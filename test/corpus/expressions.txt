@@ -1,0 +1,508 @@
+================================================================================
+Assignments
+================================================================================
+
+a = b
+a.b <- c
+a[b] += 1
+local c = d = e
+x = y ? z : w
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (identifier)))
+  (expression_statement
+    (augmented_assignment_expression
+      (member_expression
+        (identifier)
+        (property_identifier))
+      (identifier)))
+  (expression_statement
+    (augmented_assignment_expression
+      (index_expression
+        (identifier)
+        (identifier))
+      (integer)))
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (assignment_expression
+        (identifier)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (conditional_expression
+        (identifier)
+        (identifier)
+        (identifier)))))
+
+================================================================================
+Binary operator precedence
+================================================================================
+
+x = a + b * c - d / e % f
+x = a ?? b || c && d | e ^ f & g == h < i << j
+x = a not in b
+x = a instanceof B
+x = a <=> b != c >>> d
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (binary_expression
+            (identifier)
+            (identifier)))
+        (binary_expression
+          (binary_expression
+            (identifier)
+            (identifier))
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (binary_expression
+            (identifier)
+            (binary_expression
+              (identifier)
+              (binary_expression
+                (identifier)
+                (binary_expression
+                  (identifier)
+                  (binary_expression
+                    (identifier)
+                    (binary_expression
+                      (identifier)
+                      (binary_expression
+                        (identifier)
+                        (identifier))))))))))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (identifier))
+        (binary_expression
+          (identifier)
+          (identifier))))))
+
+================================================================================
+Unary and update operators
+================================================================================
+
+x = -a.b()
+x = !~a
+x = typeof a + resume g + await p
+y = clone a
+z = static [1, 2]
+w = const {a = 1}
+++a.b
+a--
+--b
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (call_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (arguments)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (unary_expression
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (unary_expression
+            (identifier))
+          (unary_expression
+            (identifier)))
+        (unary_expression
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (array
+          (integer)
+          (integer)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (table
+          (slot
+            (identifier)
+            (integer))))))
+  (expression_statement
+    (update_expression
+      (member_expression
+        (identifier)
+        (property_identifier))))
+  (expression_statement
+    (update_expression
+      (identifier)))
+  (expression_statement
+    (update_expression
+      (identifier))))
+
+================================================================================
+Delete operator
+================================================================================
+
+#allow-delete-operator
+delete a.b
+delete a[1]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (directive)
+  (expression_statement
+    (unary_expression
+      (member_expression
+        (identifier)
+        (property_identifier))))
+  (expression_statement
+    (unary_expression
+      (index_expression
+        (identifier)
+        (integer)))))
+
+================================================================================
+Member, index and call chains
+================================================================================
+
+a.b.c(d)[e](f)
+a?.b?[c]?(d)
+a.$b + a?.$c
+::root.value
+base.f(this)
+x = f
+  .g()
+  ?.h
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (call_expression
+      (index_expression
+        (call_expression
+          (member_expression
+            (member_expression
+              (identifier)
+              (property_identifier))
+            (property_identifier))
+          (arguments
+            (identifier)))
+        (identifier))
+      (arguments
+        (identifier))))
+  (expression_statement
+    (call_expression
+      (index_expression
+        (member_expression
+          (identifier)
+          (property_identifier))
+        (identifier))
+      (arguments
+        (identifier))))
+  (expression_statement
+    (binary_expression
+      (member_expression
+        (identifier)
+        (property_identifier))
+      (member_expression
+        (identifier)
+        (property_identifier))))
+  (expression_statement
+    (member_expression
+      (root_access
+        (identifier))
+      (property_identifier)))
+  (expression_statement
+    (call_expression
+      (member_expression
+        (base)
+        (property_identifier))
+      (arguments
+        (this))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (member_expression
+        (call_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (arguments))
+        (property_identifier)))))
+
+================================================================================
+Clone operator on an array
+================================================================================
+
+x = clone [a].extend(b)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (call_expression
+          (member_expression
+            (array
+              (identifier))
+            (property_identifier))
+          (arguments
+            (identifier)))))))
+
+================================================================================
+Lambdas and function expressions
+================================================================================
+
+f(@(x) x + 1)
+g = @[pure] named(a, b = 2) a + b
+h = async @() await p
+i = function(a) { return a }
+j = async function named() {}
+k = class (Base) { x = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments
+        (lambda_expression
+          (parameters
+            (parameter
+              (identifier)))
+          (binary_expression
+            (identifier)
+            (integer))))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (lambda_expression
+        (function_attributes)
+        (identifier)
+        (parameters
+          (parameter
+            (identifier))
+          (parameter
+            (identifier)
+            (integer)))
+        (binary_expression
+          (identifier)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (lambda_expression
+        (parameters)
+        (unary_expression
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (function_expression
+        (parameters
+          (parameter
+            (identifier)))
+        (block
+          (return_statement
+            (identifier))))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (function_expression
+        (identifier)
+        (parameters)
+        (block))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (class_expression
+        (identifier)
+        (class_body
+          (slot
+            (identifier)
+            (integer)))))))
+
+================================================================================
+Arrays and tables
+================================================================================
+
+a = [1, 2 3, ...rest,]
+t = {
+  a = 1
+  b,
+  "json key": 2,
+  [computed] = 3
+  ...other
+  function m() {}
+  async function n() {}
+  constructor() {}
+}
+s = { a, b c = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (array
+        (integer)
+        (integer)
+        (integer)
+        (spread_element
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (table
+        (slot
+          (identifier)
+          (integer))
+        (shorthand_slot
+          (identifier))
+        (json_slot
+          (string
+            (string_content))
+          (integer))
+        (computed_slot
+          (identifier)
+          (integer))
+        (spread_element
+          (identifier))
+        (method
+          (identifier)
+          (parameters)
+          (block))
+        (method
+          (identifier)
+          (parameters)
+          (block))
+        (method
+          (identifier)
+          (parameters)
+          (block)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (table
+        (shorthand_slot
+          (identifier))
+        (shorthand_slot
+          (identifier))
+        (slot
+          (identifier)
+          (integer))))))
+
+================================================================================
+Code block expression
+================================================================================
+
+#allow-compiler-internals
+x = $${ local a = 1; a }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (directive)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (code_block_expression
+        (local_declaration
+          (variable_declarator
+            (identifier)
+            (integer)))
+        (expression_statement
+          (identifier))))))
+
+================================================================================
+Contextual names
+================================================================================
+
+local default = 1
+x = default + case
+y = a.switch
+local from = 2
+local constructor = 3
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (integer)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (member_expression
+        (identifier)
+        (property_identifier))))
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (integer)))
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (integer))))

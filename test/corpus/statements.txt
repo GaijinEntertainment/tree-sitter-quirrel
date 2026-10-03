@@ -1,0 +1,356 @@
+================================================================================
+If statement with else
+================================================================================
+
+if (a) b(); else c()
+if (x)
+  y()
+else if (z)
+  w()
+else {
+  v()
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (if_statement
+    (identifier)
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments)))
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments))))
+  (if_statement
+    (identifier)
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments)))
+    (if_statement
+      (identifier)
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments)))
+      (block
+        (expression_statement
+          (call_expression
+            (identifier)
+            (arguments)))))))
+
+================================================================================
+If statement with a declaration condition
+================================================================================
+
+if (let a: int = f(); a > 0) g(a)
+if (local b = h()) g(b)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (if_statement
+    (if_declaration
+      (identifier)
+      (type_annotation
+        (type))
+      (call_expression
+        (identifier)
+        (arguments))
+      (binary_expression
+        (identifier)
+        (integer)))
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)))))
+  (if_statement
+    (if_declaration
+      (identifier)
+      (call_expression
+        (identifier)
+        (arguments)))
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier))))))
+
+================================================================================
+Loops
+================================================================================
+
+while (a < 10) a++
+do {
+  a--
+} while (a > 0)
+for (local i = 0, j = 1; i < 3; i++, j++) f(i, j)
+for (;;) break
+for (i = 0; i < n; i++) continue
+foreach (v in list) f(v)
+foreach (k, v in table) f(k, v)
+foreach (i, {name, age = 0} in people) f(i, name, age)
+foreach ([a b] in pairs) f(a, b)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (while_statement
+    (binary_expression
+      (identifier)
+      (integer))
+    (expression_statement
+      (update_expression
+        (identifier))))
+  (do_while_statement
+    (block
+      (expression_statement
+        (update_expression
+          (identifier))))
+    (binary_expression
+      (identifier)
+      (integer)))
+  (for_statement
+    (for_declaration
+      (variable_declarator
+        (identifier)
+        (integer))
+      (variable_declarator
+        (identifier)
+        (integer)))
+    (binary_expression
+      (identifier)
+      (integer))
+    (comma_expression
+      (update_expression
+        (identifier))
+      (update_expression
+        (identifier)))
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)
+          (identifier)))))
+  (for_statement
+    (break_statement))
+  (for_statement
+    (assignment_expression
+      (identifier)
+      (integer))
+    (binary_expression
+      (identifier)
+      (identifier))
+    (update_expression
+      (identifier))
+    (continue_statement))
+  (foreach_statement
+    (identifier)
+    (identifier)
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)))))
+  (foreach_statement
+    (identifier)
+    (identifier)
+    (identifier)
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)
+          (identifier)))))
+  (foreach_statement
+    (identifier)
+    (table_pattern
+      (pattern_field
+        (identifier))
+      (pattern_field
+        (identifier)
+        (integer)))
+    (identifier)
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)
+          (identifier)
+          (identifier)))))
+  (foreach_statement
+    (array_pattern
+      (pattern_field
+        (identifier))
+      (pattern_field
+        (identifier)))
+    (identifier)
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier)
+          (identifier))))))
+
+================================================================================
+Switch statement
+================================================================================
+
+#allow-switch-statement
+switch (x) {
+  case 1:
+  case 2:
+    f()
+    break
+  default:
+    g()
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (directive)
+  (switch_statement
+    (identifier)
+    (switch_case
+      (integer))
+    (switch_case
+      (integer)
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments)))
+      (break_statement))
+    (switch_default
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments))))))
+
+================================================================================
+Try statement with typed catches
+================================================================================
+
+try {
+  f()
+} catch (NetError e) {
+  g(e)
+} catch (e) {
+  h(e)
+}
+try f() catch (e) g()
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (try_statement
+    (block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments))))
+    (catch_clause
+      (identifier)
+      (identifier)
+      (block
+        (expression_statement
+          (call_expression
+            (identifier)
+            (arguments
+              (identifier))))))
+    (catch_clause
+      (identifier)
+      (block
+        (expression_statement
+          (call_expression
+            (identifier)
+            (arguments
+              (identifier)))))))
+  (try_statement
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments)))
+    (catch_clause
+      (identifier)
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments))))))
+
+================================================================================
+Jump statements
+================================================================================
+
+function g() {
+  yield 1
+  yield
+  return
+}
+throw "error"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (function_declaration
+    (identifier)
+    (parameters)
+    (block
+      (yield_statement
+        (integer))
+      (yield_statement)
+      (return_statement)))
+  (throw_statement
+    (string
+      (string_content))))
+
+================================================================================
+Empty statements and blocks
+================================================================================
+
+;
+{}
+{ f(); ; }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (empty_statement)
+  (block)
+  (block
+    (expression_statement
+      (call_expression
+        (identifier)
+        (arguments)))
+    (empty_statement)))
+
+================================================================================
+Directives and docstrings
+================================================================================
+
+#strict
+#default:forbid-root-table
+@@"Module documentation"
+x = 1 #allow-delete-operator
+f(#pos:10:4 1)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (directive)
+  (directive)
+  (docstring)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (integer)))
+  (directive)
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments
+        (integer)))))

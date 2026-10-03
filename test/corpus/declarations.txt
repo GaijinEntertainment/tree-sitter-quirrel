@@ -1,0 +1,269 @@
+================================================================================
+Local and let declarations
+================================================================================
+
+local a, b = 1, c: int|null = 2
+let d: (int
+  | string) = 3
+let {e, f: string = "x"} = g
+local [h i] = j
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (local_declaration
+    (variable_declarator
+      (identifier))
+    (variable_declarator
+      (identifier)
+      (integer))
+    (variable_declarator
+      (identifier)
+      (type_annotation
+        (type)
+        (type))
+      (integer)))
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (type_annotation
+        (type)
+        (type))
+      (integer)))
+  (local_declaration
+    (table_pattern
+      (pattern_field
+        (identifier))
+      (pattern_field
+        (identifier)
+        (type_annotation
+          (type))
+        (string
+          (string_content))))
+    (identifier))
+  (local_declaration
+    (array_pattern
+      (pattern_field
+        (identifier))
+      (pattern_field
+        (identifier)))
+    (identifier)))
+
+================================================================================
+Function declarations
+================================================================================
+
+function f(a, b: int = 1, {c}, d = 2) : table|null {
+  return null
+}
+async function g(...: string) {}
+function [pure, nodiscard] h() {}
+local function i() {}
+let function [nodiscard] j(x) { return x }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (function_declaration
+    (identifier)
+    (parameters
+      (parameter
+        (identifier))
+      (parameter
+        (identifier)
+        (type_annotation
+          (type))
+        (integer))
+      (parameter
+        (table_pattern
+          (pattern_field
+            (identifier))))
+      (parameter
+        (identifier)
+        (integer)))
+    (type_annotation
+      (type)
+      (type))
+    (block
+      (return_statement
+        (null))))
+  (function_declaration
+    (identifier)
+    (parameters
+      (variadic_parameter
+        (type_annotation
+          (type))))
+    (block))
+  (function_declaration
+    (function_attributes)
+    (identifier)
+    (parameters)
+    (block))
+  (local_declaration
+    (identifier)
+    (parameters)
+    (block))
+  (local_declaration
+    (function_attributes)
+    (identifier)
+    (parameters
+      (parameter
+        (identifier)))
+    (block
+      (return_statement
+        (identifier)))))
+
+================================================================================
+Class declarations
+================================================================================
+
+class Base {}
+class Derived (Base) {
+  @@"Class documentation"
+  x = 1
+  static count = 0;
+  [key] = 2
+  static [other] = 3
+  constructor(value) {
+    base.constructor(value)
+  }
+  function get() { return this.x }
+  async function fetch() {}
+  static async function make() {}
+}
+local class Local {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (class_declaration
+    (identifier)
+    (class_body))
+  (class_declaration
+    (identifier)
+    (identifier)
+    (class_body
+      (docstring)
+      (slot
+        (identifier)
+        (integer))
+      (slot
+        (identifier)
+        (integer))
+      (computed_slot
+        (identifier)
+        (integer))
+      (computed_slot
+        (identifier)
+        (integer))
+      (method
+        (identifier)
+        (parameters
+          (parameter
+            (identifier)))
+        (block
+          (expression_statement
+            (call_expression
+              (member_expression
+                (base)
+                (property_identifier))
+              (arguments
+                (identifier))))))
+      (method
+        (identifier)
+        (parameters)
+        (block
+          (return_statement
+            (member_expression
+              (this)
+              (property_identifier)))))
+      (method
+        (identifier)
+        (parameters)
+        (block))
+      (method
+        (identifier)
+        (parameters)
+        (block))))
+  (local_declaration
+    (identifier)
+    (class_body)))
+
+================================================================================
+Enum declarations
+================================================================================
+
+enum Color {
+  RED
+  GREEN = 2,
+  BLUE = -3
+  NAME = "blue"
+  RATIO = 1.5
+  FLAG = true
+  NONE = null
+}
+global enum Mode { A, B }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (enum_declaration
+    (identifier)
+    (enumerator
+      (identifier))
+    (enumerator
+      (identifier)
+      (integer))
+    (enumerator
+      (identifier)
+      (negative_literal
+        (integer)))
+    (enumerator
+      (identifier)
+      (string
+        (string_content)))
+    (enumerator
+      (identifier)
+      (float))
+    (enumerator
+      (identifier)
+      (true))
+    (enumerator
+      (identifier)
+      (null)))
+  (enum_declaration
+    (identifier)
+    (enumerator
+      (identifier))
+    (enumerator
+      (identifier))))
+
+================================================================================
+Const declarations
+================================================================================
+
+const LIMIT = 10
+const function [pure] twice(x) { return x * 2 }
+global const VERSION = "1.0"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (const_declaration
+    (identifier)
+    (integer))
+  (const_declaration
+    (function_attributes)
+    (identifier)
+    (parameters
+      (parameter
+        (identifier)))
+    (block
+      (return_statement
+        (binary_expression
+          (identifier)
+          (integer)))))
+  (const_declaration
+    (identifier)
+    (string
+      (string_content))))

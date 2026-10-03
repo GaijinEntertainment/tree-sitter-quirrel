@@ -1,0 +1,111 @@
+================================================================================
+Import statements
+================================================================================
+
+#strict
+import "math" as m
+from "ui.nut" import button, label as text, *
+;
+from "x.nut" import y
+let z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (directive)
+  (import_statement
+    (string
+      (string_content))
+    (identifier))
+  (import_statement
+    (string
+      (string_content))
+    (import_specifier
+      (identifier))
+    (import_specifier
+      (identifier)
+      (identifier))
+    (wildcard_import))
+  (import_statement
+    (string
+      (string_content))
+    (import_specifier
+      (identifier)))
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (integer))))
+
+================================================================================
+Imports after expression statements
+================================================================================
+
+import "a.nut"
+f()
+return
+import "b.nut"
+let x = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (import_statement
+    (string
+      (string_content)))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments)))
+  (return_statement)
+  (import_statement
+    (string
+      (string_content)))
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (integer))))
+
+================================================================================
+Import keywords as names after the import region
+================================================================================
+
+local a = 1
+from(1)
+import <- 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (local_declaration
+    (variable_declarator
+      (identifier)
+      (integer)))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments
+        (integer))))
+  (expression_statement
+    (augmented_assignment_expression
+      (identifier)
+      (integer))))
+
+================================================================================
+Import inside the first statement
+================================================================================
+
+if (enabled) {
+  from "debug.nut" import log
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (if_statement
+    (identifier)
+    (block
+      (import_statement
+        (string
+          (string_content))
+        (import_specifier
+          (identifier))))))

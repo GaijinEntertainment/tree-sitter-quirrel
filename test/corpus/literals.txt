@@ -1,0 +1,144 @@
+================================================================================
+Numbers
+================================================================================
+
+x = [0, 1_000, 0x_FF_00, 0X1f, 1., 1.5, 1.e5, 1e+5, 2E-3, 1_e5, 0.5]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (array
+        (integer)
+        (integer)
+        (integer)
+        (integer)
+        (float)
+        (float)
+        (float)
+        (float)
+        (float)
+        (float)
+        (float)))))
+
+================================================================================
+Strings and characters
+================================================================================
+
+a = "text \"quoted\" \x41\u0041\U0001F600\n\t\\"
+b = @"verbatim ""quote"" \no escape
+second line"
+c = 'c'
+d = '\n'
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (string
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (escape_sequence)
+        (escape_sequence)
+        (escape_sequence)
+        (escape_sequence)
+        (escape_sequence))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (verbatim_string)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (char)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (char))))
+
+================================================================================
+Template strings
+================================================================================
+
+a = $"value {x + 1}, escaped \{ \} and {f($"{y}")}"
+b = $"a}b"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (template_string
+        (string_content)
+        (template_substitution
+          (binary_expression
+            (identifier)
+            (integer)))
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (template_substitution
+          (call_expression
+            (identifier)
+            (arguments
+              (template_string
+                (template_substitution
+                  (identifier)))))))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (template_string
+        (string_content)))))
+
+================================================================================
+Keyword literals
+================================================================================
+
+x = [null, true, false, this, __LINE__, __FILE__]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (array
+        (null)
+        (true)
+        (false)
+        (this)
+        (line_macro)
+        (file_macro)))))
+
+================================================================================
+Comments
+================================================================================
+
+// line comment
+x = 1 /* block */ + 2
+/* multi
+   line */
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (integer)
+        (comment)
+        (integer))))
+  (comment))

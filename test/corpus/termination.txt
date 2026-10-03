@@ -1,0 +1,164 @@
+================================================================================
+Line ends separate statements
+================================================================================
+
+a = 1
+b = 2; c = 3
+d()
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (integer)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (integer)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (integer)))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments))))
+
+================================================================================
+Statements after a closing brace on one line
+================================================================================
+
+if (x) {} y()
+t = {} u = 2
+function f() {} f()
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (if_statement
+    (identifier)
+    (block))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (table)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (integer)))
+  (function_declaration
+    (identifier)
+    (parameters)
+    (block))
+  (expression_statement
+    (call_expression
+      (identifier)
+      (arguments))))
+
+================================================================================
+Expressions continue across line ends
+================================================================================
+
+x = a
+  + b
+  * c
+y = cond
+  ? 1
+  : 2
+z = a
+  in b
+w = f
+(1)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (conditional_expression
+        (identifier)
+        (integer)
+        (integer))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (call_expression
+        (identifier)
+        (arguments
+          (integer))))))
+
+================================================================================
+Prefix update after a line end starts a statement
+================================================================================
+
+x
+++y
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (update_expression
+      (identifier))))
+
+================================================================================
+Return value only on the same line
+================================================================================
+
+function f() {
+  return
+  g()
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (function_declaration
+    (identifier)
+    (parameters)
+    (block
+      (return_statement)
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments))))))
+
+================================================================================
+Block comment without a line end does not end a statement
+================================================================================
+
+x = 1 /* comment */ + 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (integer)
+        (comment)
+        (integer)))))
