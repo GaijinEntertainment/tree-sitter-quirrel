@@ -37,7 +37,8 @@ const DIRECTIVES = [
   'strict', 'relaxed', 'forbid-root-table', 'allow-root-table', 'disable-optimizer', 'enable-optimizer',
   'forbid-delete-operator', 'allow-delete-operator', 'forbid-clone-operator', 'allow-clone-operator',
   'forbid-switch-statement', 'allow-switch-statement', 'forbid-implicit-type-methods',
-  'allow-implicit-type-methods', 'forbid-compiler-internals', 'allow-compiler-internals',
+  'allow-implicit-type-methods', 'forbid-auto-freeze', 'allow-auto-freeze', 'forbid-compiler-internals',
+  'allow-compiler-internals',
 ];
 
 const ESCAPE = /\\(x[0-9a-fA-F]{1,2}|u[0-9a-fA-F]{1,4}|U[0-9a-fA-F]{1,8}|[tabnrvf0\\"'])/;

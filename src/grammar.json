@@ -634,6 +634,14 @@
               },
               {
                 "type": "STRING",
+                "value": "forbid-auto-freeze"
+              },
+              {
+                "type": "STRING",
+                "value": "allow-auto-freeze"
+              },
+              {
+                "type": "STRING",
                 "value": "forbid-compiler-internals"
               },
               {

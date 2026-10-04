@@ -336,6 +336,7 @@ Directives and docstrings
 
 #strict
 #default:forbid-root-table
+#allow-auto-freeze
 @@"Module documentation"
 x = 1 #allow-delete-operator
 f(#pos:10:4 1)
@@ -343,6 +344,7 @@ f(#pos:10:4 1)
 --------------------------------------------------------------------------------
 
 (source_file
+  (directive)
   (directive)
   (directive)
   (docstring)
