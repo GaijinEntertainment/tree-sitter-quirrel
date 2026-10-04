@@ -1,7 +1,6 @@
 # tree-sitter-quirrel
 
-Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine. The Dagor tree holds its source, and this
-directory is also the root of the standalone `tree-sitter-quirrel` repository.
+Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 
 ## Reference
 
@@ -45,7 +44,7 @@ directory is also the root of the standalone `tree-sitter-quirrel` repository.
   `tree-sitter.json`, and set the version with `tree-sitter version <version>`.
 - `package-lock.json`, `Cargo.lock`, `go.sum`, `Package.resolved` - lockfiles that npm, cargo, go, and swift write when
   they resolve the dependencies of the manifests. Commit them with the manifest change.
-- `.github/` - the CI, lint, fuzz, and publish workflows of the standalone repository, dependabot, and issue templates.
+- `.github/` - the CI, lint, fuzz, and publish workflows, dependabot, and issue templates.
   The publish workflow needs the `NPM_TOKEN`, `CARGO_REGISTRY_TOKEN`, and `PYPI_API_TOKEN` secrets.
 - `eslint.config.mjs` - the lint configuration for `grammar.js` (`npm run lint`).
 - `examples/` - Quirrel files that the CI workflow parses.
@@ -61,8 +60,7 @@ directory is also the root of the standalone `tree-sitter-quirrel` repository.
   `field_access_expression` with a `receiver` and a `field`, `GetSlotExpr` is `slot_access_expression` with a `key`,
   `CallExpr` has a `callee`, and `IfStatement` has a `then_branch` and an `else_branch`. The two sides of an assignment
   and a binary expression are `left` and `right`.
-- Keep this directory self-contained, because the standalone repository publishes it as it is. No file here reads a
-  file of the Dagor tree, and the docs give the path only of a Dagor file that GaijinEntertainment/DagorEngine has.
+- The docs cite a Dagor file only when GaijinEntertainment/DagorEngine on GitHub has it.
 - Model the repository setup (workflows, lint, lockfiles, README) on the official grammars of the tree-sitter
   organization, such as tree-sitter/tree-sitter-cpp. `README.md` holds only the badges, a short description of the
   grammar, and references. Editor setup, binding use, and maintainer procedures stay out of it.
