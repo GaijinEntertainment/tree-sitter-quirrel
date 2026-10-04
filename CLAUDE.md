@@ -53,6 +53,14 @@ directory is also the root of the standalone `tree-sitter-quirrel` repository.
 
 ## Rules
 
+- A node kind and a field take the name that the Quirrel language reference
+  (`prog/1stPartyLibs/quirrel/quirrel/doc/content/pages/language/`) gives the construct: `interpolated_string` and its
+  `hole`, `enum_member`, `vararg_parameter`, `root_table_access`, `spread`, the `container` of a `foreach`, the `step`
+  of a `for`. A construct that the reference does not name takes the name of the compiler AST in
+  `squirrel/compiler/ast.h`, with each abbreviation spelled out: `TerExpr` is `ternary_expression`, `GetFieldExpr` is
+  `field_access_expression` with a `receiver` and a `field`, `GetSlotExpr` is `slot_access_expression` with a `key`,
+  `CallExpr` has a `callee`, and `IfStatement` has a `then_branch` and an `else_branch`. The two sides of an assignment
+  and a binary expression are `left` and `right`.
 - Keep this directory self-contained, because the standalone repository publishes it as it is. No file here reads a
   file of the Dagor tree, and the docs give the path only of a Dagor file that GaijinEntertainment/DagorEngine has.
 - Model the repository setup (workflows, lint, lockfiles, README) on the official grammars of the tree-sitter
@@ -64,7 +72,7 @@ directory is also the root of the standalone `tree-sitter-quirrel` repository.
 - Keep the `externals` array in `grammar.js` and `enum TokenType` in `src/scanner.c` in the same order.
 - The generator copies the fields of an aliased hidden rule into the parent node, and `child_by_field_name` on the
   parent then returns the wrong child. A rule that has fields and appears only under an alias gets a visible name, as
-  the spine copies, the parameter forms, and the catch clause forms do.
+  the spine copies, the parameter forms, the catch clause forms, and the declarations of `if` and `for` do.
 - An alias of an inline `seq` applies to each element. Alias a named rule.
 - A contextual keyword used as a name, and a type name, is an aliased token, so that its node is a leaf. A keyword
   capture in `queries/highlights.scm` then does not color a name.

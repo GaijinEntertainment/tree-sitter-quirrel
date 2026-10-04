@@ -12,19 +12,19 @@ local [h i] = j
 
 (source_file
   (local_declaration
-    (variable_declarator
+    (variable_declaration
       (identifier))
-    (variable_declarator
+    (variable_declaration
       (identifier)
       (integer))
-    (variable_declarator
+    (variable_declaration
       (identifier)
       (type_annotation
         (type)
         (type))
       (integer)))
   (local_declaration
-    (variable_declarator
+    (variable_declaration
       (identifier)
       (type_annotation
         (type)
@@ -90,7 +90,7 @@ let function [nodiscard] j(x) { return x }
   (function_declaration
     (identifier)
     (parameters
-      (variadic_parameter
+      (vararg_parameter
         (type_annotation
           (type))))
     (block))
@@ -164,9 +164,9 @@ local class Local {}
         (block
           (expression_statement
             (call_expression
-              (member_expression
+              (field_access_expression
                 (base)
-                (property_identifier))
+                (field_identifier))
               (arguments
                 (identifier))))))
       (method
@@ -174,9 +174,9 @@ local class Local {}
         (parameters)
         (block
           (return_statement
-            (member_expression
+            (field_access_expression
               (this)
-              (property_identifier)))))
+              (field_identifier)))))
       (method
         (identifier)
         (parameters)
@@ -209,33 +209,33 @@ global enum Mode { A, B }
 (source_file
   (enum_declaration
     (identifier)
-    (enumerator
+    (enum_member
       (identifier))
-    (enumerator
+    (enum_member
       (identifier)
       (integer))
-    (enumerator
+    (enum_member
       (identifier)
       (negative_literal
         (integer)))
-    (enumerator
+    (enum_member
       (identifier)
       (string
         (string_content)))
-    (enumerator
+    (enum_member
       (identifier)
       (float))
-    (enumerator
+    (enum_member
       (identifier)
       (true))
-    (enumerator
+    (enum_member
       (identifier)
       (null)))
   (enum_declaration
     (identifier)
-    (enumerator
+    (enum_member
       (identifier))
-    (enumerator
+    (enum_member
       (identifier))))
 
 ================================================================================

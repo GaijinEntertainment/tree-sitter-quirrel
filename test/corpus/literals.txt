@@ -58,11 +58,11 @@ d = '\n'
   (expression_statement
     (assignment_expression
       (identifier)
-      (char)))
+      (character)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (char))))
+      (character))))
 
 ================================================================================
 Template strings
@@ -77,9 +77,9 @@ b = $"a}b"
   (expression_statement
     (assignment_expression
       (identifier)
-      (template_string
+      (interpolated_string
         (string_content)
-        (template_substitution
+        (hole
           (binary_expression
             (identifier)
             (integer)))
@@ -88,17 +88,17 @@ b = $"a}b"
         (string_content)
         (escape_sequence)
         (string_content)
-        (template_substitution
+        (hole
           (call_expression
             (identifier)
             (arguments
-              (template_string
-                (template_substitution
+              (interpolated_string
+                (hole
                   (identifier)))))))))
   (expression_statement
     (assignment_expression
       (identifier)
-      (template_string
+      (interpolated_string
         (string_content)))))
 
 ================================================================================

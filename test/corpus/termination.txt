@@ -90,7 +90,7 @@ w = f
   (expression_statement
     (assignment_expression
       (identifier)
-      (conditional_expression
+      (ternary_expression
         (identifier)
         (integer)
         (integer))))
@@ -121,7 +121,7 @@ x
   (expression_statement
     (identifier))
   (expression_statement
-    (update_expression
+    (increment_expression
       (identifier))))
 
 ================================================================================

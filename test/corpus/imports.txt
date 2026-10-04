@@ -20,19 +20,19 @@ let z = 1
   (import_statement
     (string
       (string_content))
-    (import_specifier
+    (import_slot
       (identifier))
-    (import_specifier
+    (import_slot
       (identifier)
       (identifier))
     (wildcard_import))
   (import_statement
     (string
       (string_content))
-    (import_specifier
+    (import_slot
       (identifier)))
   (local_declaration
-    (variable_declarator
+    (variable_declaration
       (identifier)
       (integer))))
 
@@ -61,7 +61,7 @@ let x = 1
     (string
       (string_content)))
   (local_declaration
-    (variable_declarator
+    (variable_declaration
       (identifier)
       (integer))))
 
@@ -77,7 +77,7 @@ import <- 2
 
 (source_file
   (local_declaration
-    (variable_declarator
+    (variable_declaration
       (identifier)
       (integer)))
   (expression_statement
@@ -86,7 +86,7 @@ import <- 2
       (arguments
         (integer))))
   (expression_statement
-    (augmented_assignment_expression
+    (newslot_expression
       (identifier)
       (integer))))
 
@@ -107,5 +107,5 @@ if (enabled) {
       (import_statement
         (string
           (string_content))
-        (import_specifier
+        (import_slot
           (identifier))))))

@@ -3,7 +3,7 @@
 ((identifier) @constant
   (#match? @constant "^[A-Z][A-Z0-9_]*$"))
 
-(property_identifier) @variable.member
+(field_identifier) @variable.member
 
 [
   (this)
@@ -14,7 +14,7 @@
   name: (identifier) @variable.parameter)
 
 (catch_clause
-  parameter: (identifier) @variable.parameter)
+  name: (identifier) @variable.parameter)
 
 (slot
   key: (identifier) @variable.member)
@@ -46,20 +46,20 @@
   name: (identifier) @function.method)
 
 (call_expression
-  function: (identifier) @function.call)
+  callee: (identifier) @function.call)
 
 (call_expression
-  function: (root_access
+  callee: (root_table_access
     name: (identifier) @function.call))
 
 (call_expression
-  function: (member_expression
-    property: (property_identifier) @function.method.call))
+  callee: (field_access_expression
+    field: (field_identifier) @function.method.call))
 
 ((identifier) @constructor
   (#eq? @constructor "constructor"))
 
-((property_identifier) @constructor
+((field_identifier) @constructor
   (#eq? @constructor "constructor"))
 
 (class_declaration
@@ -79,9 +79,9 @@
   name: (identifier) @type)
 
 (catch_clause
-  type: (identifier) @type)
+  class: (identifier) @type)
 
-(enumerator
+(enum_member
   name: (identifier) @constant)
 
 (type) @type.builtin
@@ -109,12 +109,12 @@
 [
   (string)
   (verbatim_string)
-  (template_string)
+  (interpolated_string)
 ] @string
 
 (escape_sequence) @string.escape
 
-(char) @character
+(character) @character
 
 (docstring) @string.documentation
 
@@ -236,7 +236,7 @@
   "..."
 ] @operator
 
-(variadic_parameter
+(vararg_parameter
   "..." @variable.parameter)
 
 [
@@ -261,13 +261,13 @@
   "::"
 ] @punctuation.delimiter
 
-(conditional_expression
+(ternary_expression
   [
     "?"
     ":"
   ] @keyword.conditional.ternary)
 
-(template_substitution
+(hole
   [
     "{"
     "}"

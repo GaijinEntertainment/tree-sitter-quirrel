@@ -98,8 +98,9 @@ function expressionSpine(prefix) {
     [`${prefix}_regular_expression`]: $ => choice(node($, 'assignment_expression'), hidden($, '_expression')),
 
     [`${prefix}_expression`]: $ => choice(
-      node($, 'conditional_expression'),
-      node($, 'augmented_assignment_expression'),
+      node($, 'ternary_expression'),
+      node($, 'compound_assignment_expression'),
+      node($, 'newslot_expression'),
       hidden($, '_operand'),
     ),
 
@@ -107,8 +108,8 @@ function expressionSpine(prefix) {
 
     [`${prefix}_unary_operand`]: $ => choice(
       node($, 'unary_expression'),
-      $.update_expression,
-      alias($[ruleName('postfix_update_expression')], $.update_expression),
+      $.increment_expression,
+      alias($[ruleName('postfix_increment_expression')], $.increment_expression),
       hidden($, '_postfix_operand'),
     ),
 
@@ -118,13 +119,19 @@ function expressionSpine(prefix) {
       field('right', $._expression),
     )),
 
-    [ruleName('augmented_assignment_expression')]: $ => prec.right(PREC.ASSIGN, seq(
+    [ruleName('compound_assignment_expression')]: $ => prec.right(PREC.ASSIGN, seq(
       field('left', hidden($, '_operand')),
-      field('operator', choice('<-', '+=', '-=', '*=', '/=', '%=')),
+      field('operator', choice('+=', '-=', '*=', '/=', '%=')),
       field('right', $._expression),
     )),
 
-    [ruleName('conditional_expression')]: $ => prec.right(PREC.ASSIGN, seq(
+    [ruleName('newslot_expression')]: $ => prec.right(PREC.ASSIGN, seq(
+      field('left', hidden($, '_operand')),
+      '<-',
+      field('right', $._expression),
+    )),
+
+    [ruleName('ternary_expression')]: $ => prec.right(PREC.ASSIGN, seq(
       field('condition', hidden($, '_operand')),
       '?',
       field('consequence', $._expression),
@@ -146,7 +153,7 @@ function expressionSpine(prefix) {
       seq(
         field('operator', 'clone'),
         field('argument', choice(
-          alias($.clone_postfix_update_expression, $.update_expression),
+          alias($.clone_postfix_increment_expression, $.increment_expression),
           $._clone_postfix_operand,
         )),
       ),
@@ -165,37 +172,37 @@ function postfixSpine(prefix) {
   const {hidden, node, ruleName} = spineNames(prefix);
 
   return {
-    [ruleName('postfix_update_expression')]: $ => prec(PREC.POSTFIX, seq(
+    [ruleName('postfix_increment_expression')]: $ => prec(PREC.POSTFIX, seq(
       field('argument', hidden($, '_postfix_operand')),
       field('operator', choice(alias($._postfix_increment, '++'), alias($._postfix_decrement, '--'))),
     )),
 
-    [ruleName('member_expression')]: $ => prec(PREC.POSTFIX, seq(
-      field('object', hidden($, '_postfix_operand')),
+    [ruleName('field_access_expression')]: $ => prec(PREC.POSTFIX, seq(
+      field('receiver', hidden($, '_postfix_operand')),
       field('operator', choice('.', '?.', '.$', '?.$')),
       $._name_adjacent,
-      field('property', choice(
-        alias($.identifier, $.property_identifier),
-        $._contextual_property_name,
-        alias('constructor', $.property_identifier),
+      field('field', choice(
+        alias($.identifier, $.field_identifier),
+        $._contextual_field_name,
+        alias('constructor', $.field_identifier),
       )),
     )),
 
-    [ruleName('index_expression')]: $ => prec(PREC.POSTFIX, seq(
-      field('object', hidden($, '_postfix_operand')),
+    [ruleName('slot_access_expression')]: $ => prec(PREC.POSTFIX, seq(
+      field('receiver', hidden($, '_postfix_operand')),
       field('operator', choice(alias($._index_bracket, '['), alias($._null_index_bracket, '?['))),
-      field('index', $._expression),
+      field('key', $._expression),
       ']',
     )),
 
     [ruleName('call_expression')]: $ => prec(PREC.POSTFIX, seq(
-      field('function', hidden($, '_postfix_operand')),
+      field('callee', hidden($, '_postfix_operand')),
       field('arguments', $.arguments),
     )),
 
     [`${prefix}_postfix_operand`]: $ => choice(
-      node($, 'member_expression'),
-      node($, 'index_expression'),
+      node($, 'field_access_expression'),
+      node($, 'slot_access_expression'),
       node($, 'call_expression'),
       hidden($, '_primary_expression'),
     ),
@@ -332,13 +339,13 @@ export default grammar({
         'from',
         field('module', $._module_name),
         'import',
-        sep1(choice($.import_specifier, alias('*', $.wildcard_import)), ','),
+        sep1(choice($.import_slot, alias('*', $.wildcard_import)), ','),
       ),
     ),
 
     _module_name: $ => choice($.string, $.verbatim_string),
 
-    import_specifier: $ => seq(field('name', $.identifier), optional(seq('as', field('alias', $.identifier)))),
+    import_slot: $ => seq(field('name', $.identifier), optional(seq('as', field('alias', $.identifier)))),
 
     expression_statement: $ => $._statement_regular_expression,
 
@@ -353,12 +360,12 @@ export default grammar({
       choice(
         seq('function', optional($.function_attributes), field('name', $._name), $._function_tail),
         seq('class', field('name', $._name), $._class_tail),
-        sep1($.variable_declarator, ','),
+        sep1($.variable_declaration, ','),
         seq(field('pattern', $._pattern), '=', field('value', $._expression)),
       ),
     ),
 
-    variable_declarator: $ => seq(
+    variable_declaration: $ => seq(
       field('name', $._name),
       optional(field('type', alias($._declarator_type_annotation, $.type_annotation))),
       optional(seq('=', field('value', $._regular_expression))),
@@ -400,11 +407,11 @@ export default grammar({
       'enum',
       field('name', $._name),
       '{',
-      repeat(seq($.enumerator, optional(','))),
+      repeat(seq($.enum_member, optional(','))),
       alias($._close_brace, '}'),
     ),
 
-    enumerator: $ => seq(field('name', $._name), optional(seq('=', field('value', $._enum_value)))),
+    enum_member: $ => seq(field('name', $._name), optional(seq('=', field('value', $._enum_value)))),
 
     _enum_value: $ => choice(
       $.null,
@@ -412,30 +419,36 @@ export default grammar({
       $.false,
       $.integer,
       $.float,
-      $.char,
+      $.character,
       $.string,
       $.verbatim_string,
       $.negative_literal,
     ),
 
-    negative_literal: $ => seq('-', choice($.integer, $.float, $.char)),
+    negative_literal: $ => seq('-', choice($.integer, $.float, $.character)),
 
     if_statement: $ => prec.right(seq(
       'if',
       '(',
-      field('condition', choice($._expression, $.if_declaration)),
+      choice(
+        field('condition', $._expression),
+        seq(
+          field('declaration', alias($.if_local_declaration, $.local_declaration)),
+          optional(seq(alias($._semicolon, ';'), field('condition', $._expression))),
+        ),
+      ),
       ')',
-      field('consequence', $._body_statement),
-      optional(seq(optional($._else_marker), 'else', field('alternative', $._body_statement))),
+      field('then_branch', $._body_statement),
+      optional(seq(optional($._else_marker), 'else', field('else_branch', $._body_statement))),
     )),
 
-    if_declaration: $ => seq(
-      choice('local', 'let'),
+    if_local_declaration: $ => seq(choice('local', 'let'), alias($.if_variable_declaration, $.variable_declaration)),
+
+    if_variable_declaration: $ => seq(
       field('name', $._name),
       optional(field('type', alias($._declarator_type_annotation, $.type_annotation))),
       '=',
       field('value', $._regular_expression),
-      optional(seq(alias($._semicolon, ';'), field('condition', $._expression))),
     ),
 
     while_statement: $ => seq('while', '(', field('condition', $._expression), ')', field('body', $._body_statement)),
@@ -452,19 +465,19 @@ export default grammar({
     for_statement: $ => seq(
       'for',
       '(',
-      optional(field('initializer', choice($.for_declaration, $._comma_expression))),
+      optional(field('initializer', choice(alias($.for_local_declaration, $.local_declaration), $._comma_expression))),
       alias($._semicolon, ';'),
       optional(field('condition', $._expression)),
       alias($._semicolon, ';'),
-      optional(field('increment', $._comma_expression)),
+      optional(field('step', $._comma_expression)),
       ')',
       field('body', $._body_statement),
     ),
 
-    for_declaration: $ => seq(
+    for_local_declaration: $ => seq(
       'local',
       choice(
-        sep1($.variable_declarator, ','),
+        sep1($.variable_declaration, ','),
         seq(field('pattern', $._pattern), '=', field('value', $._expression)),
       ),
     ),
@@ -479,7 +492,7 @@ export default grammar({
       optional(seq(field('index', $._name), ',')),
       field('value', choice($._name, $._pattern)),
       'in',
-      field('iterable', $._expression),
+      field('container', $._expression),
       ')',
       field('body', $._body_statement),
     ),
@@ -487,17 +500,17 @@ export default grammar({
     switch_statement: $ => seq(
       'switch',
       '(',
-      field('value', $._expression),
+      field('expression', $._expression),
       ')',
       '{',
       repeat($.switch_case),
-      optional($.switch_default),
+      optional($.default_case),
       alias($._close_brace, '}'),
     ),
 
     switch_case: $ => prec.left(seq('case', field('value', $._expression), ':', repeat($._statement_item))),
 
-    switch_default: $ => prec.left(seq('default', ':', repeat($._statement_item))),
+    default_case: $ => prec.left(seq('default', ':', repeat($._statement_item))),
 
     try_statement: $ => seq('try', field('body', $._unterminated_body), $._catch_clauses),
 
@@ -510,8 +523,8 @@ export default grammar({
       optional($._catch_marker),
       'catch',
       '(',
-      field('type', $._name),
-      field('parameter', $._name),
+      field('class', $._name),
+      field('name', $._name),
       ')',
       field('body', $._unterminated_body),
     ),
@@ -520,7 +533,7 @@ export default grammar({
       optional($._catch_marker),
       'catch',
       '(',
-      field('parameter', $._name),
+      field('name', $._name),
       ')',
       field('body', $._unterminated_body),
     ),
@@ -541,7 +554,7 @@ export default grammar({
 
     _contextual_name: $ => choice(...CONTEXTUAL_NAMES.map(name => alias(name, $.identifier))),
 
-    _contextual_property_name: $ => choice(...CONTEXTUAL_NAMES.map(name => alias(name, $.property_identifier))),
+    _contextual_field_name: $ => choice(...CONTEXTUAL_NAMES.map(name => alias(name, $.field_identifier))),
 
     function_attributes: _ => {
       const attribute = (/** @type {string} */ name) => seq(name, optional(','));
@@ -559,13 +572,13 @@ export default grammar({
 
     parameters: $ => seq(
       '(',
-      optional(choice($._required_parameters, $._default_parameters, $.variadic_parameter)),
+      optional(choice($._required_parameters, $._default_parameters, $.vararg_parameter)),
       ')',
     ),
 
     _required_parameters: $ => seq(
       choice(alias($.required_parameter, $.parameter), alias($.pattern_parameter, $.parameter)),
-      optional(seq(',', optional(choice($._required_parameters, $._default_parameters, $.variadic_parameter)))),
+      optional(seq(',', optional(choice($._required_parameters, $._default_parameters, $.vararg_parameter)))),
     ),
 
     _default_parameters: $ => seq(
@@ -589,7 +602,7 @@ export default grammar({
 
     pattern_parameter: $ => field('pattern', $._pattern),
 
-    variadic_parameter: $ => seq('...', optional(field('type', $.type_annotation))),
+    vararg_parameter: $ => seq('...', optional(field('type', $.type_annotation))),
 
     type_annotation: $ => seq(':', choice($._type_union, seq('(', $._type_union, ')'))),
 
@@ -644,11 +657,11 @@ export default grammar({
 
     _clone_array: $ => seq(
       alias($._index_bracket, '['),
-      repeat(seq(choice($._expression, $.spread_element), optional(','))),
+      repeat(seq(choice($._expression, $.spread), optional(','))),
       ']',
     ),
 
-    update_expression: $ => prec(PREC.UNARY, seq(
+    increment_expression: $ => prec(PREC.UNARY, seq(
       field('operator', choice('++', '--')),
       field('argument', $._unary_operand),
     )),
@@ -659,16 +672,16 @@ export default grammar({
       $._name,
       $.this,
       $.base,
-      $.root_access,
+      $.root_table_access,
       $.null,
       $.true,
       $.false,
       $.integer,
       $.float,
-      $.char,
+      $.character,
       $.string,
       $.verbatim_string,
-      $.template_string,
+      $.interpolated_string,
       $.line_macro,
       $.file_macro,
       $.parenthesized_expression,
@@ -684,16 +697,16 @@ export default grammar({
       $._name,
       $.this,
       $.base,
-      $.root_access,
+      $.root_table_access,
       $.null,
       $.true,
       $.false,
       $.integer,
       $.float,
-      $.char,
+      $.character,
       $.string,
       $.verbatim_string,
-      $.template_string,
+      $.interpolated_string,
       $.line_macro,
       $.file_macro,
       $.parenthesized_expression,
@@ -710,13 +723,13 @@ export default grammar({
     line_macro: _ => '__LINE__',
     file_macro: _ => '__FILE__',
 
-    root_access: $ => seq('::', $._name_adjacent, field('name', $._name)),
+    root_table_access: $ => seq('::', $._name_adjacent, field('name', $._name)),
 
     parenthesized_expression: $ => seq('(', $._regular_expression, ')'),
 
-    array: $ => seq('[', repeat(seq(choice($._expression, $.spread_element), optional(','))), ']'),
+    array: $ => seq('[', repeat(seq(choice($._expression, $.spread), optional(','))), ']'),
 
-    spread_element: $ => seq('...', $._expression),
+    spread: $ => seq('...', $._expression),
 
     table: $ => seq('{', repeat($._table_group), optional($._shorthand_run), alias($._close_brace, '}')),
 
@@ -729,16 +742,16 @@ export default grammar({
 
     _table_member: $ => choice(
       $.slot,
-      $.json_slot,
+      $.quoted_key_slot,
       $.computed_slot,
-      $.spread_element,
+      $.spread,
       $.method,
     ),
 
     _shorthand_follower: $ => choice(
       $.slot,
       $.computed_slot,
-      $.spread_element,
+      $.spread,
       alias($.function_method, $.method),
     ),
 
@@ -746,7 +759,7 @@ export default grammar({
 
     shorthand_slot: $ => field('key', $._slot_name),
 
-    json_slot: $ => seq(field('key', choice($.string, $.verbatim_string)), ':', field('value', $._expression)),
+    quoted_key_slot: $ => seq(field('key', choice($.string, $.verbatim_string)), ':', field('value', $._expression)),
 
     computed_slot: $ => seq('[', field('key', $._expression), ']', '=', field('value', $._expression)),
 
@@ -785,23 +798,23 @@ export default grammar({
 
     verbatim_string: _ => token(seq('@"', repeat(choice(/[^"]/, '""')), '"')),
 
-    char: _ => token(seq(
+    character: _ => token(seq(
       '\'',
       choice(/[\x00-\x09\x0b-\x26\x28-\x5b\x5d-\x7f]/, ESCAPE),
       '\'',
     )),
 
-    template_string: $ => seq(
+    interpolated_string: $ => seq(
       '$"',
       repeat(choice(
         alias($._template_chars, $.string_content),
         alias(token.immediate(TEMPLATE_ESCAPE), $.escape_sequence),
-        $.template_substitution,
+        $.hole,
       )),
       '"',
     ),
 
-    template_substitution: $ => seq('{', $._expression, alias($._close_brace, '}')),
+    hole: $ => seq('{', $._expression, alias($._close_brace, '}')),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
 

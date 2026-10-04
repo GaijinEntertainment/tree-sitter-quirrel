@@ -53,27 +53,29 @@ if (local b = h()) g(b)
 
 (source_file
   (if_statement
-    (if_declaration
+    (local_declaration
+      (variable_declaration
+        (identifier)
+        (type_annotation
+          (type))
+        (call_expression
+          (identifier)
+          (arguments))))
+    (binary_expression
       (identifier)
-      (type_annotation
-        (type))
-      (call_expression
-        (identifier)
-        (arguments))
-      (binary_expression
-        (identifier)
-        (integer)))
+      (integer))
     (expression_statement
       (call_expression
         (identifier)
         (arguments
           (identifier)))))
   (if_statement
-    (if_declaration
-      (identifier)
-      (call_expression
+    (local_declaration
+      (variable_declaration
         (identifier)
-        (arguments)))
+        (call_expression
+          (identifier)
+          (arguments))))
     (expression_statement
       (call_expression
         (identifier)
@@ -104,31 +106,31 @@ foreach ([a b] in pairs) f(a, b)
       (identifier)
       (integer))
     (expression_statement
-      (update_expression
+      (increment_expression
         (identifier))))
   (do_while_statement
     (block
       (expression_statement
-        (update_expression
+        (increment_expression
           (identifier))))
     (binary_expression
       (identifier)
       (integer)))
   (for_statement
-    (for_declaration
-      (variable_declarator
+    (local_declaration
+      (variable_declaration
         (identifier)
         (integer))
-      (variable_declarator
+      (variable_declaration
         (identifier)
         (integer)))
     (binary_expression
       (identifier)
       (integer))
     (comma_expression
-      (update_expression
+      (increment_expression
         (identifier))
-      (update_expression
+      (increment_expression
         (identifier)))
     (expression_statement
       (call_expression
@@ -145,7 +147,7 @@ foreach ([a b] in pairs) f(a, b)
     (binary_expression
       (identifier)
       (identifier))
-    (update_expression
+    (increment_expression
       (identifier))
     (continue_statement))
   (foreach_statement
@@ -225,7 +227,7 @@ switch (x) {
           (identifier)
           (arguments)))
       (break_statement))
-    (switch_default
+    (default_case
       (expression_statement
         (call_expression
           (identifier)
