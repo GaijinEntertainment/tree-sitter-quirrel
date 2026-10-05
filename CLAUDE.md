@@ -27,10 +27,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
     `not in`.
   - An import in a nested statement list. The compiler accepts it only while each statement that has ended in the file
     is an import, a directive, `;`, an expression statement, `return`, `yield`, `break`, `continue`, or `throw`.
-- The grammar does not check what the compiler checks after it reads the syntax: the range of number literals, the
-  names in a declaration (duplicate catch types, the same name for the key and the value of a `foreach`, `async` on a
-  metamethod), the number of docstrings in a function, the nesting depth of an expression, and the checks of the code
-  generator.
+- The grammar does not check what the compiler checks after it reads the syntax: the names in a declaration (duplicate
+  catch types, the same name for the key and the value of a `foreach`, `async` on a metamethod), the number of
+  docstrings in a function, the nesting depth of an expression, and the checks of the code generator.
 
 ## Where things live
 
@@ -91,7 +90,12 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - A `}` or `;` that ends a statement sets `after_terminator`. One `}` or `;` ends each statement that it closes, as in
   `if (a) if (b) c; d`, so an automatic `;` that needs the flag keeps it for the statement around it.
 - `scan_number` follows `SQLexer::ReadNumber`: a decimal number takes every following letter, digit, and `.`, and an
-  invalid run returns `_malformed_number`, which no rule accepts. Number limits stay unchecked.
+  invalid run returns `_malformed_number`, which no rule accepts.
+- A number outside the limits of the engine build returns `_malformed_number` too: an integer above 2^63 - 1, also after
+  a minus sign; more than 16 hex digits; a float that a 32-bit float rounds to its maximum or to zero.
+- The compiler rounds a float with `std::from_chars` where the library declares it, and through `strtod` and a cast
+  elsewhere. The two paths differ within one double-precision step of each float limit. The scanner accepts a literal
+  that one of the paths accepts.
 - The import region is open only at the top level: `_import_marker` makes `import` and `from` start an import at the
   start of a prelude statement. Nested statement lists accept an import in any position.
 - `TYPE_NAMES` follows `sq_type_string_to_mask` in `sqtypeparser.cpp`, and `DIRECTIVES` holds the directive tables in
