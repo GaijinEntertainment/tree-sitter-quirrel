@@ -755,6 +755,10 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     if (ends_const_declaration) {
       return accept(lexer, CONST_DECLARATION_END);
     }
+    // constraint: the compiler takes a `;` on the line of the `}` or `;` that ended a statement as an empty statement
+    if (after_terminator && !gap.newline && may_terminate) {
+      return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
+    }
     return valid_symbols[SEMICOLON] && !gap.crossed_comment && accept_terminator(scanner, lexer, SEMICOLON);
   }
   if (c == '|' && valid_symbols[SAME_LINE_TYPE_BAR] && !gap.newline) {
