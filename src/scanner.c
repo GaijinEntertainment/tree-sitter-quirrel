@@ -38,20 +38,28 @@ enum TokenType {
   DOCSTRING_SCOPE_START,
   UNCHECKED_DOCSTRING_SCOPE_START,
   DOCSTRING_SCOPE_END,
+  TRY_START,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
 
-enum { DOCSTRING_SCOPES_MAX = 512 };
+enum { DOCSTRING_SCOPES_MAX = 512, CATCH_TYPES_SIZE = 256 };
 
 enum DocstringScope { SCOPE_WITHOUT_DOCSTRING, SCOPE_WITH_DOCSTRING, UNCHECKED_SCOPE };
+
+// constraint: a type name holds none of these bytes, so one of them starts the record of an open `try` in `catch_types`
+enum { OPEN_TRY = 1, OPEN_TRY_AS_CATCH_BODY = 2 };
 
 // constraint: the runtime restores this state from the last external token, so each scan that changes it returns one
 typedef struct {
   bool after_terminator;
   bool imports_closed;
+  bool next_try_is_catch_body;
+  bool catch_types_lost;
+  uint16_t catch_types_size;
   uint32_t open_scopes;
   uint8_t scopes[DOCSTRING_SCOPES_MAX];
+  char catch_types[CATCH_TYPES_SIZE];
 } Scanner;
 
 typedef struct {
@@ -693,143 +701,11 @@ static bool scan_enum_members_marker(TSLexer *lexer) {
   return !has_duplicate && accept(lexer, ENUM_MEMBERS_MARKER);
 }
 
-enum { TEMPLATE_NESTING_MAX = 32 };
-
-typedef struct {
-  unsigned open_brackets;
-  unsigned hole_levels[TEMPLATE_NESTING_MAX];
-  unsigned open_holes;
-  bool in_template_text;
-} CodeNesting;
-
-static bool read_word_outside_brackets(TSLexer *lexer, CodeNesting *nesting, char *word, unsigned size) {
-  for (;;) {
-    if (nesting->in_template_text) {
-      int32_t c = lexer->lookahead;
-      if (at_text_end(lexer) || c == '\n') {
-        return false;
-      }
-      advance(lexer);
-      if (c == '\\') {
-        advance(lexer);
-      } else if (c == '"') {
-        nesting->in_template_text = false;
-      } else if (c == '{') {
-        if (nesting->open_holes == TEMPLATE_NESTING_MAX) {
-          return false;
-        }
-        nesting->hole_levels[nesting->open_holes++] = nesting->open_brackets++;
-        nesting->in_template_text = false;
-      }
-      continue;
-    }
-    Gap gap = {false, false, false, false};
-    skip_gap(lexer, &gap);
-    if (at_text_end(lexer)) {
-      return false;
-    }
-    int32_t c = lexer->lookahead;
-    if (is_word_char(c)) {
-      bool fits = read_word(lexer, word, size);
-      while (is_word_char(lexer->lookahead)) {
-        advance(lexer);
-      }
-      if (fits && nesting->open_brackets == 0) {
-        return true;
-      }
-    } else if (c == '"' || c == '\'') {
-      if (!skip_quoted(lexer, c, false)) {
-        return false;
-      }
-    } else if (c == '@') {
-      advance(lexer);
-      if (lexer->lookahead == '@') {
-        advance(lexer);
-      }
-      if (lexer->lookahead == '"' && !skip_quoted(lexer, '"', true)) {
-        return false;
-      }
-    } else if (c == '$') {
-      advance(lexer);
-      if (lexer->lookahead == '"') {
-        advance(lexer);
-        nesting->in_template_text = true;
-      }
-    } else if (c == '{' || c == '(' || c == '[') {
-      advance(lexer);
-      nesting->open_brackets++;
-    } else if (c == '}' || c == ')' || c == ']') {
-      if (nesting->open_brackets == 0) {
-        return false;
-      }
-      advance(lexer);
-      nesting->open_brackets--;
-      if (nesting->open_holes > 0 && nesting->hole_levels[nesting->open_holes - 1] == nesting->open_brackets) {
-        nesting->open_holes--;
-        nesting->in_template_text = true;
-      }
-    } else {
-      advance(lexer);
-    }
-  }
-}
-
-typedef struct {
-  NameList types;
-  bool has_catch_all;
-} CatchChain;
-
-static bool breaks_catch_chain(TSLexer *lexer, CodeNesting *nesting, CatchChain *chain) {
-  if (chain->has_catch_all) {
-    return true;
-  }
-  Gap gap = {false, false, false, false};
-  skip_gap(lexer, &gap);
-  if (lexer->lookahead != '(') {
-    return false;
-  }
-  advance(lexer);
-  nesting->open_brackets++;
-  skip_gap(lexer, &gap);
-  if (!starts_name(lexer->lookahead)) {
-    return false;
-  }
-  unsigned type = chain->types.size;
-  read_name(lexer, &chain->types);
-  skip_gap(lexer, &gap);
-  if (starts_name(lexer->lookahead)) {
-    return name_list_holds_last_name_twice(&chain->types, type);
-  }
-  chain->types.size = type;
-  chain->has_catch_all = lexer->lookahead == ')';
-  return false;
-}
-
-// constraint: the compiler gives a `catch` to the nearest `try`, and rejects a second clause for one type and a clause
-// after the catch-all clause
-// shortcut: the scan stops at 32 nested template strings - use a growing list when deeper text needs the check
-static bool is_valid_catch_chain(TSLexer *lexer) {
-  CatchChain chain = {{NULL, 0, 0, 0}, false};
-  CodeNesting nesting = {0, {0}, 0, false};
-  char word[8];
-  bool is_broken = breaks_catch_chain(lexer, &nesting, &chain);
-  while (!is_broken && read_word_outside_brackets(lexer, &nesting, word, sizeof(word))) {
-    if (strcmp(word, "try") == 0) {
-      break;
-    }
-    if (strcmp(word, "catch") == 0) {
-      is_broken = breaks_catch_chain(lexer, &nesting, &chain);
-    }
-  }
-  ts_free(chain.types.text);
-  return !is_broken;
-}
-
 void *tree_sitter_quirrel_external_scanner_create(void) { return ts_calloc(1, sizeof(Scanner)); }
 
 void tree_sitter_quirrel_external_scanner_destroy(void *payload) { ts_free(payload); }
 
-enum { SCOPES_OFFSET = 2 + sizeof(uint32_t) };
+enum { SCOPES_OFFSET = 4 + sizeof(uint16_t) + sizeof(uint32_t) };
 
 static unsigned recorded_scopes(const Scanner *scanner) {
   return scanner->open_scopes < DOCSTRING_SCOPES_MAX ? scanner->open_scopes + 1 : DOCSTRING_SCOPES_MAX;
@@ -837,17 +713,25 @@ static unsigned recorded_scopes(const Scanner *scanner) {
 
 unsigned tree_sitter_quirrel_external_scanner_serialize(void *payload, char *buffer) {
   Scanner *scanner = payload;
+  unsigned types_offset = SCOPES_OFFSET + recorded_scopes(scanner);
   buffer[0] = (char)scanner->after_terminator;
   buffer[1] = (char)scanner->imports_closed;
-  memcpy(buffer + 2, &scanner->open_scopes, sizeof scanner->open_scopes);
+  buffer[2] = (char)scanner->next_try_is_catch_body;
+  buffer[3] = (char)scanner->catch_types_lost;
+  memcpy(buffer + 4, &scanner->catch_types_size, sizeof scanner->catch_types_size);
+  memcpy(buffer + 4 + sizeof scanner->catch_types_size, &scanner->open_scopes, sizeof scanner->open_scopes);
   memcpy(buffer + SCOPES_OFFSET, scanner->scopes, recorded_scopes(scanner));
-  return SCOPES_OFFSET + recorded_scopes(scanner);
+  memcpy(buffer + types_offset, scanner->catch_types, scanner->catch_types_size);
+  return types_offset + scanner->catch_types_size;
 }
 
 void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
   Scanner *scanner = payload;
   scanner->after_terminator = false;
   scanner->imports_closed = false;
+  scanner->next_try_is_catch_body = false;
+  scanner->catch_types_lost = false;
+  scanner->catch_types_size = 0;
   scanner->open_scopes = 0;
   scanner->scopes[0] = SCOPE_WITHOUT_DOCSTRING;
   if (length < SCOPES_OFFSET) {
@@ -855,8 +739,93 @@ void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char 
   }
   scanner->after_terminator = buffer[0] != 0;
   scanner->imports_closed = buffer[1] != 0;
-  memcpy(&scanner->open_scopes, buffer + 2, sizeof scanner->open_scopes);
-  memcpy(scanner->scopes, buffer + SCOPES_OFFSET, length - SCOPES_OFFSET);
+  scanner->next_try_is_catch_body = buffer[2] != 0;
+  scanner->catch_types_lost = buffer[3] != 0;
+  memcpy(&scanner->catch_types_size, buffer + 4, sizeof scanner->catch_types_size);
+  memcpy(&scanner->open_scopes, buffer + 4 + sizeof scanner->catch_types_size, sizeof scanner->open_scopes);
+  memcpy(scanner->scopes, buffer + SCOPES_OFFSET, recorded_scopes(scanner));
+  memcpy(scanner->catch_types, buffer + SCOPES_OFFSET + recorded_scopes(scanner), scanner->catch_types_size);
+}
+
+static void open_try(Scanner *scanner) {
+  char tag = scanner->next_try_is_catch_body ? OPEN_TRY_AS_CATCH_BODY : OPEN_TRY;
+  scanner->next_try_is_catch_body = false;
+  if (scanner->catch_types_size == CATCH_TYPES_SIZE) {
+    scanner->catch_types_lost = true;
+  }
+  if (!scanner->catch_types_lost) {
+    scanner->catch_types[scanner->catch_types_size++] = tag;
+  }
+}
+
+static unsigned innermost_try(const Scanner *scanner) {
+  unsigned tag = scanner->catch_types_size - 1;
+  while (tag > 0 && scanner->catch_types[tag] != OPEN_TRY && scanner->catch_types[tag] != OPEN_TRY_AS_CATCH_BODY) {
+    tag--;
+  }
+  return tag;
+}
+
+// constraint: the compiler ends a `try` that is the body of a catch clause together with the `try` of that clause
+static void close_try(Scanner *scanner) {
+  bool ends_outer_try = !scanner->catch_types_lost;
+  while (ends_outer_try && scanner->catch_types_size > 0) {
+    unsigned tag = innermost_try(scanner);
+    ends_outer_try = scanner->catch_types[tag] == OPEN_TRY_AS_CATCH_BODY;
+    scanner->catch_types_size = (uint16_t)tag;
+  }
+}
+
+static bool add_catch_type(Scanner *scanner, const NameList *type) {
+  if (scanner->catch_types_lost || scanner->catch_types_size == 0) {
+    return true;
+  }
+  const char *types = scanner->catch_types;
+  unsigned at = innermost_try(scanner) + 1;
+  while (at < scanner->catch_types_size) {
+    if (strcmp(types + at, type->text) == 0) {
+      return false;
+    }
+    at += (unsigned)strlen(types + at) + 1;
+  }
+  if (scanner->catch_types_size + type->size > CATCH_TYPES_SIZE) {
+    scanner->catch_types_lost = true;
+    return true;
+  }
+  memcpy(scanner->catch_types + scanner->catch_types_size, type->text, type->size);
+  scanner->catch_types_size += (uint16_t)type->size;
+  return true;
+}
+
+// constraint: the compiler rejects a `try` that has two catch clauses for one type
+// shortcut: the scanner keeps 256 bytes of type names of the open `try` statements - past that it stops the check
+static bool scan_catch_clause(Scanner *scanner, TSLexer *lexer) {
+  Gap gap = {false, false, false, false};
+  NameList type = {NULL, 0, 0, 0};
+  bool is_typed = false;
+  scanner->next_try_is_catch_body = false;
+  skip_gap(lexer, &gap);
+  if (lexer->lookahead == '(') {
+    advance(lexer);
+    skip_gap(lexer, &gap);
+    if (starts_name(lexer->lookahead)) {
+      read_name(lexer, &type);
+      skip_gap(lexer, &gap);
+      is_typed = starts_name(lexer->lookahead);
+      while (is_word_char(lexer->lookahead)) {
+        advance(lexer);
+      }
+      skip_gap(lexer, &gap);
+    }
+    if (lexer->lookahead == ')') {
+      advance(lexer);
+      skip_gap(lexer, &gap);
+      scanner->next_try_is_catch_body = is_next_word(lexer, "try");
+    }
+  }
+  bool is_new_type = !is_typed || add_catch_type(scanner, &type);
+  ts_free(type.text);
+  return is_new_type && accept(lexer, CATCH_MARKER);
 }
 
 // shortcut: the scanner keeps the docstring state of 512 nested scopes - a deeper scope takes each docstring
@@ -917,6 +886,10 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (valid_symbols[UNCHECKED_DOCSTRING_SCOPE_START]) {
     open_docstring_scope(scanner, UNCHECKED_SCOPE);
     return accept(lexer, UNCHECKED_DOCSTRING_SCOPE_START);
+  }
+  if (valid_symbols[TRY_START]) {
+    open_try(scanner);
+    return accept(lexer, TRY_START);
   }
 
   Gap gap = {false, false, false, false};
@@ -982,7 +955,7 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (c == 'c' && valid_symbols[CATCH_MARKER]) {
     bool has_word = read_word(lexer, word, sizeof word);
     if (has_word && strcmp(word, "catch") == 0) {
-      return is_valid_catch_chain(lexer) && accept(lexer, CATCH_MARKER);
+      return scan_catch_clause(scanner, lexer);
     }
     if (!may_terminate || !line_break) {
       return false;
@@ -1032,6 +1005,11 @@ bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, co
   bool changes_state = after_terminator || (closes_imports && !scanner->imports_closed);
   scanner->imports_closed = scanner->imports_closed || closes_imports;
   if (scan_token(scanner, lexer, valid_symbols, after_terminator)) {
+    // constraint: the parser ends the innermost `try` when it takes a statement end where a catch clause can follow
+    bool ends_statement = lexer->result_symbol == AUTOMATIC_SEMICOLON || lexer->result_symbol == SEMICOLON;
+    if (ends_statement && valid_symbols[CATCH_MARKER]) {
+      close_try(scanner);
+    }
     return true;
   }
   return changes_state && valid_symbols[TERMINATOR_RESET] && accept(lexer, TERMINATOR_RESET);

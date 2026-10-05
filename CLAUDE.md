@@ -141,10 +141,16 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   the index and the value of a `foreach`, and the members of an enum. The scan returns no token when two names are
   equal, and the statement is then an error. The enum scan follows the lexer of the compiler for the member values
   and compares the first 4096 members.
-- `_catch_marker` is a zero-width token before each `catch`. Its scan reads ahead and compares the type names of the
-  catch clauses that follow outside brackets, up to the next `try` outside brackets, because a `catch` joins the
-  nearest `try`. The scan returns no token when two types are equal or a clause follows the catch-all clause. It steps
-  over strings, template strings, and comments, and it stops at 32 nested template strings.
+- The compiler gives each `catch` to the innermost `try` that is open, and it rejects a second clause for one type of
+  that `try`. The scanner keeps the type names of each open `try`. `_try_start` after `try` opens a record. The
+  zero-width `_catch_marker` before each `catch` adds the type of the clause, and its scan returns no token for a type
+  that the record holds. A statement end that the scanner returns where `_catch_marker` is valid closes the record,
+  because the parser ends the `try` there. A `try` that is the body of a catch clause closes together with the `try`
+  of that clause. The records hold 256 bytes; past that, the scanner stops the check for the rest of the file.
+- Do not find the clauses of a `try` in the text: `else`, the `while` of a `do` loop, or a `;` can end a nested `try`
+  before the next `catch`, and only the parser knows that.
+- After the catch-all clause the grammar takes one more `_catch_marker` and then needs `_never_returned`. A `catch`
+  after the catch-all clause of a nested `try` is therefore an error and does not go to the outer `try`.
 - The compiler takes one docstring in a file, in a function body, and in a class body, and none in a table. The
   scanner keeps one entry for each open scope: `_docstring_scope_start` after the `{` of a function body or a class
   body opens an entry, and `_docstring_scope_end` before the `}` closes it. `_docstring_start` is a zero-width token
