@@ -2235,6 +2235,10 @@
           "value": "try"
         },
         {
+          "type": "SYMBOL",
+          "name": "_try_start"
+        },
+        {
           "type": "FIELD",
           "name": "body",
           "content": {
@@ -2299,6 +2303,27 @@
                 },
                 "named": true,
                 "value": "catch_clause"
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_catch_marker"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_never_returned"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
               }
             ]
           }
@@ -10629,6 +10654,10 @@
     {
       "type": "SYMBOL",
       "name": "_docstring_scope_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_try_start"
     },
     {
       "type": "SYMBOL",

@@ -302,6 +302,54 @@ catch (e) {}
       body: (block))))
 
 ================================================================================
+The same catch type after a nested try statement that an else or a do loop ends
+================================================================================
+
+try if (a) try y = 1 catch (A e) {}
+else z = 1
+catch (A f) {}
+try do try y = 1 catch (e) {} while (b) catch (A f) {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (try_statement
+    body: (if_statement
+      condition: (identifier)
+      then_branch: (try_statement
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (integer)))
+        (catch_clause
+          class: (identifier)
+          name: (identifier)
+          body: (block)))
+      else_branch: (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (integer))))
+    (catch_clause
+      class: (identifier)
+      name: (identifier)
+      body: (block)))
+  (try_statement
+    body: (do_while_statement
+      body: (try_statement
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (integer)))
+        (catch_clause
+          name: (identifier)
+          body: (block)))
+      condition: (identifier))
+    (catch_clause
+      class: (identifier)
+      name: (identifier)
+      body: (block))))
+
+================================================================================
 The same catch type in a nested try statement
 ================================================================================
 
