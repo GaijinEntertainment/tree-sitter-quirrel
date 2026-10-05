@@ -38,6 +38,7 @@ enum TokenType {
   UNCHECKED_DOCSTRING_SCOPE_START,
   DOCSTRING_SCOPE_END,
   TRY_START,
+  TRY_END,
   CONST_SEMICOLON,
   BEFORE_RETURN_VALUE,
   NEVER_RETURNED,
@@ -49,14 +50,13 @@ enum { DOCSTRING_SCOPES_MAX = 512, CATCH_TYPES_SIZE = 256 };
 enum DocstringScope { SCOPE_WITHOUT_DOCSTRING, SCOPE_WITH_DOCSTRING, UNCHECKED_SCOPE };
 
 // constraint: a type name holds no byte below 8, so a byte of these flags starts the record of an open `try`
-enum { OPEN_TRY = 1, AS_CATCH_BODY = 2, BODY_CLOSES_IMPORTS = 4, OPEN_TRY_FLAGS_END = 8 };
+enum { OPEN_TRY = 1, BODY_CLOSES_IMPORTS = 2, OPEN_TRY_FLAGS_END = 8 };
 
 // constraint: the runtime restores this state from the last external token, so each scan that changes it returns one
 typedef struct {
   bool after_terminator;
   bool after_postfix_update;
   bool imports_closed;
-  bool next_try_is_catch_body;
   bool catch_types_lost;
   uint16_t catch_types_size;
   uint32_t open_scopes;
@@ -707,7 +707,7 @@ void *tree_sitter_quirrel_external_scanner_create(void) { return ts_calloc(1, si
 
 void tree_sitter_quirrel_external_scanner_destroy(void *payload) { ts_free(payload); }
 
-enum { FLAGS_SIZE = 5, SCOPES_OFFSET = FLAGS_SIZE + sizeof(uint16_t) + sizeof(uint32_t) };
+enum { FLAGS_SIZE = 4, SCOPES_OFFSET = FLAGS_SIZE + sizeof(uint16_t) + sizeof(uint32_t) };
 
 static unsigned recorded_scopes(const Scanner *scanner) {
   return scanner->open_scopes < DOCSTRING_SCOPES_MAX ? scanner->open_scopes + 1 : DOCSTRING_SCOPES_MAX;
@@ -719,8 +719,7 @@ unsigned tree_sitter_quirrel_external_scanner_serialize(void *payload, char *buf
   buffer[0] = (char)scanner->after_terminator;
   buffer[1] = (char)scanner->after_postfix_update;
   buffer[2] = (char)scanner->imports_closed;
-  buffer[3] = (char)scanner->next_try_is_catch_body;
-  buffer[4] = (char)scanner->catch_types_lost;
+  buffer[3] = (char)scanner->catch_types_lost;
   memcpy(buffer + FLAGS_SIZE, &scanner->catch_types_size, sizeof scanner->catch_types_size);
   memcpy(buffer + FLAGS_SIZE + sizeof scanner->catch_types_size, &scanner->open_scopes, sizeof scanner->open_scopes);
   memcpy(buffer + SCOPES_OFFSET, scanner->scopes, recorded_scopes(scanner));
@@ -733,7 +732,6 @@ void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char 
   scanner->after_terminator = false;
   scanner->after_postfix_update = false;
   scanner->imports_closed = false;
-  scanner->next_try_is_catch_body = false;
   scanner->catch_types_lost = false;
   scanner->catch_types_size = 0;
   scanner->open_scopes = 0;
@@ -744,8 +742,7 @@ void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char 
   scanner->after_terminator = buffer[0] != 0;
   scanner->after_postfix_update = buffer[1] != 0;
   scanner->imports_closed = buffer[2] != 0;
-  scanner->next_try_is_catch_body = buffer[3] != 0;
-  scanner->catch_types_lost = buffer[4] != 0;
+  scanner->catch_types_lost = buffer[3] != 0;
   memcpy(&scanner->catch_types_size, buffer + FLAGS_SIZE, sizeof scanner->catch_types_size);
   memcpy(&scanner->open_scopes, buffer + FLAGS_SIZE + sizeof scanner->catch_types_size, sizeof scanner->open_scopes);
   memcpy(scanner->scopes, buffer + SCOPES_OFFSET, recorded_scopes(scanner));
@@ -754,13 +751,13 @@ void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char 
 
 // constraint: the compiler takes `import` as a name after a statement that starts with one of these words or is a
 // docstring, and the body of a `try` or of a catch clause has no statement end that shows it
-static bool body_closes_imports(TSLexer *lexer, char *word, unsigned size) {
+static bool body_closes_imports(TSLexer *lexer) {
   static const char *const closing_words[] = {
     "local", "let", "const", "global", "enum", "class", "if", "while", "do", "for", "foreach",
   };
+  char word[16];
   Gap gap = {false, false, false, false};
   skip_gap(lexer, &gap);
-  word[0] = '\0';
   if (lexer->lookahead == '@') {
     advance(lexer);
     if (lexer->lookahead != '@') {
@@ -769,8 +766,7 @@ static bool body_closes_imports(TSLexer *lexer, char *word, unsigned size) {
     advance(lexer);
     return !at_text_end(lexer);
   }
-  if (!read_word(lexer, word, size)) {
-    word[0] = '\0';
+  if (!read_word(lexer, word, sizeof word)) {
     return false;
   }
   for (unsigned i = 0; i < sizeof closing_words / sizeof closing_words[0]; i++) {
@@ -782,19 +778,11 @@ static bool body_closes_imports(TSLexer *lexer, char *word, unsigned size) {
 }
 
 static void open_try(Scanner *scanner, bool body_closes) {
-  int flags = OPEN_TRY;
-  if (scanner->next_try_is_catch_body) {
-    flags |= AS_CATCH_BODY;
-  }
-  if (body_closes) {
-    flags |= BODY_CLOSES_IMPORTS;
-  }
-  scanner->next_try_is_catch_body = false;
   if (scanner->catch_types_size == CATCH_TYPES_SIZE) {
     scanner->catch_types_lost = true;
   }
   if (!scanner->catch_types_lost) {
-    scanner->catch_types[scanner->catch_types_size++] = (char)flags;
+    scanner->catch_types[scanner->catch_types_size++] = (char)(body_closes ? OPEN_TRY | BODY_CLOSES_IMPORTS : OPEN_TRY);
   }
 }
 
@@ -806,13 +794,9 @@ static unsigned innermost_try(const Scanner *scanner) {
   return flags;
 }
 
-// constraint: the compiler ends a `try` that is the body of a catch clause together with the `try` of that clause
 static void close_try(Scanner *scanner) {
-  bool ends_outer_try = !scanner->catch_types_lost;
-  while (ends_outer_try && scanner->catch_types_size > 0) {
-    unsigned flags = innermost_try(scanner);
-    ends_outer_try = (scanner->catch_types[flags] & AS_CATCH_BODY) != 0;
-    scanner->catch_types_size = (uint16_t)flags;
+  if (!scanner->catch_types_lost && scanner->catch_types_size > 0) {
+    scanner->catch_types_size = (uint16_t)innermost_try(scanner);
   }
 }
 
@@ -842,7 +826,6 @@ static bool add_catch_type(Scanner *scanner, const NameList *type) {
 static bool scan_catch_clause(Scanner *scanner, TSLexer *lexer) {
   Gap gap = {false, false, false, false};
   NameList type = {NULL, 0, 0, 0};
-  char body_word[16] = "";
   bool is_typed = false;
   bool body_closes = false;
   bool has_open_try = !scanner->catch_types_lost && scanner->catch_types_size > 0;
@@ -865,10 +848,9 @@ static bool scan_catch_clause(Scanner *scanner, TSLexer *lexer) {
     }
     if (lexer->lookahead == ')') {
       advance(lexer);
-      body_closes = body_closes_imports(lexer, body_word, sizeof body_word);
+      body_closes = body_closes_imports(lexer);
     }
   }
-  scanner->next_try_is_catch_body = strcmp(body_word, "try") == 0;
   if (flags) {
     *flags = (char)((*flags & ~BODY_CLOSES_IMPORTS) | (body_closes ? BODY_CLOSES_IMPORTS : 0));
   }
@@ -943,8 +925,7 @@ static bool scan_token(
     return accept(lexer, UNCHECKED_DOCSTRING_SCOPE_START);
   }
   if (valid_symbols[TRY_START]) {
-    char body_word[16];
-    open_try(scanner, body_closes_imports(lexer, body_word, sizeof body_word));
+    open_try(scanner, body_closes_imports(lexer));
     return accept(lexer, TRY_START);
   }
 
@@ -954,6 +935,10 @@ static bool scan_token(
   // constraint: the compiler ends a `const` declaration only at `;`, a line end, `}`, or the text end, also after `}`
   bool ends_const_declaration = valid_symbols[CONST_DECLARATION_END];
   enum TokenType statement_end = ends_const_declaration ? CONST_DECLARATION_END : AUTOMATIC_SEMICOLON;
+  // constraint: a `try` ends where the statement around it can end, and the parser takes `_try_end` before that end
+  if (!ends_const_declaration && valid_symbols[TRY_END]) {
+    statement_end = TRY_END;
+  }
   bool may_terminate = valid_symbols[statement_end];
   bool expression_ended = valid_symbols[INDEX_BRACKET];
   bool line_break = gap.newline || (after_terminator && !ends_const_declaration);
@@ -993,7 +978,7 @@ static bool scan_token(
       return !gap.crossed_comment && accept_terminator(scanner, lexer, CONST_SEMICOLON);
     }
     // constraint: the compiler takes a `;` on the line of the `}` or `;` that ended a statement as an empty statement
-    if (after_terminator && !gap.newline && may_terminate) {
+    if ((after_terminator && !gap.newline && may_terminate) || statement_end == TRY_END) {
       return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
     }
     return valid_symbols[SEMICOLON] && !gap.crossed_comment && accept_terminator(scanner, lexer, SEMICOLON);
@@ -1072,9 +1057,7 @@ bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, co
   if (scan_token(scanner, lexer, valid_symbols, after_terminator, after_postfix_update)) {
     scanner->after_postfix_update =
       lexer->result_symbol == POSTFIX_INCREMENT || lexer->result_symbol == POSTFIX_DECREMENT;
-    // constraint: the parser ends the innermost `try` when it takes a statement end where a catch clause can follow
-    bool ends_statement = lexer->result_symbol == AUTOMATIC_SEMICOLON || lexer->result_symbol == SEMICOLON;
-    if (ends_statement && valid_symbols[CATCH_MARKER]) {
+    if (lexer->result_symbol == TRY_END) {
       close_try(scanner);
     }
     return true;

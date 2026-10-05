@@ -2326,88 +2326,104 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "_catch_clauses"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_catch_clauses"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_try_end"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_never_returned"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
     "_catch_clauses": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SEQ",
-            "members": [
-              {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_catch_marker"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
                 "type": "SYMBOL",
-                "name": "_catch_marker"
+                "name": "typed_catch_clause"
               },
-              {
-                "type": "ALIAS",
-                "content": {
+              "named": true,
+              "value": "catch_clause"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
                   "type": "SYMBOL",
-                  "name": "typed_catch_clause"
+                  "name": "_catch_clauses"
                 },
-                "named": true,
-                "value": "catch_clause"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_catch_clauses"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
+                {
+                  "type": "SYMBOL",
+                  "name": "_try_end"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_catch_marker"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
                 "type": "SYMBOL",
-                "name": "_catch_marker"
+                "name": "catch_all_clause"
               },
-              {
-                "type": "ALIAS",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "catch_all_clause"
+              "named": true,
+              "value": "catch_clause"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_catch_marker"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_never_returned"
+                    }
+                  ]
                 },
-                "named": true,
-                "value": "catch_clause"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "_catch_marker"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_never_returned"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                {
+                  "type": "SYMBOL",
+                  "name": "_try_end"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     "typed_catch_clause": {
       "type": "SEQ",
@@ -10697,6 +10713,10 @@
     {
       "type": "SYMBOL",
       "name": "_try_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_try_end"
     },
     {
       "type": "SYMBOL",

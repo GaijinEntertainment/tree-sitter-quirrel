@@ -431,6 +431,7 @@ export default grammar({
     $._unchecked_docstring_scope_start,
     $._docstring_scope_end,
     $._try_start,
+    $._try_end,
     $._const_semicolon,
     $._before_return_value,
     $._never_returned,
@@ -751,17 +752,22 @@ export default grammar({
 
     default_case: $ => prec.left(seq('default', ':', repeat($._statement_item))),
 
-    try_statement: $ => seq('try', $._try_start, field('body', $._unterminated_body), $._catch_clauses),
+    try_statement: $ => seq(
+      'try',
+      $._try_start,
+      field('body', $._unterminated_body),
+      choice($._catch_clauses, seq($._try_end, $._never_returned)),
+    ),
 
     // constraint: the compiler gives a `catch` to the innermost open `try`, also after the catch-all clause of it
-    _catch_clauses: $ => prec.right(choice(
-      seq($._catch_marker, alias($.typed_catch_clause, $.catch_clause), optional($._catch_clauses)),
+    _catch_clauses: $ => choice(
+      seq($._catch_marker, alias($.typed_catch_clause, $.catch_clause), choice($._catch_clauses, $._try_end)),
       seq(
         $._catch_marker,
         alias($.catch_all_clause, $.catch_clause),
-        optional(seq($._catch_marker, $._never_returned)),
+        choice(seq($._catch_marker, $._never_returned), $._try_end),
       ),
-    )),
+    ),
 
     typed_catch_clause: $ => seq(
       'catch',

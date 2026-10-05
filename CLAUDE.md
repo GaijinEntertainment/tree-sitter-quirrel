@@ -147,9 +147,11 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler gives each `catch` to the innermost `try` that is open, and it rejects a second clause for one type of
   that `try`. The scanner keeps the type names of each open `try`. `_try_start` after `try` opens a record. The
   zero-width `_catch_marker` before each `catch` adds the type of the clause, and its scan returns no token for a type
-  that the record holds. A statement end that the scanner returns where `_catch_marker` is valid closes the record,
-  because the parser ends the `try` there. A `try` that is the body of a catch clause closes together with the `try`
-  of that clause. The records hold 256 bytes; past that, the scanner stops the check for the rest of the file.
+  that the record holds. The zero-width `_try_end` ends each `try` statement and closes the record. A `try` ends
+  where the statement around it can end, so the scanner returns `_try_end` where it would return a statement end,
+  and the statement end follows at the next scan. The grammar takes `_try_end` after the body of the `try` too and
+  then needs `_never_returned`: the body and the clause bodies then end in the same parser states. The records hold
+  256 bytes; past that, the scanner stops the check for the rest of the file.
 - Do not find the clauses of a `try` in the text: `else`, the `while` of a `do` loop, or a `;` can end a nested `try`
   before the next `catch`, and only the parser knows that.
 - After the catch-all clause the grammar takes one more `_catch_marker` and then needs `_never_returned`. A `catch`
