@@ -141,9 +141,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 
 ## Releasing
 
-- The version is `X.Y.P`. `X.Y` is the newest Quirrel version that the grammar covers, and `P` counts the releases
-  for that version. Only a new Quirrel major version can mark a breaking change: under one major version, a release
-  adds node kinds and fields, and never renames or removes one.
+- The version is `X.Y.P`. `X.Y` is always the major and minor number of the newest Quirrel version that the grammar
+  covers. `P` is the grammar's own number: it counts the grammar releases for that Quirrel version and does not follow
+  the patch number of the compiler. Only a new Quirrel major version can mark a breaking change: under one major
+  version, a release adds node kinds and fields, and never renames or removes one.
 - To release, set the version with `tree-sitter version X.Y.P`, then run `tree-sitter generate`, because
   `src/parser.c` holds the version too, and update the lockfiles with `cargo update --workspace --offline` and
   `npm install --package-lock-only --ignore-scripts`. Commit, and push the tag `vX.Y.P`.
