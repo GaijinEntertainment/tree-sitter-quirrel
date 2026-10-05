@@ -24,6 +24,7 @@ const PREC = {
   MULTIPLICATIVE: 12,
   UNARY: 13,
   POSTFIX: 14,
+  FOLDED_LITERAL: 15,
 };
 
 const TYPE_NAMES = [
@@ -126,6 +127,7 @@ function expressionSpine(prefix) {
   const {hidden, node, ruleName} = spineNames(prefix);
   // constraint: the compiler allows `=` in the operand of a unary operator where it allows `=` before the operator
   const operand = spineNames(prefix === RVALUE ? RVALUE : OUTER);
+  const unaryOperator = choice(...UNARY_OPERATORS, ...(prefix === STATEMENT ? [] : ['const']));
 
   return {
     ...(prefix === RVALUE ? {} : {
@@ -141,19 +143,47 @@ function expressionSpine(prefix) {
     ...(prefix === STATEMENT ? {} : {
       [ruleName('increment_expression')]: $ => prec(PREC.UNARY, seq(
         field('operator', choice('++', '--')),
-        field('argument', hidden($, '_unary_operand')),
+        field('argument', hidden($, '_open_operand')),
+      )),
+
+      [ruleName('update_increment_expression')]: $ => prec(PREC.UNARY, seq(
+        field('operator', choice('++', '--')),
+        field('argument', alias($[ruleName('postfix_increment_expression')], $.increment_expression)),
       )),
 
       // constraint: `clone` is also a name, so the scanner returns the `++` or `--` after it as a postfix token
       [ruleName('clone_update_expression')]: $ => seq(
         field('operator', 'clone'),
-        field('argument', alias($[ruleName('clone_prefix_increment_expression')], $.increment_expression)),
+        field('argument', choice(
+          alias($[ruleName('clone_prefix_increment_expression')], $.increment_expression),
+          $[`${prefix}_clone_update_unary_operand`],
+        )),
       ),
 
       [ruleName('clone_prefix_increment_expression')]: $ => seq(
         field('operator', choice(alias($._postfix_increment, '++'), alias($._postfix_decrement, '--'))),
-        field('argument', hidden($, '_unary_operand')),
+        field('argument', hidden($, '_open_operand')),
       ),
+
+      [`${prefix}_clone_update_primary_expression`]: $ => alias(
+        $[ruleName('clone_prefix_update_increment_expression')],
+        $.increment_expression,
+      ),
+
+      [ruleName('clone_prefix_update_increment_expression')]: $ => seq(
+        field('operator', choice(alias($._postfix_increment, '++'), alias($._postfix_decrement, '--'))),
+        field('argument', alias($[ruleName('postfix_increment_expression')], $.increment_expression)),
+      ),
+
+      [`${prefix}_clone_update_unary_operand`]: $ => choice(
+        $[`${prefix}_clone_update_postfix_operand`],
+        alias(
+          $[spineNames(`${prefix}_clone_update`).ruleName('postfix_increment_expression')],
+          $.increment_expression,
+        ),
+      ),
+
+      ...postfixSpine(`${prefix}_clone_update`),
     }),
 
     [`${prefix}_expression`]: $ => choice(
@@ -202,12 +232,23 @@ function expressionSpine(prefix) {
     ),
 
     [`${prefix}_unary_operand`]: $ => choice(
+      hidden($, '_open_operand'),
+      alias($[ruleName('postfix_increment_expression')], $.increment_expression),
+    ),
+
+    // constraint: after a postfix update the compiler leaves the operand, and a postfix operator applies to the
+    // unary expression around it: `~x--.y` is `(~(x--)).y`
+    [`${prefix}_open_operand`]: $ => choice(
       node($, 'unary_expression'),
       alias($[operand.ruleName('clone_update_expression')], $.unary_expression),
       operand.node($, 'increment_expression'),
-      alias($[ruleName('postfix_increment_expression')], $.increment_expression),
       hidden($, '_postfix_operand'),
     ),
+
+    [ruleName('update_unary_expression')]: $ => prec(PREC.UNARY, seq(
+      field('operator', unaryOperator),
+      field('argument', alias($[operand.ruleName('postfix_increment_expression')], $.increment_expression)),
+    )),
 
     [`${prefix}_primary_expression`]: $ => {
       const parenthesized = prefix === RVALUE ?
@@ -232,6 +273,7 @@ function expressionSpine(prefix) {
         $.interpolated_string,
         $.line_macro,
         $.file_macro,
+        alias($.folded_literal_expression, $.unary_expression),
         parenthesized,
         $.array,
         ...functionsAndTable,
@@ -268,29 +310,25 @@ function expressionSpine(prefix) {
     )),
 
     [ruleName('unary_expression')]: $ => prec(PREC.UNARY, choice(
-      seq(
-        field('operator', choice(...UNARY_OPERATORS, ...(prefix === STATEMENT ? [] : ['const']))),
-        field('argument', operand.hidden($, '_unary_operand')),
-      ),
-      seq(
-        field('operator', 'clone'),
-        field('argument', choice(
-          alias($.clone_postfix_increment_expression, $.increment_expression),
-          $._clone_postfix_operand,
-        )),
-      ),
+      seq(field('operator', unaryOperator), field('argument', operand.hidden($, '_open_operand'))),
+      seq(field('operator', 'clone'), field('argument', $._clone_postfix_operand)),
     )),
 
-    ...postfixSpine(prefix),
+    ...postfixSpine(prefix, $ => [
+      alias($[ruleName('update_unary_expression')], $.unary_expression),
+      alias($[operand.ruleName('update_increment_expression')], $.increment_expression),
+      alias($.clone_array_update_expression, $.unary_expression),
+    ]),
   };
 }
 
 // constraint: the compiler reads `clone [` as the clone operator on an array, not as an index
 /**
  * @param {string} prefix
+ * @param {($: GrammarSymbols<string>) => RuleOrLiteral[]} closedOperands
  * @returns {Record<string, ($: GrammarSymbols<string>) => RuleOrLiteral>}
  */
-function postfixSpine(prefix) {
+function postfixSpine(prefix, closedOperands = () => []) {
   const {hidden, node, ruleName} = spineNames(prefix);
 
   return {
@@ -328,6 +366,7 @@ function postfixSpine(prefix) {
       node($, 'slot_access_expression'),
       node($, 'call_expression'),
       hidden($, '_primary_expression'),
+      ...closedOperands($),
     ),
   };
 }
@@ -784,6 +823,17 @@ export default grammar({
     ...postfixSpine('_clone'),
 
     _clone_primary_expression: $ => alias($._clone_array, $.array),
+
+    // constraint: the compiler folds `-` or `~` and the number or character literal after it into one literal
+    folded_literal_expression: $ => prec(PREC.FOLDED_LITERAL, choice(
+      seq(field('operator', '-'), field('argument', choice($.integer, $.float, $.character))),
+      seq(field('operator', '~'), field('argument', choice($.integer, $.character))),
+    )),
+
+    clone_array_update_expression: $ => prec(PREC.UNARY, seq(
+      field('operator', 'clone'),
+      field('argument', alias($.clone_postfix_increment_expression, $.increment_expression)),
+    )),
 
     _clone_array: $ => seq(
       alias($._index_bracket, '['),

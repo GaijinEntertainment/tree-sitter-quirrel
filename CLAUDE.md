@@ -43,6 +43,14 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   actions, and after `a not in b` no action on `<` conflicts with the shift. The binary rules therefore have operand
   levels: `_operand` for the operators below the relational ones, `_relational_operand`, and `_shift_operand`. All
   of them give `binary_expression` nodes.
+- The compiler reads a unary operator and its operand as one operand of the postfix operators. The operand of the
+  unary operator takes every postfix operator itself, except after `++` or `--`, where it ends. A postfix operator
+  after that applies to the unary expression: `~x--.y` is `(~(x--)).y`. The `update_unary_expression` and
+  `update_increment_expression` rules are that form, and `_open_operand` is an operand that does not end with a
+  postfix update.
+- The compiler folds `-` or `~` and the number or character literal after it into one literal, so `-1[0]` is
+  `(-1)[0]`, and no postfix operator follows `-1++`. `folded_literal_expression` is that literal, as a
+  `unary_expression` node.
 - After the word `clone` the scanner returns `++` and `--` as postfix tokens, because `clone` can be a name. The
   `clone_update_expression` rules take those tokens as the prefix update that the clone operator applies to, and the
   conflict with `_contextual_name` lets the parser try both readings of `clone --x`.

@@ -425,6 +425,60 @@ clone--
       argument: (identifier))))
 
 ================================================================================
+Postfix operator on a unary expression that ends with a postfix update
+================================================================================
+
+x = ~a--.z
+y = ++b++[0]
+z = clone []--.w
+v = -1[0]
+w = clone --c++.d
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (field_access_expression
+        receiver: (unary_expression
+          argument: (increment_expression
+            argument: (identifier)))
+        field: (field_identifier))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (slot_access_expression
+        receiver: (increment_expression
+          argument: (increment_expression
+            argument: (identifier)))
+        key: (integer))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (field_access_expression
+        receiver: (unary_expression
+          argument: (increment_expression
+            argument: (array)))
+        field: (field_identifier))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (slot_access_expression
+        receiver: (unary_expression
+          argument: (integer))
+        key: (integer))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (field_access_expression
+          receiver: (increment_expression
+            argument: (increment_expression
+              argument: (identifier)))
+          field: (field_identifier))))))
+
+================================================================================
 Lambdas and function expressions
 ================================================================================
 
