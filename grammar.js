@@ -433,6 +433,7 @@ export default grammar({
     $._docstring_scope_end,
     $._try_start,
     $._const_semicolon,
+    $._before_return_value,
     $._never_returned,
     $._error_sentinel,
   ],
@@ -780,9 +781,9 @@ export default grammar({
 
     throw_statement: $ => seq('throw', $._expression),
 
-    return_statement: $ => seq('return', optional($._expression)),
+    return_statement: $ => seq('return', optional(choice($._expression, $._before_return_value))),
 
-    yield_statement: $ => seq('yield', optional($._expression)),
+    yield_statement: $ => seq('yield', optional(choice($._expression, $._before_return_value))),
 
     break_statement: _ => 'break',
 

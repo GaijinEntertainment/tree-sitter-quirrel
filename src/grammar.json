@@ -2491,8 +2491,17 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_expression"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_before_return_value"
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -2512,8 +2521,17 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_expression"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_before_return_value"
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -10725,6 +10743,10 @@
     {
       "type": "SYMBOL",
       "name": "_const_semicolon"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_before_return_value"
     },
     {
       "type": "SYMBOL",

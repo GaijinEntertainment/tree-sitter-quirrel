@@ -40,6 +40,7 @@ enum TokenType {
   DOCSTRING_SCOPE_END,
   TRY_START,
   CONST_SEMICOLON,
+  BEFORE_RETURN_VALUE,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
@@ -959,7 +960,9 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (c == 'c' && valid_symbols[CATCH_MARKER]) {
     bool has_word = read_word(lexer, word, sizeof word);
     if (has_word && strcmp(word, "catch") == 0) {
-      return scan_catch_clause(scanner, lexer);
+      // constraint: the compiler reads a value after `return` or `yield` when the next token is on the same line
+      bool needs_value = valid_symbols[BEFORE_RETURN_VALUE] && !gap.newline;
+      return !needs_value && scan_catch_clause(scanner, lexer);
     }
     if (!may_terminate || !line_break) {
       return false;
