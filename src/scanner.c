@@ -29,6 +29,8 @@ enum TokenType {
   CONST_DECLARATION_END,
   AFTER_POSTFIX_UPDATE,
   BEFORE_IMPORT_ALIAS,
+  FOREACH_INDEX_MARKER,
+  ENUM_MEMBERS_MARKER,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
@@ -493,6 +495,161 @@ static bool next_word_starts_import(TSLexer *lexer) {
   return read_word(lexer, word, sizeof word) && (strcmp(word, "import") == 0 || strcmp(word, "from") == 0);
 }
 
+typedef struct {
+  char *text;
+  unsigned size;
+  unsigned capacity;
+  unsigned count;
+} NameList;
+
+static void name_list_append(NameList *names, char c) {
+  if (names->size == names->capacity) {
+    names->capacity = names->capacity ? names->capacity * 2 : 256;
+    names->text = ts_realloc(names->text, names->capacity);
+  }
+  names->text[names->size++] = c;
+}
+
+static bool starts_name(int32_t c) { return is_word_char(c) && !is_digit(c); }
+
+static void read_name(TSLexer *lexer, NameList *names) {
+  while (is_word_char(lexer->lookahead)) {
+    name_list_append(names, (char)lexer->lookahead);
+    advance(lexer);
+  }
+  name_list_append(names, '\0');
+  names->count++;
+}
+
+static bool is_next_word(TSLexer *lexer, const char *expected) {
+  while (is_word_char(lexer->lookahead) && lexer->lookahead == *expected) {
+    expected++;
+    advance(lexer);
+  }
+  return *expected == '\0' && !is_word_char(lexer->lookahead);
+}
+
+// constraint: the compiler rejects a `foreach` whose index and value are the same name
+static bool scan_foreach_index_marker(TSLexer *lexer) {
+  Gap gap = {false, false, false, false};
+  skip_gap(lexer, &gap);
+  if (!starts_name(lexer->lookahead)) {
+    return false;
+  }
+  NameList index = {NULL, 0, 0, 0};
+  read_name(lexer, &index);
+  skip_gap(lexer, &gap);
+  bool has_index = !gap.slash && !gap.directive && lexer->lookahead == ',';
+  bool has_same_value = false;
+  if (has_index) {
+    advance(lexer);
+    skip_gap(lexer, &gap);
+    has_same_value = is_next_word(lexer, index.text);
+  }
+  ts_free(index.text);
+  return has_index && !has_same_value && accept(lexer, FOREACH_INDEX_MARKER);
+}
+
+static bool name_list_holds_last_name_twice(const NameList *names, unsigned last_name) {
+  for (unsigned start = 0; start < last_name; start += (unsigned)strlen(names->text + start) + 1) {
+    if (strcmp(names->text + start, names->text + last_name) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static bool skip_quoted(TSLexer *lexer, int32_t quote, bool verbatim) {
+  advance(lexer);
+  for (;;) {
+    int32_t c = lexer->lookahead;
+    if (at_text_end(lexer) || (c == '\n' && !verbatim)) {
+      return false;
+    }
+    advance(lexer);
+    if (c == '\\' && !verbatim) {
+      advance(lexer);
+    } else if (c == quote) {
+      if (!verbatim || lexer->lookahead != quote) {
+        return true;
+      }
+      advance(lexer);
+    }
+  }
+}
+
+static bool skip_enum_value(TSLexer *lexer) {
+  if (lexer->lookahead == '-') {
+    advance(lexer);
+  }
+  int32_t c = lexer->lookahead;
+  if (c == '"' || c == '\'') {
+    return skip_quoted(lexer, c, false);
+  }
+  if (c == '@') {
+    advance(lexer);
+    return lexer->lookahead == '"' && skip_quoted(lexer, '"', true);
+  }
+  if (!is_word_char(c)) {
+    return false;
+  }
+  if (!is_digit(c)) {
+    while (is_word_char(lexer->lookahead)) {
+      advance(lexer);
+    }
+    return true;
+  }
+  advance_digit(lexer);
+  if (c == '0' && (lexer->lookahead == 'x' || lexer->lookahead == 'X')) {
+    advance_digit(lexer);
+    while (is_hex_digit(lexer->lookahead)) {
+      advance_digit(lexer);
+    }
+    return true;
+  }
+  while (is_alnum(lexer->lookahead) || lexer->lookahead == '.') {
+    int32_t previous = lexer->lookahead;
+    advance_digit(lexer);
+    if ((previous == 'e' || previous == 'E') && (lexer->lookahead == '+' || lexer->lookahead == '-')) {
+      advance(lexer);
+    }
+  }
+  return true;
+}
+
+enum { ENUM_MEMBERS_COMPARED_MAX = 4096 };
+
+// constraint: the compiler rejects an enum that has two members of the same name
+// shortcut: the scan compares the first 4096 members - use a hash set when a larger enum needs the check
+static bool scan_enum_members_marker(TSLexer *lexer) {
+  NameList names = {NULL, 0, 0, 0};
+  bool has_duplicate = false;
+  while (!has_duplicate && names.count < ENUM_MEMBERS_COMPARED_MAX) {
+    Gap gap = {false, false, false, false};
+    skip_gap(lexer, &gap);
+    if (gap.slash || gap.directive || !starts_name(lexer->lookahead)) {
+      break;
+    }
+    unsigned name = names.size;
+    read_name(lexer, &names);
+    has_duplicate = name_list_holds_last_name_twice(&names, name);
+    skip_gap(lexer, &gap);
+    if (lexer->lookahead == '=' && !gap.slash && !gap.directive) {
+      advance(lexer);
+      skip_gap(lexer, &gap);
+      if (gap.slash || gap.directive || !skip_enum_value(lexer)) {
+        break;
+      }
+      skip_gap(lexer, &gap);
+    }
+    if (lexer->lookahead == ',' && !gap.slash && !gap.directive) {
+      advance(lexer);
+    }
+  }
+  ts_free(names.text);
+  return !has_duplicate && accept(lexer, ENUM_MEMBERS_MARKER);
+}
+
 void *tree_sitter_quirrel_external_scanner_create(void) { return ts_calloc(1, sizeof(Scanner)); }
 
 void tree_sitter_quirrel_external_scanner_destroy(void *payload) { ts_free(payload); }
@@ -515,6 +672,12 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (valid_symbols[NAME_ADJACENT]) {
     int32_t c = lexer->lookahead;
     return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') && accept(lexer, NAME_ADJACENT);
+  }
+  if (valid_symbols[FOREACH_INDEX_MARKER]) {
+    return scan_foreach_index_marker(lexer);
+  }
+  if (valid_symbols[ENUM_MEMBERS_MARKER]) {
+    return scan_enum_members_marker(lexer);
   }
 
   Gap gap = {false, false, false, false};

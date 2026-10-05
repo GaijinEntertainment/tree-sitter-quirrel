@@ -295,6 +295,40 @@ class C { async function _added() {} function _add() {} }
         body: (block)))))
 
 ================================================================================
+Names that are near to equal in a foreach and in an enum
+================================================================================
+
+foreach (x, xx in t) {}
+foreach (x, {x} in t) {}
+enum E { A = "B", B = "A" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (foreach_statement
+    index: (identifier)
+    value: (identifier)
+    container: (identifier)
+    body: (block))
+  (foreach_statement
+    index: (identifier)
+    value: (table_pattern
+      (pattern_field
+        name: (identifier)))
+    container: (identifier)
+    body: (block))
+  (enum_declaration
+    name: (identifier)
+    (enum_member
+      name: (identifier)
+      value: (string
+        (string_content)))
+    (enum_member
+      name: (identifier)
+      value: (string
+        (string_content)))))
+
+================================================================================
 Empty pattern in a parameter and in a foreach
 ================================================================================
 

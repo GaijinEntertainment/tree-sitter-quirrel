@@ -24,9 +24,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   the list current:
   - An import in a nested statement list. The compiler accepts it only while each statement that has ended in the file
     is an import, a directive, `;`, an expression statement, `return`, `yield`, `break`, `continue`, or `throw`.
-- The grammar does not check what the compiler checks after it reads the syntax: the names in a declaration (duplicate
-  catch types, the same name for the key and the value of a `foreach`), the number of docstrings in a function, the
-  nesting depth of an expression, and the checks of the code generator.
+- The grammar does not check what the compiler checks after it reads the syntax: duplicate catch types, the number of
+  docstrings in a function, the nesting depth of an expression, and the checks of the code generator.
 
 ## Where things live
 
@@ -125,6 +124,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler reads an import statement without regard to line ends: the word `as` after an import name or a module
   name is the alias keyword, also on a later line. `_before_import_alias` is a token that the scanner never returns;
   where it is valid, a line end before `as` does not end the statement.
+- `_foreach_index_marker` and `_enum_members_marker` are zero-width tokens whose scan reads ahead and compares names:
+  the index and the value of a `foreach`, and the members of an enum. The scan returns no token when two names are
+  equal, and the statement is then an error. The enum scan follows the lexer of the compiler for the member values
+  and compares the first 4096 members.
 - The scanner never returns `_after_postfix_update` either. Its presence in `valid_symbols` marks the position after a
   postfix update, where `_index_bracket` is not valid but a binary minus on the next line continues the expression.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
