@@ -20,10 +20,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The grammar accepts the input of every language mode, because a directive in the file and the host application set
   the mode. `switch`, `case`, `default`, and `clone` therefore parse both as keywords and as names, and `delete`, `::`,
   and `$${ ... }` parse everywhere.
-- The compiler rejects this input with state that a grammar does not keep, and the grammar accepts it on purpose. Keep
-  the list current:
-  - An import in a nested statement list. The compiler accepts it only while each statement that has ended in the file
-    is an import, a directive, `;`, an expression statement, `return`, `yield`, `break`, `continue`, or `throw`.
+- The compiler rejects this input, and the grammar accepts it. Keep the list current:
+  - An import after a `try` or `catch` body that is a declaration or a control statement without braces, as in
+    `try local x = 1 catch (e) { import "m" }`. A marker for the end of such a body costs about 2,200 parser states.
 - The grammar does not check what the compiler checks after it reads the syntax: duplicate catch types, the number of
   docstrings in a function, the nesting depth of an expression, and the checks of the code generator.
 
@@ -149,8 +148,15 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler rounds a float with `std::from_chars` where the library declares it, and through `strtod` and a cast
   elsewhere. The two paths differ within one double-precision step of each float limit. The scanner accepts a literal
   that one of the paths accepts.
-- The import region is open only at the top level: `_import_marker` makes `import` and `from` start an import at the
-  start of a prelude statement. Nested statement lists accept an import in any position.
+- The compiler takes `import` and `from` as keywords at the start of a statement until a statement has ended that is
+  not an import, a directive, `;`, an expression statement, `return`, `yield`, `break`, `continue`, or `throw`. The
+  end of a function body counts as such a statement. After that, the two words are names. The scanner keeps this in
+  `imports_closed`, which never goes back to false: `_after_opening_item` is valid after the terminator of such a
+  statement and `_after_block` after a function body, and the scanner never returns either. While imports are open,
+  the scanner returns `_import_marker` before `import` or `from` at the start of a statement, and each import
+  statement needs that token.
+- A scan that changes the scanner state returns a token, the `_terminator_reset` extra when no other token applies,
+  because the runtime keeps the state only with a token.
 - `TYPE_NAMES` follows `sq_type_string_to_mask` in `sqtypeparser.cpp`, and `DIRECTIVES` holds the directive tables in
   `parser.cpp` of both compiler releases.
 - Every corpus input without `:error` compiles in some language mode, and every `:error` input fails in every mode.

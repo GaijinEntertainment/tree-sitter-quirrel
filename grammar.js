@@ -425,6 +425,8 @@ export default grammar({
     $._foreach_index_marker,
     $._enum_members_marker,
     $._after_clone,
+    $._after_opening_item,
+    $._after_block,
     $._never_returned,
     $._error_sentinel,
   ],
@@ -455,7 +457,7 @@ export default grammar({
   rules: {
     source_file: $ => seq(
       repeat($._prelude_item),
-      optional(seq($._opening_statement, $._terminator, repeat($._top_level_item))),
+      optional(seq($._opening_item, repeat($._top_level_item))),
     ),
 
     _prelude_item: $ => choice(
@@ -464,7 +466,8 @@ export default grammar({
     ),
 
     _top_level_item: $ => choice(
-      seq(choice($._prelude_statement, $._opening_statement), $._terminator),
+      seq($._prelude_statement, $._terminator),
+      $._opening_item,
       alias($._semicolon, $.empty_statement),
     ),
 
@@ -479,6 +482,15 @@ export default grammar({
     ),
 
     _opening_statement: $ => choice($._opening_statement_without_block, $.block),
+
+    // constraint: the compiler takes `import` and `from` as names after an opening statement or a function body ends
+    _opening_item: $ => prec.right(seq($._opening_statement, $._terminator, optional($._after_opening_item))),
+
+    _opening_body_item: $ => prec.right(seq(
+      $._opening_statement_without_block,
+      $._terminator,
+      optional($._after_opening_item),
+    )),
 
     _opening_statement_without_block: $ => choice(
       $.local_declaration,
@@ -498,20 +510,23 @@ export default grammar({
 
     _statement: $ => choice($._prelude_statement, $._opening_statement, $.import_statement),
 
-    _statement_item: $ => choice(
-      seq($._statement, $._terminator),
-      alias($._semicolon, $.empty_statement),
-    ),
+    _statement_item: $ => choice($._prelude_item, $._opening_item),
 
     _terminator: $ => choice(alias($._semicolon, ';'), $._automatic_semicolon),
 
-    _body_statement: $ => choice(
-      $.block,
-      seq(choice($._prelude_statement, $._opening_statement_without_block, $.import_statement), $._terminator),
+    _body_statement: $ => choice($.block, $._prelude_item, $._opening_body_item),
+
+    _unterminated_body: $ => choice(
+      $._unterminated_statement,
+      seq($._import_marker, $.import_statement),
       alias($._semicolon, $.empty_statement),
     ),
 
-    _unterminated_body: $ => choice($._statement, alias($._semicolon, $.empty_statement)),
+    _unterminated_statement: $ => choice(
+      $._prelude_statement,
+      $._opening_statement_without_block,
+      prec.right(seq($.block, optional($._after_block))),
+    ),
 
     import_statement: $ => choice(
       seq('import', field('module', $._module_name), optional($._import_alias)),
@@ -772,6 +787,7 @@ export default grammar({
       field('parameters', $.parameters),
       optional(field('return_type', $.type_annotation)),
       field('body', $.block),
+      optional($._after_block),
     ),
 
     parameters: $ => seq(
