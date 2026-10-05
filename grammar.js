@@ -65,10 +65,12 @@ const CHARACTER_ESCAPE = new RegExp(
 );
 const ESCAPE = new RegExp(`\\\\(x${HEX}{1,2}|${UNICODE_ESCAPE}|[tabnrvf0\\\\"'])`);
 const TEMPLATE_ESCAPE = new RegExp(`\\\\(x${HEX}{1,2}|${UNICODE_ESCAPE}|[tabnrvf0\\\\"'{}])`);
+// constraint: the compiler allows `=` in the right operand of `??`, `||` and `&&` where it allows `=` in the left one
+const RIGHT_OPERAND_KEEPS_PLACE = true;
 const BINARY_OPERATORS = [
-  [prec.right, PREC.NULL_COALESCE, '??'],
-  [prec.right, PREC.OR, '||'],
-  [prec.right, PREC.AND, '&&'],
+  [prec.right, PREC.NULL_COALESCE, '??', RIGHT_OPERAND_KEEPS_PLACE],
+  [prec.right, PREC.OR, '||', RIGHT_OPERAND_KEEPS_PLACE],
+  [prec.right, PREC.AND, '&&', RIGHT_OPERAND_KEEPS_PLACE],
   [prec.right, PREC.BIT_OR, '|'],
   [prec.left, PREC.BIT_XOR, '^'],
   [prec.left, PREC.BIT_AND, '&'],
@@ -81,17 +83,26 @@ const BINARY_OPERATORS = [
 
 const UNARY_OPERATORS = ['-', '!', '~', 'typeof', 'resume', 'await', 'clone', 'static', 'delete'];
 
+// constraint: the compiler allows `=` only in an expression that no operator, call, or bracket contains
+const RVALUE = '';
+const OUTER = '_outer';
+// constraint: the compiler starts other statements with `{`, `function`, `class`, `const` and `async`
+const STATEMENT = '_statement';
+
 // constraint: a rule copy with fields gets a visible name; the generator copies an aliased hidden rule's fields up
 /**
  * @param {string} prefix
  */
 function spineNames(prefix) {
-  const copy = prefix !== '';
+  /**
+   * @param {string} name
+   */
+  const isCopy = name => prefix !== RVALUE && !(prefix === OUTER && name === 'assignment_expression');
 
   /**
    * @param {string} name
    */
-  const ruleName = name => (copy ? `${prefix.slice(1)}_${name}` : name);
+  const ruleName = name => (isCopy(name) ? `${prefix.slice(1)}_${name}` : name);
 
   /**
    * @param {GrammarSymbols<string>} $
@@ -103,22 +114,37 @@ function spineNames(prefix) {
    * @param {GrammarSymbols<string>} $
    * @param {string} name
    */
-  const node = ($, name) => (copy ? alias($[ruleName(name)], $[name]) : $[name]);
+  const node = ($, name) => (isCopy(name) ? alias($[ruleName(name)], $[name]) : $[name]);
 
   return {hidden, node, ruleName};
 }
 
-// constraint: the compiler starts other statements with `{`, `function`, `class`, `const` and `async`
 /**
  * @param {string} prefix
  * @returns {Record<string, ($: GrammarSymbols<string>) => RuleOrLiteral>}
  */
 function expressionSpine(prefix) {
-  const statement = prefix !== '';
   const {hidden, node, ruleName} = spineNames(prefix);
+  // constraint: the compiler allows `=` in the operand of a unary operator where it allows `=` before the operator
+  const operand = spineNames(prefix === RVALUE ? RVALUE : OUTER);
 
   return {
-    [`${prefix}_regular_expression`]: $ => choice(node($, 'assignment_expression'), hidden($, '_expression')),
+    ...(prefix === RVALUE ? {} : {
+      [`${prefix}_regular_expression`]: $ => choice(node($, 'assignment_expression'), hidden($, '_expression')),
+
+      [ruleName('assignment_expression')]: $ => prec.right(PREC.ASSIGN, seq(
+        field('left', hidden($, '_operand')),
+        '=',
+        field('right', $._expression),
+      )),
+    }),
+
+    ...(prefix === STATEMENT ? {} : {
+      [ruleName('increment_expression')]: $ => prec(PREC.UNARY, seq(
+        field('operator', choice('++', '--')),
+        field('argument', hidden($, '_unary_operand')),
+      )),
+    }),
 
     [`${prefix}_expression`]: $ => choice(
       node($, 'ternary_expression'),
@@ -131,16 +157,40 @@ function expressionSpine(prefix) {
 
     [`${prefix}_unary_operand`]: $ => choice(
       node($, 'unary_expression'),
-      $.increment_expression,
+      operand.node($, 'increment_expression'),
       alias($[ruleName('postfix_increment_expression')], $.increment_expression),
       hidden($, '_postfix_operand'),
     ),
 
-    [ruleName('assignment_expression')]: $ => prec.right(PREC.ASSIGN, seq(
-      field('left', hidden($, '_operand')),
-      '=',
-      field('right', $._expression),
-    )),
+    [`${prefix}_primary_expression`]: $ => {
+      const parenthesized = prefix === RVALUE ?
+        $.parenthesized_expression :
+        alias($.outer_parenthesized_expression, $.parenthesized_expression);
+      const functionsAndTable = prefix === STATEMENT ?
+        [alias($.statement_lambda_expression, $.lambda_expression)] :
+        [$.table, $.function_expression, $.lambda_expression, $.class_expression];
+      return choice(
+        $._name,
+        $.this,
+        $.base,
+        $.root_table_access,
+        $.null,
+        $.true,
+        $.false,
+        $.integer,
+        $.float,
+        $.character,
+        $.string,
+        $.verbatim_string,
+        $.interpolated_string,
+        $.line_macro,
+        $.file_macro,
+        parenthesized,
+        $.array,
+        ...functionsAndTable,
+        $.code_block_expression,
+      );
+    },
 
     [ruleName('compound_assignment_expression')]: $ => prec.right(PREC.ASSIGN, seq(
       field('left', hidden($, '_operand')),
@@ -162,16 +212,18 @@ function expressionSpine(prefix) {
       field('alternative', $._expression),
     )),
 
-    [ruleName('binary_expression')]: $ => choice(...BINARY_OPERATORS.map(([fn, level, operator]) => fn(level, seq(
-      field('left', hidden($, '_operand')),
-      field('operator', operator),
-      field('right', $._operand),
-    )))),
+    [ruleName('binary_expression')]: $ => choice(...BINARY_OPERATORS.map(
+      ([fn, level, operator, rightOperandKeepsPlace]) => fn(level, seq(
+        field('left', hidden($, '_operand')),
+        field('operator', operator),
+        field('right', rightOperandKeepsPlace ? operand.hidden($, '_operand') : $._operand),
+      )),
+    )),
 
     [ruleName('unary_expression')]: $ => prec(PREC.UNARY, choice(
       seq(
-        field('operator', choice(...UNARY_OPERATORS, ...(statement ? [] : ['const']))),
-        field('argument', $._unary_operand),
+        field('operator', choice(...UNARY_OPERATORS, ...(prefix === STATEMENT ? [] : ['const']))),
+        field('argument', operand.hidden($, '_unary_operand')),
       ),
       seq(
         field('operator', 'clone'),
@@ -395,7 +447,7 @@ export default grammar({
     variable_declaration: $ => seq(
       field('name', $._name),
       optional(field('type', alias($._declarator_type_annotation, $.type_annotation))),
-      optional(seq('=', field('value', $._regular_expression))),
+      optional(seq('=', field('value', $._outer_regular_expression))),
     ),
 
     _pattern: $ => choice($.table_pattern, $.array_pattern),
@@ -407,7 +459,7 @@ export default grammar({
     pattern_field: $ => seq(
       field('name', $._name),
       optional(field('type', $.type_annotation)),
-      optional(seq('=', field('default', $._regular_expression))),
+      optional(seq('=', field('default', $._outer_regular_expression))),
     ),
 
     function_declaration: $ => seq(
@@ -475,7 +527,7 @@ export default grammar({
       field('name', $._name),
       optional(field('type', alias($._declarator_type_annotation, $.type_annotation))),
       '=',
-      field('value', $._regular_expression),
+      field('value', $._outer_regular_expression),
     ),
 
     while_statement: $ => seq('while', '(', field('condition', $._expression), ')', field('body', $._body_statement)),
@@ -509,9 +561,9 @@ export default grammar({
       ),
     ),
 
-    _comma_expression: $ => choice($._regular_expression, $.comma_expression),
+    _comma_expression: $ => choice($._outer_regular_expression, $.comma_expression),
 
-    comma_expression: $ => seq($._regular_expression, repeat1(seq(',', $._regular_expression))),
+    comma_expression: $ => seq($._outer_regular_expression, repeat1(seq(',', $._outer_regular_expression))),
 
     foreach_statement: $ => seq(
       'foreach',
@@ -674,9 +726,11 @@ export default grammar({
 
     function_method: $ => functionMethod($),
 
-    ...expressionSpine(''),
+    ...expressionSpine(RVALUE),
 
-    ...expressionSpine('_statement'),
+    ...expressionSpine(OUTER),
+
+    ...expressionSpine(STATEMENT),
 
     ...postfixSpine('_clone'),
 
@@ -688,59 +742,7 @@ export default grammar({
       ']',
     ),
 
-    increment_expression: $ => prec(PREC.UNARY, seq(
-      field('operator', choice('++', '--')),
-      field('argument', $._unary_operand),
-    )),
-
     arguments: $ => seq(choice('(', '?('), repeat(seq($._expression, optional(','))), ')'),
-
-    _primary_expression: $ => choice(
-      $._name,
-      $.this,
-      $.base,
-      $.root_table_access,
-      $.null,
-      $.true,
-      $.false,
-      $.integer,
-      $.float,
-      $.character,
-      $.string,
-      $.verbatim_string,
-      $.interpolated_string,
-      $.line_macro,
-      $.file_macro,
-      $.parenthesized_expression,
-      $.array,
-      $.table,
-      $.function_expression,
-      $.lambda_expression,
-      $.class_expression,
-      $.code_block_expression,
-    ),
-
-    _statement_primary_expression: $ => choice(
-      $._name,
-      $.this,
-      $.base,
-      $.root_table_access,
-      $.null,
-      $.true,
-      $.false,
-      $.integer,
-      $.float,
-      $.character,
-      $.string,
-      $.verbatim_string,
-      $.interpolated_string,
-      $.line_macro,
-      $.file_macro,
-      $.parenthesized_expression,
-      $.array,
-      alias($.statement_lambda_expression, $.lambda_expression),
-      $.code_block_expression,
-    ),
 
     this: _ => 'this',
     base: _ => 'base',
@@ -752,7 +754,9 @@ export default grammar({
 
     root_table_access: $ => seq('::', $._name_adjacent, field('name', $._name)),
 
-    parenthesized_expression: $ => seq('(', $._regular_expression, ')'),
+    parenthesized_expression: $ => seq('(', $._expression, ')'),
+
+    outer_parenthesized_expression: $ => seq('(', $._outer_regular_expression, ')'),
 
     array: $ => seq('[', repeat(seq(choice($._expression, $.spread), optional(','))), ']'),
 
@@ -808,7 +812,8 @@ export default grammar({
       optional(field('name', $._name)),
       field('parameters', $.parameters),
       optional(field('return_type', $.type_annotation)),
-      field('body', $._regular_expression),
+      field('body', $._outer_regular_expression),
+      optional(seq('=', $._never_returned)),
     )),
 
     class_expression: $ => seq('class', $._class_tail),

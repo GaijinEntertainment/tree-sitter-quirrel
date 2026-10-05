@@ -42,6 +42,58 @@ x = y ? z : w
         alternative: (identifier)))))
 
 ================================================================================
+Assignment in parentheses where the compiler allows it
+================================================================================
+
+(a = 1).b
+local x = -(a = 1) || (b = 2)
+for ((i = 0); ; (i = 1)) {}
+let f = @() (a = 1)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (field_access_expression
+      receiver: (parenthesized_expression
+        (assignment_expression
+          left: (identifier)
+          right: (integer)))
+      field: (field_identifier)))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (binary_expression
+        left: (unary_expression
+          argument: (parenthesized_expression
+            (assignment_expression
+              left: (identifier)
+              right: (integer))))
+        right: (parenthesized_expression
+          (assignment_expression
+            left: (identifier)
+            right: (integer))))))
+  (for_statement
+    initializer: (parenthesized_expression
+      (assignment_expression
+        left: (identifier)
+        right: (integer)))
+    step: (parenthesized_expression
+      (assignment_expression
+        left: (identifier)
+        right: (integer)))
+    body: (block))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (lambda_expression
+        parameters: (parameters)
+        body: (parenthesized_expression
+          (assignment_expression
+            left: (identifier)
+            right: (integer)))))))
+
+================================================================================
 Binary operator precedence
 ================================================================================
 
