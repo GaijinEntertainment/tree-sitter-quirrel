@@ -19,7 +19,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   leaves no ERROR or MISSING node for a tree walk, and `tree-sitter parse` then reports a successful parse.
 - The grammar accepts the input of every language mode, because a directive in the file and the host application set
   the mode. `switch`, `case`, `default`, and `clone` therefore parse both as keywords and as names, and `delete`, `::`,
-  and `$${ ... }` parse everywhere.
+  and `$${ ... }` parse everywhere. A file that uses the forms of two modes also parses, although no single mode
+  accepts it, as in `x = clone y` followed by `clone--`.
 - The compiler rejects this input, and the grammar accepts it. Keep the list current:
   - An import after a `try` or `catch` body that is a declaration or a control statement without braces, as in
     `try local x = 1 catch (e) { import "m" }`. A marker for the end of such a body costs about 2,200 parser states.
