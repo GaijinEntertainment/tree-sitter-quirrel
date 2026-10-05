@@ -4393,7 +4393,7 @@
       }
     },
     "postfix_increment_expression": {
-      "type": "PREC",
+      "type": "PREC_LEFT",
       "value": 14,
       "content": {
         "type": "SEQ",
@@ -4432,6 +4432,36 @@
                 }
               ]
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_after_postfix_update"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "--"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_never_returned"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
         ]
       }
@@ -5428,7 +5458,7 @@
       }
     },
     "statement_postfix_increment_expression": {
-      "type": "PREC",
+      "type": "PREC_LEFT",
       "value": 14,
       "content": {
         "type": "SEQ",
@@ -5467,6 +5497,36 @@
                 }
               ]
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_after_postfix_update"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "--"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_never_returned"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
         ]
       }
@@ -5666,7 +5726,7 @@
       ]
     },
     "clone_postfix_increment_expression": {
-      "type": "PREC",
+      "type": "PREC_LEFT",
       "value": 14,
       "content": {
         "type": "SEQ",
@@ -5705,6 +5765,36 @@
                 }
               ]
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_after_postfix_update"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "--"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_never_returned"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
         ]
       }
@@ -7177,6 +7267,10 @@
     {
       "type": "SYMBOL",
       "name": "_const_declaration_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_after_postfix_update"
     },
     {
       "type": "SYMBOL",

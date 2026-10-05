@@ -215,6 +215,41 @@ x
       argument: (identifier))))
 
 ================================================================================
+After a postfix update a minus continues and a decrement starts an operand
+================================================================================
+
+x = a++
+- b
+y = [a++ --b]
+a++
+--b
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (binary_expression
+        left: (increment_expression
+          argument: (identifier))
+        right: (identifier))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (array
+        (increment_expression
+          argument: (identifier))
+        (increment_expression
+          argument: (identifier)))))
+  (expression_statement
+    (increment_expression
+      argument: (identifier)))
+  (expression_statement
+    (increment_expression
+      argument: (identifier))))
+
+================================================================================
 Return value only on the same line
 ================================================================================
 
