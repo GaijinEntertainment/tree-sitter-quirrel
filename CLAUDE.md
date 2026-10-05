@@ -50,6 +50,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler folds `-` or `~` and the number or character literal after it into one literal, so `-1[0]` is
   `(-1)[0]`, and no postfix operator follows `-1++`. `folded_literal_expression` is that literal, as a
   `unary_expression` node.
+- After the word `clone` a `[` on a later line starts the array that the clone operator takes, so the scanner returns
+  `_index_bracket` there and not `_unexpected_newline`. `_after_clone`, which the scanner never returns, marks that
+  position.
 - After the word `clone` the scanner returns `++` and `--` as postfix tokens, because `clone` can be a name. The
   `clone_update_expression` rules take those tokens as the prefix update that the clone operator applies to, and the
   conflict with `_contextual_name` lets the parser try both readings of `clone --x`.
