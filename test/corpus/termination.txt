@@ -62,6 +62,59 @@ function f() {} f()
       arguments: (arguments))))
 
 ================================================================================
+A closing brace or a semicolon ends each nested body on one line
+================================================================================
+
+if (a) if (b) c; d
+while (a) if (b) {} c
+if (a) b
+else if (c) d
+else {} e
+function f() { for (;;) foreach (x in y) z; w }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (if_statement
+    condition: (identifier)
+    then_branch: (if_statement
+      condition: (identifier)
+      then_branch: (expression_statement
+        (identifier))))
+  (expression_statement
+    (identifier))
+  (while_statement
+    condition: (identifier)
+    body: (if_statement
+      condition: (identifier)
+      then_branch: (block)))
+  (expression_statement
+    (identifier))
+  (if_statement
+    condition: (identifier)
+    then_branch: (expression_statement
+      (identifier))
+    else_branch: (if_statement
+      condition: (identifier)
+      then_branch: (expression_statement
+        (identifier))
+      else_branch: (block)))
+  (expression_statement
+    (identifier))
+  (function_declaration
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (for_statement
+        body: (foreach_statement
+          value: (identifier)
+          container: (identifier)
+          body: (expression_statement
+            (identifier))))
+      (expression_statement
+        (identifier)))))
+
+================================================================================
 Expressions continue across line ends
 ================================================================================
 

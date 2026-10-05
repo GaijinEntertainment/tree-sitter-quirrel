@@ -29,7 +29,7 @@ enum TokenType {
   ERROR_SENTINEL,
 };
 
-// constraint: the runtime restores this state from the last external token, so a scan after a terminator returns one
+// constraint: the runtime restores this state from the last external token, so each scan with the flag set returns one
 typedef struct {
   bool after_terminator;
 } Scanner;
@@ -156,6 +156,12 @@ static bool accept_terminator(Scanner *scanner, TSLexer *lexer, enum TokenType t
   lexer->mark_end(lexer);
   scanner->after_terminator = true;
   return accept(lexer, token);
+}
+
+// constraint: the compiler lets one `}` or `;` end each statement that it closes, so nested bodies take one `;` each
+static bool accept_automatic_semicolon(Scanner *scanner, TSLexer *lexer, bool after_terminator, const Gap *gap) {
+  scanner->after_terminator = after_terminator && !gap->newline;
+  return accept(lexer, AUTOMATIC_SEMICOLON);
 }
 
 static void advance_digit(TSLexer *lexer) {
@@ -439,12 +445,13 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     return valid_symbols[IMPORT_MARKER] && next_word_starts_import(lexer) && accept(lexer, IMPORT_MARKER);
   }
   if ((c == 'e' && valid_symbols[ELSE_MARKER]) || (c == 'c' && valid_symbols[CATCH_MARKER])) {
-    return !next_word_is(lexer, c == 'e' ? "else" : "catch") && accept(lexer, AUTOMATIC_SEMICOLON);
+    return !next_word_is(lexer, c == 'e' ? "else" : "catch") &&
+           accept_automatic_semicolon(scanner, lexer, after_terminator, &gap);
   }
   if (continues_statement(lexer, expression_ended)) {
     return false;
   }
-  return accept(lexer, AUTOMATIC_SEMICOLON);
+  return accept_automatic_semicolon(scanner, lexer, after_terminator, &gap);
 }
 
 bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
