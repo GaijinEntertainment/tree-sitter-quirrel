@@ -5430,6 +5430,18 @@
                 }
               },
               {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_after_clone"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
                 "type": "FIELD",
                 "name": "argument",
                 "content": {
@@ -7275,6 +7287,18 @@
                 }
               },
               {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_after_clone"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
                 "type": "FIELD",
                 "name": "argument",
                 "content": {
@@ -8635,6 +8659,18 @@
                   "type": "STRING",
                   "value": "clone"
                 }
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_after_clone"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
               },
               {
                 "type": "FIELD",
@@ -10438,6 +10474,10 @@
     {
       "type": "SYMBOL",
       "name": "_enum_members_marker"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_after_clone"
     },
     {
       "type": "SYMBOL",

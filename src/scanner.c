@@ -31,6 +31,7 @@ enum TokenType {
   BEFORE_IMPORT_ALIAS,
   FOREACH_INDEX_MARKER,
   ENUM_MEMBERS_MARKER,
+  AFTER_CLONE,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
@@ -399,7 +400,9 @@ static bool scan_postfix(TSLexer *lexer, const bool *valid_symbols, const Gap *g
     }
     advance(lexer);
     lexer->mark_end(lexer);
-    return accept(lexer, gap->newline ? UNEXPECTED_NEWLINE : INDEX_BRACKET);
+    // constraint: after the clone operator the compiler reads `[` on a later line as the start of an array
+    bool breaks_index = gap->newline && !valid_symbols[AFTER_CLONE];
+    return accept(lexer, breaks_index ? UNEXPECTED_NEWLINE : INDEX_BRACKET);
   }
   if (c == '?') {
     if (gap->crossed_comment) {

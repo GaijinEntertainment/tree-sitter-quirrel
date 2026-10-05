@@ -396,6 +396,24 @@ x = clone [a].extend(b)
             (identifier)))))))
 
 ================================================================================
+Clone operator on an array that starts on the next line
+================================================================================
+
+x = clone
+[1, 2]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (array
+          (integer)
+          (integer))))))
+
+================================================================================
 Clone operator on a prefix update, and a postfix update of the name clone
 ================================================================================
 

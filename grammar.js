@@ -317,7 +317,7 @@ function expressionSpine(prefix) {
 
     [ruleName('unary_expression')]: $ => prec(PREC.UNARY, choice(
       seq(field('operator', unaryOperator), field('argument', operand.hidden($, '_open_operand'))),
-      seq(field('operator', 'clone'), field('argument', $._clone_postfix_operand)),
+      seq(field('operator', 'clone'), optional($._after_clone), field('argument', $._clone_postfix_operand)),
     )),
 
     ...postfixSpine(prefix, $ => [
@@ -424,6 +424,7 @@ export default grammar({
     $._before_import_alias,
     $._foreach_index_marker,
     $._enum_members_marker,
+    $._after_clone,
     $._never_returned,
     $._error_sentinel,
   ],
