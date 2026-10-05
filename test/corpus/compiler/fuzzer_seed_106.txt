@@ -268,526 +268,526 @@ let to_log = function(id, s) { let tp = typeof(s); print($"{id}: "); print(tp ==
   (comment)
   (comment)
   (try_statement
-    (block
+    body: (block
       (local_declaration
         (variable_declaration
-          (identifier)
-          (integer)))
+          name: (identifier)
+          value: (integer)))
       (local_declaration
         (variable_declaration
-          (identifier)
-          (function_expression
-            (parameters
+          name: (identifier)
+          value: (function_expression
+            parameters: (parameters
               (parameter
-                (identifier))
+                name: (identifier))
               (parameter
-                (identifier)))
-            (block
+                name: (identifier)))
+            body: (block
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (unary_expression
-                    (parenthesized_expression
+                  name: (identifier)
+                  value: (unary_expression
+                    argument: (parenthesized_expression
                       (identifier)))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (interpolated_string
                       (hole
                         (identifier))
                       (string_content)))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (ternary_expression
-                      (binary_expression
-                        (binary_expression
-                          (identifier)
-                          (string
+                      condition: (binary_expression
+                        left: (binary_expression
+                          left: (identifier)
+                          right: (string
                             (string_content)))
-                        (binary_expression
-                          (binary_expression
-                            (identifier)
-                            (string
+                        right: (binary_expression
+                          left: (binary_expression
+                            left: (identifier)
+                            right: (string
                               (string_content)))
-                          (binary_expression
-                            (identifier)
-                            (string
+                          right: (binary_expression
+                            left: (identifier)
+                            right: (string
                               (string_content)))))
-                      (identifier)
-                      (identifier)))))
+                      consequence: (identifier)
+                      alternative: (identifier)))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (escape_sequence)))))
               (if_statement
-                (binary_expression
-                  (increment_expression
-                    (identifier))
-                  (integer))
-                (expression_statement
+                condition: (binary_expression
+                  left: (increment_expression
+                    argument: (identifier))
+                  right: (integer))
+                then_branch: (expression_statement
                   (slot_access_expression
-                    (identifier)
-                    (string
+                    receiver: (identifier)
+                    key: (string
                       (string_content)))))))))
       (block
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table)))
+            name: (identifier)
+            value: (table)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array
+            name: (identifier)
+            value: (array
               (parenthesized_expression
                 (unary_expression
-                  (integer))))))
+                  argument: (integer))))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table
+            name: (identifier)
+            value: (table
               (slot
-                (identifier)
-                (unary_expression
-                  (integer)))
+                key: (identifier)
+                value: (unary_expression
+                  argument: (integer)))
               (slot
-                (identifier)
-                (unary_expression
-                  (integer))))))
+                key: (identifier)
+                value: (unary_expression
+                  argument: (integer))))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table)))
+            name: (identifier)
+            value: (table)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array)))
+            name: (identifier)
+            value: (array)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (unary_expression
-              (integer))))
+            name: (identifier)
+            value: (unary_expression
+              argument: (integer))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (integer)))
+            name: (identifier)
+            value: (integer)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table
+            name: (identifier)
+            value: (table
               (slot
-                (identifier)
-                (parenthesized_expression
+                key: (identifier)
+                value: (parenthesized_expression
                   (binary_expression
-                    (parenthesized_expression
+                    left: (parenthesized_expression
                       (identifier))
-                    (parenthesized_expression
+                    right: (parenthesized_expression
                       (integer))))))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array
+            name: (identifier)
+            value: (array
               (integer)
               (integer))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table)))
+            name: (identifier)
+            value: (table)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array
+            name: (identifier)
+            value: (array
               (parenthesized_expression
                 (ternary_expression
-                  (parenthesized_expression
+                  condition: (parenthesized_expression
                     (parenthesized_expression
                       (binary_expression
-                        (integer)
-                        (binary_expression
-                          (integer)
-                          (integer)))))
-                  (parenthesized_expression
+                        left: (integer)
+                        right: (binary_expression
+                          left: (integer)
+                          right: (integer)))))
+                  consequence: (parenthesized_expression
                     (parenthesized_expression
                       (integer)))
-                  (parenthesized_expression
+                  alternative: (parenthesized_expression
                     (integer)))))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (binary_expression
-              (parenthesized_expression
+            name: (identifier)
+            value: (binary_expression
+              left: (parenthesized_expression
                 (ternary_expression
-                  (parenthesized_expression
+                  condition: (parenthesized_expression
                     (parenthesized_expression
                       (binary_expression
-                        (integer)
-                        (integer))))
-                  (parenthesized_expression
+                        left: (integer)
+                        right: (integer))))
+                  consequence: (parenthesized_expression
                     (parenthesized_expression
                       (ternary_expression
-                        (parenthesized_expression
+                        condition: (parenthesized_expression
                           (parenthesized_expression
                             (binary_expression
-                              (unary_expression
-                                (integer))
-                              (unary_expression
-                                (integer)))))
-                        (parenthesized_expression
+                              left: (unary_expression
+                                argument: (integer))
+                              right: (unary_expression
+                                argument: (integer)))))
+                        consequence: (parenthesized_expression
                           (integer))
-                        (parenthesized_expression
+                        alternative: (parenthesized_expression
                           (integer)))))
-                  (parenthesized_expression
+                  alternative: (parenthesized_expression
                     (integer))))
-              (integer))))
+              right: (integer))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array
+            name: (identifier)
+            value: (array
               (integer)
               (parenthesized_expression
                 (binary_expression
-                  (slot_access_expression
-                    (identifier)
-                    (integer))
-                  (identifier))))))
+                  left: (slot_access_expression
+                    receiver: (identifier)
+                    key: (integer))
+                  right: (identifier))))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table
+            name: (identifier)
+            value: (table
               (slot
-                (identifier)
-                (unary_expression
-                  (integer)))
+                key: (identifier)
+                value: (unary_expression
+                  argument: (integer)))
               (slot
-                (identifier)
-                (parenthesized_expression
+                key: (identifier)
+                value: (parenthesized_expression
                   (ternary_expression
-                    (parenthesized_expression
+                    condition: (parenthesized_expression
                       (parenthesized_expression
                         (binary_expression
-                          (parenthesized_expression
+                          left: (parenthesized_expression
                             (ternary_expression
-                              (parenthesized_expression
+                              condition: (parenthesized_expression
                                 (parenthesized_expression
                                   (binary_expression
-                                    (parenthesized_expression
+                                    left: (parenthesized_expression
                                       (binary_expression
-                                        (slot_access_expression
-                                          (identifier)
-                                          (integer))
-                                        (integer)))
-                                    (identifier))))
-                              (parenthesized_expression
+                                        left: (slot_access_expression
+                                          receiver: (identifier)
+                                          key: (integer))
+                                        right: (integer)))
+                                    right: (identifier))))
+                              consequence: (parenthesized_expression
                                 (integer))
-                              (parenthesized_expression
+                              alternative: (parenthesized_expression
                                 (integer))))
-                          (parenthesized_expression
+                          right: (parenthesized_expression
                             (binary_expression
-                              (parenthesized_expression
+                              left: (parenthesized_expression
                                 (binary_expression
-                                  (unary_expression
-                                    (integer))
-                                  (parenthesized_expression
+                                  left: (unary_expression
+                                    argument: (integer))
+                                  right: (parenthesized_expression
                                     (ternary_expression
-                                      (parenthesized_expression
+                                      condition: (parenthesized_expression
                                         (parenthesized_expression
                                           (binary_expression
-                                            (parenthesized_expression
+                                            left: (parenthesized_expression
                                               (binary_expression
-                                                (parenthesized_expression
+                                                left: (parenthesized_expression
                                                   (integer))
-                                                (parenthesized_expression
+                                                right: (parenthesized_expression
                                                   (unary_expression
-                                                    (integer)))))
-                                            (parenthesized_expression
+                                                    argument: (integer)))))
+                                            right: (parenthesized_expression
                                               (binary_expression
-                                                (parenthesized_expression
+                                                left: (parenthesized_expression
                                                   (integer))
-                                                (parenthesized_expression
+                                                right: (parenthesized_expression
                                                   (integer)))))))
-                                      (parenthesized_expression
+                                      consequence: (parenthesized_expression
                                         (binary_expression
-                                          (unary_expression
-                                            (integer))
-                                          (integer)))
-                                      (parenthesized_expression
+                                          left: (unary_expression
+                                            argument: (integer))
+                                          right: (integer)))
+                                      alternative: (parenthesized_expression
                                         (binary_expression
-                                          (integer)
-                                          (integer)))))))
-                              (parenthesized_expression
+                                          left: (integer)
+                                          right: (integer)))))))
+                              right: (parenthesized_expression
                                 (integer)))))))
-                    (parenthesized_expression
+                    consequence: (parenthesized_expression
                       (binary_expression
-                        (parenthesized_expression
+                        left: (parenthesized_expression
                           (binary_expression
-                            (slot_access_expression
-                              (identifier)
-                              (string
+                            left: (slot_access_expression
+                              receiver: (identifier)
+                              key: (string
                                 (string_content)))
-                            (parenthesized_expression
+                            right: (parenthesized_expression
                               (binary_expression
-                                (parenthesized_expression
+                                left: (parenthesized_expression
                                   (integer))
-                                (parenthesized_expression
+                                right: (parenthesized_expression
                                   (integer))))))
-                        (parenthesized_expression
+                        right: (parenthesized_expression
                           (ternary_expression
-                            (parenthesized_expression
+                            condition: (parenthesized_expression
                               (parenthesized_expression
                                 (binary_expression
-                                  (parenthesized_expression
+                                  left: (parenthesized_expression
                                     (parenthesized_expression
                                       (ternary_expression
-                                        (parenthesized_expression
+                                        condition: (parenthesized_expression
                                           (parenthesized_expression
                                             (binary_expression
-                                              (integer)
-                                              (integer))))
-                                        (parenthesized_expression
+                                              left: (integer)
+                                              right: (integer))))
+                                        consequence: (parenthesized_expression
                                           (integer))
-                                        (parenthesized_expression
+                                        alternative: (parenthesized_expression
                                           (parenthesized_expression
                                             (binary_expression
-                                              (slot_access_expression
-                                                (identifier)
-                                                (integer))
-                                              (parenthesized_expression
+                                              left: (slot_access_expression
+                                                receiver: (identifier)
+                                                key: (integer))
+                                              right: (parenthesized_expression
                                                 (binary_expression
-                                                  (slot_access_expression
-                                                    (identifier)
-                                                    (string
+                                                  left: (slot_access_expression
+                                                    receiver: (identifier)
+                                                    key: (string
                                                       (string_content)))
-                                                  (integer)))))))))
-                                  (binary_expression
-                                    (binary_expression
-                                      (integer)
-                                      (integer))
-                                    (parenthesized_expression
+                                                  right: (integer)))))))))
+                                  right: (binary_expression
+                                    left: (binary_expression
+                                      left: (integer)
+                                      right: (integer))
+                                    right: (parenthesized_expression
                                       (ternary_expression
-                                        (parenthesized_expression
+                                        condition: (parenthesized_expression
                                           (parenthesized_expression
                                             (binary_expression
-                                              (integer)
-                                              (integer))))
-                                        (parenthesized_expression
+                                              left: (integer)
+                                              right: (integer))))
+                                        consequence: (parenthesized_expression
                                           (integer))
-                                        (parenthesized_expression
+                                        alternative: (parenthesized_expression
                                           (integer))))))))
-                            (parenthesized_expression
+                            consequence: (parenthesized_expression
                               (integer))
-                            (parenthesized_expression
+                            alternative: (parenthesized_expression
                               (parenthesized_expression
                                 (unary_expression
-                                  (integer))))))))
-                    (parenthesized_expression
+                                  argument: (integer))))))))
+                    alternative: (parenthesized_expression
                       (parenthesized_expression
                         (binary_expression
-                          (slot_access_expression
-                            (identifier)
-                            (integer))
-                          (unary_expression
-                            (integer)))))))))))
+                          left: (slot_access_expression
+                            receiver: (identifier)
+                            key: (integer))
+                          right: (unary_expression
+                            argument: (integer)))))))))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array)))
+            name: (identifier)
+            value: (array)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table
+            name: (identifier)
+            value: (table
               (slot
-                (identifier)
-                (integer)))))
+                key: (identifier)
+                value: (integer)))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (lambda_expression
-              (parameters)
-              (integer))))
+            name: (identifier)
+            value: (lambda_expression
+              parameters: (parameters)
+              body: (integer))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (integer)))
+            name: (identifier)
+            value: (integer)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (lambda_expression
-              (parameters)
-              (integer))))
+            name: (identifier)
+            value: (lambda_expression
+              parameters: (parameters)
+              body: (integer))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array)))
+            name: (identifier)
+            value: (array)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (identifier)))
+            name: (identifier)
+            value: (identifier)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (unary_expression
-              (integer))))
+            name: (identifier)
+            value: (unary_expression
+              argument: (integer))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array
+            name: (identifier)
+            value: (array
               (parenthesized_expression
                 (identifier)))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (unary_expression
-              (integer))))
+            name: (identifier)
+            value: (unary_expression
+              argument: (integer))))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (identifier)))
+            name: (identifier)
+            value: (identifier)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table)))
+            name: (identifier)
+            value: (table)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (array)))
+            name: (identifier)
+            value: (array)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table)))
+            name: (identifier)
+            value: (table)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (table)))
+            name: (identifier)
+            value: (table)))
         (local_declaration
           (variable_declaration
-            (identifier)
-            (integer)))
+            name: (identifier)
+            value: (integer)))
         (block
           (local_declaration
             (variable_declaration
-              (identifier)
-              (integer)))
+              name: (identifier)
+              value: (integer)))
           (while_statement
-            (binary_expression
-              (increment_expression
-                (identifier))
-              (unary_expression
-                (integer)))
-            (block
+            condition: (binary_expression
+              left: (increment_expression
+                argument: (identifier))
+              right: (unary_expression
+                argument: (integer)))
+            body: (block
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (parenthesized_expression
+                  name: (identifier)
+                  value: (parenthesized_expression
                     (unary_expression
-                      (integer)))))
+                      argument: (integer)))))
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (integer)))
+                  name: (identifier)
+                  value: (integer)))
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (array)))
+                  name: (identifier)
+                  value: (array)))
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (parenthesized_expression
+                  name: (identifier)
+                  value: (parenthesized_expression
                     (integer))))
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (table
+                  name: (identifier)
+                  value: (table
                     (slot
-                      (identifier)
-                      (identifier))
+                      key: (identifier)
+                      value: (identifier))
                     (slot
-                      (identifier)
-                      (parenthesized_expression
+                      key: (identifier)
+                      value: (parenthesized_expression
                         (binary_expression
-                          (identifier)
-                          (parenthesized_expression
+                          left: (identifier)
+                          right: (parenthesized_expression
                             (binary_expression
-                              (slot_access_expression
-                                (identifier)
-                                (integer))
-                              (binary_expression
-                                (unary_expression
-                                  (integer))
-                                (identifier))))))))))
+                              left: (slot_access_expression
+                                receiver: (identifier)
+                                key: (integer))
+                              right: (binary_expression
+                                left: (unary_expression
+                                  argument: (integer))
+                                right: (identifier))))))))))
               (continue_statement)
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (field_access_expression
-                      (identifier)
-                      (field_identifier)))))
+                      receiver: (identifier)
+                      field: (field_identifier)))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier)))))))
         (block
           (local_declaration
             (variable_declaration
-              (identifier)
-              (parenthesized_expression
+              name: (identifier)
+              value: (parenthesized_expression
                 (binary_expression
-                  (field_access_expression
-                    (identifier)
-                    (field_identifier))
-                  (slot_access_expression
-                    (identifier)
-                    (integer))))))
+                  left: (field_access_expression
+                    receiver: (identifier)
+                    field: (field_identifier))
+                  right: (slot_access_expression
+                    receiver: (identifier)
+                    key: (integer))))))
           (while_statement
-            (binary_expression
-              (increment_expression
-                (identifier))
-              (unary_expression
-                (integer)))
-            (block
+            condition: (binary_expression
+              left: (increment_expression
+                argument: (identifier))
+              right: (unary_expression
+                argument: (integer)))
+            body: (block
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (function_expression
-                    (parameters)
-                    (block
+                  name: (identifier)
+                  value: (function_expression
+                    parameters: (parameters)
+                    body: (block
                       (yield_statement
                         (integer))
                       (yield_statement
@@ -796,389 +796,389 @@ let to_log = function(id, s) { let tp = typeof(s); print($"{id}: "); print(tp ==
                         (integer))))))
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (table)))
+                  name: (identifier)
+                  value: (table)))
               (local_declaration
                 (variable_declaration
-                  (identifier)
-                  (array
+                  name: (identifier)
+                  value: (array
                     (binary_expression
-                      (integer)
-                      (unary_expression
-                        (integer)))
+                      left: (integer)
+                      right: (unary_expression
+                        argument: (integer)))
                     (unary_expression
-                      (integer)))))
+                      argument: (integer)))))
               (foreach_statement
-                (identifier)
-                (identifier)
-                (call_expression
-                  (identifier)
-                  (arguments))
-                (block
+                index: (identifier)
+                value: (identifier)
+                container: (call_expression
+                  callee: (identifier)
+                  arguments: (arguments))
+                body: (block
                   (local_declaration
                     (variable_declaration
-                      (identifier)
-                      (parenthesized_expression
+                      name: (identifier)
+                      value: (parenthesized_expression
                         (binary_expression
-                          (parenthesized_expression
+                          left: (parenthesized_expression
                             (parenthesized_expression
                               (binary_expression
-                                (slot_access_expression
-                                  (identifier)
-                                  (string
+                                left: (slot_access_expression
+                                  receiver: (identifier)
+                                  key: (string
                                     (string_content)))
-                                (parenthesized_expression
+                                right: (parenthesized_expression
                                   (integer)))))
-                          (parenthesized_expression
+                          right: (parenthesized_expression
                             (parenthesized_expression
                               (binary_expression
-                                (parenthesized_expression
+                                left: (parenthesized_expression
                                   (parenthesized_expression
                                     (binary_expression
-                                      (slot_access_expression
-                                        (identifier)
-                                        (integer))
-                                      (unary_expression
-                                        (integer)))))
-                                (parenthesized_expression
+                                      left: (slot_access_expression
+                                        receiver: (identifier)
+                                        key: (integer))
+                                      right: (unary_expression
+                                        argument: (integer)))))
+                                right: (parenthesized_expression
                                   (unary_expression
-                                    (integer))))))))))
+                                    argument: (integer))))))))))
                   (break_statement)
                   (expression_statement
                     (call_expression
-                      (identifier)
-                      (arguments
+                      callee: (identifier)
+                      arguments: (arguments
                         (string
                           (string_content))
                         (integer))))
                   (break_statement)
                   (if_statement
-                    (unary_expression
-                      (integer))
-                    (block
+                    condition: (unary_expression
+                      argument: (integer))
+                    then_branch: (block
                       (local_declaration
                         (variable_declaration
-                          (identifier)
-                          (identifier)))
+                          name: (identifier)
+                          value: (identifier)))
                       (local_declaration
                         (variable_declaration
-                          (identifier)
-                          (function_expression
-                            (identifier)
-                            (parameters
+                          name: (identifier)
+                          value: (function_expression
+                            name: (identifier)
+                            parameters: (parameters
                               (parameter
-                                (identifier))
+                                name: (identifier))
                               (parameter
-                                (identifier))
+                                name: (identifier))
                               (parameter
-                                (identifier)))
-                            (block
+                                name: (identifier)))
+                            body: (block
                               (local_declaration
                                 (variable_declaration
-                                  (identifier)
-                                  (function_expression
-                                    (identifier)
-                                    (parameters)
-                                    (block
+                                  name: (identifier)
+                                  value: (function_expression
+                                    name: (identifier)
+                                    parameters: (parameters)
+                                    body: (block
                                       (local_declaration
                                         (variable_declaration
-                                          (identifier)
-                                          (table
+                                          name: (identifier)
+                                          value: (table
                                             (slot
-                                              (identifier)
-                                              (unary_expression
-                                                (integer)))
+                                              key: (identifier)
+                                              value: (unary_expression
+                                                argument: (integer)))
                                             (slot
-                                              (identifier)
-                                              (integer))
+                                              key: (identifier)
+                                              value: (integer))
                                             (slot
-                                              (identifier)
-                                              (integer)))))
+                                              key: (identifier)
+                                              value: (integer)))))
                                       (local_declaration
                                         (variable_declaration
-                                          (identifier)
-                                          (function_expression
-                                            (identifier)
-                                            (parameters
+                                          name: (identifier)
+                                          value: (function_expression
+                                            name: (identifier)
+                                            parameters: (parameters
                                               (parameter
-                                                (identifier)))
-                                            (block
+                                                name: (identifier)))
+                                            body: (block
                                               (expression_statement
                                                 (call_expression
-                                                  (identifier)
-                                                  (arguments
+                                                  callee: (identifier)
+                                                  arguments: (arguments
                                                     (string
                                                       (string_content))
                                                     (parenthesized_expression
                                                       (ternary_expression
-                                                        (parenthesized_expression
+                                                        condition: (parenthesized_expression
                                                           (parenthesized_expression
                                                             (binary_expression
-                                                              (integer)
-                                                              (integer))))
-                                                        (parenthesized_expression
+                                                              left: (integer)
+                                                              right: (integer))))
+                                                        consequence: (parenthesized_expression
                                                           (unary_expression
-                                                            (integer)))
-                                                        (parenthesized_expression
+                                                            argument: (integer)))
+                                                        alternative: (parenthesized_expression
                                                           (integer)))))))
                                               (expression_statement
                                                 (call_expression
-                                                  (identifier)
-                                                  (arguments
+                                                  callee: (identifier)
+                                                  arguments: (arguments
                                                     (string
                                                       (string_content))
                                                     (integer))))
                                               (expression_statement
                                                 (call_expression
-                                                  (identifier)
-                                                  (arguments
+                                                  callee: (identifier)
+                                                  arguments: (arguments
                                                     (string
                                                       (string_content))
                                                     (binary_expression
-                                                      (integer)
-                                                      (identifier)))))
+                                                      left: (integer)
+                                                      right: (identifier)))))
                                               (try_statement
-                                                (block
+                                                body: (block
                                                   (local_declaration
                                                     (variable_declaration
-                                                      (identifier)
-                                                      (integer)))
+                                                      name: (identifier)
+                                                      value: (integer)))
                                                   (expression_statement
                                                     (call_expression
-                                                      (identifier)
-                                                      (arguments
+                                                      callee: (identifier)
+                                                      arguments: (arguments
                                                         (string
                                                           (string_content))
                                                         (identifier))))
                                                   (expression_statement
                                                     (call_expression
-                                                      (identifier)
-                                                      (arguments
+                                                      callee: (identifier)
+                                                      arguments: (arguments
                                                         (string
                                                           (string_content))
                                                         (unary_expression
-                                                          (integer)))))
+                                                          argument: (integer)))))
                                                   (expression_statement
                                                     (call_expression
-                                                      (identifier)
-                                                      (arguments
+                                                      callee: (identifier)
+                                                      arguments: (arguments
                                                         (string
                                                           (string_content))
                                                         (identifier)))))
                                                 (catch_clause
-                                                  (identifier)
-                                                  (block
+                                                  name: (identifier)
+                                                  body: (block
                                                     (expression_statement
                                                       (call_expression
-                                                        (identifier)
-                                                        (arguments
+                                                        callee: (identifier)
+                                                        arguments: (arguments
                                                           (string
                                                             (string_content))
                                                           (parenthesized_expression
                                                             (binary_expression
-                                                              (parenthesized_expression
+                                                              left: (parenthesized_expression
                                                                 (integer))
-                                                              (parenthesized_expression
+                                                              right: (parenthesized_expression
                                                                 (integer))))))))))))))
                                       (foreach_statement
-                                        (identifier)
-                                        (identifier)
-                                        (identifier)
-                                        (expression_statement
+                                        index: (identifier)
+                                        value: (identifier)
+                                        container: (identifier)
+                                        body: (expression_statement
                                           (call_expression
-                                            (identifier)
-                                            (arguments
+                                            callee: (identifier)
+                                            arguments: (arguments
                                               (integer)))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (identifier))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (identifier))))))))
                               (local_declaration
                                 (variable_declaration
-                                  (identifier)
-                                  (integer)))
+                                  name: (identifier)
+                                  value: (integer)))
                               (local_declaration
                                 (variable_declaration
-                                  (identifier)
-                                  (lambda_expression
-                                    (parameters)
-                                    (parenthesized_expression
+                                  name: (identifier)
+                                  value: (lambda_expression
+                                    parameters: (parameters)
+                                    body: (parenthesized_expression
                                       (binary_expression
-                                        (parenthesized_expression
+                                        left: (parenthesized_expression
                                           (identifier))
-                                        (parenthesized_expression
+                                        right: (parenthesized_expression
                                           (parenthesized_expression
                                             (binary_expression
-                                              (parenthesized_expression
+                                              left: (parenthesized_expression
                                                 (integer))
-                                              (parenthesized_expression
+                                              right: (parenthesized_expression
                                                 (integer))))))))))
                               (local_declaration
                                 (variable_declaration
-                                  (identifier)
-                                  (array
+                                  name: (identifier)
+                                  value: (array
                                     (integer))))
                               (local_declaration
                                 (variable_declaration
-                                  (identifier)
-                                  (parenthesized_expression
+                                  name: (identifier)
+                                  value: (parenthesized_expression
                                     (ternary_expression
-                                      (parenthesized_expression
+                                      condition: (parenthesized_expression
                                         (parenthesized_expression
                                           (binary_expression
-                                            (unary_expression
-                                              (integer))
-                                            (unary_expression
-                                              (integer)))))
-                                      (parenthesized_expression
+                                            left: (unary_expression
+                                              argument: (integer))
+                                            right: (unary_expression
+                                              argument: (integer)))))
+                                      consequence: (parenthesized_expression
                                         (integer))
-                                      (parenthesized_expression
+                                      alternative: (parenthesized_expression
                                         (identifier))))))
                               (local_declaration
                                 (variable_declaration
-                                  (identifier)
-                                  (lambda_expression
-                                    (parameters)
-                                    (identifier))))
+                                  name: (identifier)
+                                  value: (lambda_expression
+                                    parameters: (parameters)
+                                    body: (identifier))))
                               (local_declaration
                                 (variable_declaration
-                                  (identifier)
-                                  (unary_expression
-                                    (integer))))
+                                  name: (identifier)
+                                  value: (unary_expression
+                                    argument: (integer))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments)))
+                                  callee: (identifier)
+                                  arguments: (arguments)))
                               (block
                                 (local_declaration
                                   (variable_declaration
-                                    (identifier)
-                                    (parenthesized_expression
+                                    name: (identifier)
+                                    value: (parenthesized_expression
                                       (binary_expression
-                                        (parenthesized_expression
+                                        left: (parenthesized_expression
                                           (unary_expression
-                                            (integer)))
-                                        (parenthesized_expression
+                                            argument: (integer)))
+                                        right: (parenthesized_expression
                                           (call_expression
-                                            (identifier)
-                                            (arguments)))))))
+                                            callee: (identifier)
+                                            arguments: (arguments)))))))
                                 (while_statement
-                                  (binary_expression
-                                    (increment_expression
-                                      (identifier))
-                                    (parenthesized_expression
+                                  condition: (binary_expression
+                                    left: (increment_expression
+                                      argument: (identifier))
+                                    right: (parenthesized_expression
                                       (binary_expression
-                                        (slot_access_expression
-                                          (identifier)
-                                          (integer))
-                                        (call_expression
-                                          (identifier)
-                                          (arguments)))))
-                                  (block
+                                        left: (slot_access_expression
+                                          receiver: (identifier)
+                                          key: (integer))
+                                        right: (call_expression
+                                          callee: (identifier)
+                                          arguments: (arguments)))))
+                                  body: (block
                                     (local_declaration
                                       (variable_declaration
-                                        (identifier)
-                                        (array)))
+                                        name: (identifier)
+                                        value: (array)))
                                     (expression_statement
                                       (call_expression
-                                        (identifier)
-                                        (arguments
+                                        callee: (identifier)
+                                        arguments: (arguments
                                           (string
                                             (string_content))
                                           (integer))))
                                     (expression_statement
                                       (call_expression
-                                        (identifier)
-                                        (arguments
+                                        callee: (identifier)
+                                        arguments: (arguments
                                           (string
                                             (string_content))
                                           (parenthesized_expression
                                             (binary_expression
-                                              (slot_access_expression
-                                                (identifier)
-                                                (integer))
-                                              (parenthesized_expression
+                                              left: (slot_access_expression
+                                                receiver: (identifier)
+                                                key: (integer))
+                                              right: (parenthesized_expression
                                                 (unary_expression
-                                                  (integer))))))))
+                                                  argument: (integer))))))))
                                     (expression_statement
                                       (call_expression
-                                        (identifier)
-                                        (arguments
+                                        callee: (identifier)
+                                        arguments: (arguments
                                           (string
                                             (string_content))
                                           (identifier)))))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (binary_expression
-                                      (unary_expression
-                                        (integer))
-                                      (identifier)))))
+                                      left: (unary_expression
+                                        argument: (integer))
+                                      right: (identifier)))))
                               (if_statement
-                                (identifier)
-                                (expression_statement
+                                condition: (identifier)
+                                then_branch: (expression_statement
                                   (call_expression
-                                    (identifier)
-                                    (arguments
+                                    callee: (identifier)
+                                    arguments: (arguments
                                       (string
                                         (string_content))
                                       (integer))))
-                                (block
+                                else_branch: (block
                                   (local_declaration
                                     (variable_declaration
-                                      (identifier)
-                                      (lambda_expression
-                                        (parameters)
-                                        (integer))))
+                                      name: (identifier)
+                                      value: (lambda_expression
+                                        parameters: (parameters)
+                                        body: (integer))))
                                   (expression_statement
                                     (call_expression
-                                      (identifier)
-                                      (arguments
+                                      callee: (identifier)
+                                      arguments: (arguments
                                         (string
                                           (string_content))
                                         (identifier))))
                                   (try_statement
-                                    (block
+                                    body: (block
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (integer))))
                                       (expression_statement
                                         (binary_expression
-                                          (integer)
-                                          (integer))))
+                                          left: (integer)
+                                          right: (integer))))
                                     (catch_clause
-                                      (identifier)
-                                      (block
+                                      name: (identifier)
+                                      body: (block
                                         (local_declaration
                                           (variable_declaration
-                                            (identifier)
-                                            (function_expression
-                                              (parameters)
-                                              (block
+                                            name: (identifier)
+                                            value: (function_expression
+                                              parameters: (parameters)
+                                              body: (block
                                                 (return_statement
                                                   (integer))
                                                 (yield_statement
@@ -1187,1005 +1187,1005 @@ let to_log = function(id, s) { let tp = typeof(s); print($"{id}: "); print(tp ==
                                                   (integer))))))
                                         (local_declaration
                                           (variable_declaration
-                                            (identifier)
-                                            (function_expression
-                                              (identifier)
-                                              (parameters)
-                                              (block
+                                            name: (identifier)
+                                            value: (function_expression
+                                              name: (identifier)
+                                              parameters: (parameters)
+                                              body: (block
                                                 (local_declaration
                                                   (variable_declaration
-                                                    (identifier)
-                                                    (parenthesized_expression
+                                                    name: (identifier)
+                                                    value: (parenthesized_expression
                                                       (ternary_expression
-                                                        (parenthesized_expression
+                                                        condition: (parenthesized_expression
                                                           (parenthesized_expression
                                                             (binary_expression
-                                                              (integer)
-                                                              (unary_expression
-                                                                (integer)))))
-                                                        (parenthesized_expression
+                                                              left: (integer)
+                                                              right: (unary_expression
+                                                                argument: (integer)))))
+                                                        consequence: (parenthesized_expression
                                                           (unary_expression
-                                                            (integer)))
-                                                        (parenthesized_expression
+                                                            argument: (integer)))
+                                                        alternative: (parenthesized_expression
                                                           (integer))))))
                                                 (local_declaration
                                                   (variable_declaration
-                                                    (identifier)
-                                                    (function_expression
-                                                      (parameters)
-                                                      (block))))
+                                                    name: (identifier)
+                                                    value: (function_expression
+                                                      parameters: (parameters)
+                                                      body: (block))))
                                                 (for_statement
-                                                  (local_declaration
+                                                  initializer: (local_declaration
                                                     (variable_declaration
-                                                      (identifier)
-                                                      (integer)))
-                                                  (binary_expression
-                                                    (identifier)
-                                                    (identifier))
-                                                  (increment_expression
-                                                    (identifier))
-                                                  (block
+                                                      name: (identifier)
+                                                      value: (integer)))
+                                                  condition: (binary_expression
+                                                    left: (identifier)
+                                                    right: (identifier))
+                                                  step: (increment_expression
+                                                    argument: (identifier))
+                                                  body: (block
                                                     (local_declaration
                                                       (variable_declaration
-                                                        (identifier)
-                                                        (function_expression
-                                                          (identifier)
-                                                          (parameters)
-                                                          (block
+                                                        name: (identifier)
+                                                        value: (function_expression
+                                                          name: (identifier)
+                                                          parameters: (parameters)
+                                                          body: (block
                                                             (local_declaration
                                                               (variable_declaration
-                                                                (identifier)
-                                                                (integer)))
+                                                                name: (identifier)
+                                                                value: (integer)))
                                                             (expression_statement
                                                               (call_expression
-                                                                (identifier)
-                                                                (arguments
+                                                                callee: (identifier)
+                                                                arguments: (arguments
                                                                   (string
                                                                     (string_content))
                                                                   (identifier))))
                                                             (expression_statement
                                                               (call_expression
-                                                                (identifier)
-                                                                (arguments
+                                                                callee: (identifier)
+                                                                arguments: (arguments
                                                                   (string
                                                                     (string_content))
                                                                   (integer))))
                                                             (expression_statement
                                                               (call_expression
-                                                                (identifier)
-                                                                (arguments
+                                                                callee: (identifier)
+                                                                arguments: (arguments
                                                                   (string
                                                                     (string_content))
                                                                   (identifier))))))))
                                                     (expression_statement
                                                       (call_expression
-                                                        (identifier)
-                                                        (arguments
+                                                        callee: (identifier)
+                                                        arguments: (arguments
                                                           (string
                                                             (string_content))
                                                           (unary_expression
-                                                            (integer)))))
+                                                            argument: (integer)))))
                                                     (expression_statement
                                                       (call_expression
-                                                        (identifier)
-                                                        (arguments)))
+                                                        callee: (identifier)
+                                                        arguments: (arguments)))
                                                     (expression_statement
                                                       (call_expression
-                                                        (identifier)
-                                                        (arguments
+                                                        callee: (identifier)
+                                                        arguments: (arguments
                                                           (string
                                                             (string_content))
                                                           (identifier))))))
                                                 (expression_statement
                                                   (call_expression
-                                                    (identifier)
-                                                    (arguments
+                                                    callee: (identifier)
+                                                    arguments: (arguments
                                                       (string
                                                         (string_content))
                                                       (integer))))
                                                 (foreach_statement
-                                                  (identifier)
-                                                  (identifier)
-                                                  (call_expression
-                                                    (identifier)
-                                                    (arguments))
-                                                  (block
+                                                  index: (identifier)
+                                                  value: (identifier)
+                                                  container: (call_expression
+                                                    callee: (identifier)
+                                                    arguments: (arguments))
+                                                  body: (block
                                                     (if_statement
-                                                      (unary_expression
-                                                        (parenthesized_expression
+                                                      condition: (unary_expression
+                                                        argument: (parenthesized_expression
                                                           (parenthesized_expression
                                                             (binary_expression
-                                                              (integer)
-                                                              (integer)))))
-                                                      (block
+                                                              left: (integer)
+                                                              right: (integer)))))
+                                                      then_branch: (block
                                                         (expression_statement
                                                           (call_expression
-                                                            (identifier)
-                                                            (arguments
+                                                            callee: (identifier)
+                                                            arguments: (arguments
                                                               (string
                                                                 (string_content))
                                                               (unary_expression
-                                                                (integer)))))))
+                                                                argument: (integer)))))))
                                                     (expression_statement
                                                       (call_expression
-                                                        (identifier)
-                                                        (arguments
+                                                        callee: (identifier)
+                                                        arguments: (arguments
                                                           (string
                                                             (string_content))
                                                           (unary_expression
-                                                            (integer)))))
+                                                            argument: (integer)))))
                                                     (if_statement
-                                                      (unary_expression
-                                                        (parenthesized_expression
+                                                      condition: (unary_expression
+                                                        argument: (parenthesized_expression
                                                           (parenthesized_expression
                                                             (binary_expression
-                                                              (unary_expression
-                                                                (integer))
-                                                              (integer)))))
-                                                      (block
+                                                              left: (unary_expression
+                                                                argument: (integer))
+                                                              right: (integer)))))
+                                                      then_branch: (block
                                                         (expression_statement
                                                           (call_expression
-                                                            (identifier)
-                                                            (arguments
+                                                            callee: (identifier)
+                                                            arguments: (arguments
                                                               (string
                                                                 (string_content))
                                                               (unary_expression
-                                                                (integer)))))
+                                                                argument: (integer)))))
                                                         (expression_statement
                                                           (call_expression
-                                                            (identifier)
-                                                            (arguments
+                                                            callee: (identifier)
+                                                            arguments: (arguments
                                                               (string
                                                                 (string_content))
                                                               (parenthesized_expression
                                                                 (ternary_expression
-                                                                  (parenthesized_expression
+                                                                  condition: (parenthesized_expression
                                                                     (parenthesized_expression
                                                                       (binary_expression
-                                                                        (integer)
-                                                                        (integer))))
-                                                                  (parenthesized_expression
+                                                                        left: (integer)
+                                                                        right: (integer))))
+                                                                  consequence: (parenthesized_expression
                                                                     (unary_expression
-                                                                      (integer)))
-                                                                  (parenthesized_expression
+                                                                      argument: (integer)))
+                                                                  alternative: (parenthesized_expression
                                                                     (integer)))))))
                                                         (expression_statement
                                                           (call_expression
-                                                            (identifier)
-                                                            (arguments
+                                                            callee: (identifier)
+                                                            arguments: (arguments
                                                               (string
                                                                 (string_content))
                                                               (integer))))
                                                         (expression_statement
                                                           (call_expression
-                                                            (identifier)
-                                                            (arguments
+                                                            callee: (identifier)
+                                                            arguments: (arguments
                                                               (string
                                                                 (string_content))
                                                               (integer))))
                                                         (expression_statement
                                                           (call_expression
-                                                            (identifier)
-                                                            (arguments
+                                                            callee: (identifier)
+                                                            arguments: (arguments
                                                               (string
                                                                 (string_content))
                                                               (integer))))))
                                                     (expression_statement
                                                       (call_expression
-                                                        (identifier)
-                                                        (arguments
+                                                        callee: (identifier)
+                                                        arguments: (arguments
                                                           (string
                                                             (string_content))
                                                           (integer))))
                                                     (expression_statement
                                                       (call_expression
-                                                        (identifier)
-                                                        (arguments
+                                                        callee: (identifier)
+                                                        arguments: (arguments
                                                           (string
                                                             (string_content))
                                                           (unary_expression
-                                                            (integer)))))))
+                                                            argument: (integer)))))))
                                                 (expression_statement
                                                   (call_expression
-                                                    (identifier)
-                                                    (arguments
+                                                    callee: (identifier)
+                                                    arguments: (arguments
                                                       (string
                                                         (string_content))
                                                       (integer))))
                                                 (expression_statement
                                                   (call_expression
-                                                    (identifier)
-                                                    (arguments
+                                                    callee: (identifier)
+                                                    arguments: (arguments
                                                       (string
                                                         (string_content))
                                                       (identifier))))
                                                 (expression_statement
                                                   (call_expression
-                                                    (identifier)
-                                                    (arguments
+                                                    callee: (identifier)
+                                                    arguments: (arguments
                                                       (string
                                                         (string_content))
                                                       (identifier))))))))
                                         (foreach_statement
-                                          (identifier)
-                                          (identifier)
-                                          (call_expression
-                                            (identifier)
-                                            (arguments))
-                                          (block
+                                          index: (identifier)
+                                          value: (identifier)
+                                          container: (call_expression
+                                            callee: (identifier)
+                                            arguments: (arguments))
+                                          body: (block
                                             (expression_statement
                                               (call_expression
-                                                (identifier)
-                                                (arguments
+                                                callee: (identifier)
+                                                arguments: (arguments
                                                   (string
                                                     (string_content))
                                                   (identifier))))
                                             (expression_statement
                                               (call_expression
-                                                (identifier)
-                                                (arguments
+                                                callee: (identifier)
+                                                arguments: (arguments
                                                   (string
                                                     (string_content))
                                                   (integer))))
                                             (expression_statement
                                               (call_expression
-                                                (identifier)
-                                                (arguments
+                                                callee: (identifier)
+                                                arguments: (arguments
                                                   (string
                                                     (string_content))
                                                   (parenthesized_expression
                                                     (binary_expression
-                                                      (parenthesized_expression
+                                                      left: (parenthesized_expression
                                                         (integer))
-                                                      (parenthesized_expression
+                                                      right: (parenthesized_expression
                                                         (unary_expression
-                                                          (integer))))))))))
+                                                          argument: (integer))))))))))
                                         (expression_statement
                                           (call_expression
-                                            (identifier)
-                                            (arguments)))
+                                            callee: (identifier)
+                                            arguments: (arguments)))
                                         (expression_statement
                                           (call_expression
-                                            (identifier)
-                                            (arguments
+                                            callee: (identifier)
+                                            arguments: (arguments
                                               (string
                                                 (string_content))
                                               (identifier))))
                                         (expression_statement
                                           (call_expression
-                                            (identifier)
-                                            (arguments
+                                            callee: (identifier)
+                                            arguments: (arguments
                                               (string
                                                 (string_content))
                                               (identifier)))))))
                                   (for_statement
-                                    (local_declaration
+                                    initializer: (local_declaration
                                       (variable_declaration
-                                        (identifier)
-                                        (integer)))
-                                    (binary_expression
-                                      (identifier)
-                                      (integer))
-                                    (increment_expression
-                                      (identifier))
-                                    (block
+                                        name: (identifier)
+                                        value: (integer)))
+                                    condition: (binary_expression
+                                      left: (identifier)
+                                      right: (integer))
+                                    step: (increment_expression
+                                      argument: (identifier))
+                                    body: (block
                                       (local_declaration
                                         (variable_declaration
-                                          (identifier)
-                                          (table
+                                          name: (identifier)
+                                          value: (table
                                             (slot
-                                              (identifier)
-                                              (unary_expression
-                                                (integer)))
+                                              key: (identifier)
+                                              value: (unary_expression
+                                                argument: (integer)))
                                             (slot
-                                              (identifier)
-                                              (integer)))))
+                                              key: (identifier)
+                                              value: (integer)))))
                                       (local_declaration
                                         (variable_declaration
-                                          (identifier)
-                                          (lambda_expression
-                                            (parameters)
-                                            (integer))))
+                                          name: (identifier)
+                                          value: (lambda_expression
+                                            parameters: (parameters)
+                                            body: (integer))))
                                       (local_declaration
                                         (variable_declaration
-                                          (identifier)
-                                          (array
+                                          name: (identifier)
+                                          value: (array
                                             (unary_expression
-                                              (integer)))))
+                                              argument: (integer)))))
                                       (local_declaration
                                         (variable_declaration
-                                          (identifier)
-                                          (integer)))
+                                          name: (identifier)
+                                          value: (integer)))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (integer))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (integer))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (binary_expression
-                                              (parenthesized_expression
+                                              left: (parenthesized_expression
                                                 (binary_expression
-                                                  (parenthesized_expression
+                                                  left: (parenthesized_expression
                                                     (parenthesized_expression
                                                       (field_access_expression
-                                                        (identifier)
-                                                        (field_identifier))))
-                                                  (parenthesized_expression
+                                                        receiver: (identifier)
+                                                        field: (field_identifier))))
+                                                  right: (parenthesized_expression
                                                     (call_expression
-                                                      (identifier)
-                                                      (arguments)))))
-                                              (parenthesized_expression
+                                                      callee: (identifier)
+                                                      arguments: (arguments)))))
+                                              right: (parenthesized_expression
                                                 (ternary_expression
-                                                  (parenthesized_expression
+                                                  condition: (parenthesized_expression
                                                     (parenthesized_expression
                                                       (binary_expression
-                                                        (integer)
-                                                        (integer))))
-                                                  (parenthesized_expression
+                                                        left: (integer)
+                                                        right: (integer))))
+                                                  consequence: (parenthesized_expression
                                                     (integer))
-                                                  (parenthesized_expression
+                                                  alternative: (parenthesized_expression
                                                     (integer))))))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (parenthesized_expression
                                               (ternary_expression
-                                                (parenthesized_expression
+                                                condition: (parenthesized_expression
                                                   (parenthesized_expression
                                                     (binary_expression
-                                                      (slot_access_expression
-                                                        (identifier)
-                                                        (integer))
-                                                      (integer))))
-                                                (parenthesized_expression
+                                                      left: (slot_access_expression
+                                                        receiver: (identifier)
+                                                        key: (integer))
+                                                      right: (integer))))
+                                                consequence: (parenthesized_expression
                                                   (parenthesized_expression
                                                     (binary_expression
-                                                      (parenthesized_expression
+                                                      left: (parenthesized_expression
                                                         (binary_expression
-                                                          (integer)
-                                                          (integer)))
-                                                      (parenthesized_expression
+                                                          left: (integer)
+                                                          right: (integer)))
+                                                      right: (parenthesized_expression
                                                         (identifier)))))
-                                                (parenthesized_expression
+                                                alternative: (parenthesized_expression
                                                   (integer)))))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (identifier))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (identifier))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (identifier))))
                                       (expression_statement
                                         (call_expression
-                                          (identifier)
-                                          (arguments
+                                          callee: (identifier)
+                                          arguments: (arguments
                                             (string
                                               (string_content))
                                             (identifier))))))
                                   (expression_statement
                                     (call_expression
-                                      (identifier)
-                                      (arguments
+                                      callee: (identifier)
+                                      arguments: (arguments
                                         (string
                                           (string_content))
                                         (call_expression
-                                          (identifier)
-                                          (arguments)))))
+                                          callee: (identifier)
+                                          arguments: (arguments)))))
                                   (expression_statement
                                     (call_expression
-                                      (identifier)
-                                      (arguments
+                                      callee: (identifier)
+                                      arguments: (arguments
                                         (string
                                           (string_content))
                                         (identifier))))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))
                               (expression_statement
                                 (call_expression
-                                  (identifier)
-                                  (arguments
+                                  callee: (identifier)
+                                  arguments: (arguments
                                     (string
                                       (string_content))
                                     (identifier))))))))
                       (expression_statement
                         (call_expression
-                          (identifier)
-                          (arguments
+                          callee: (identifier)
+                          arguments: (arguments
                             (integer)
                             (parenthesized_expression
                               (binary_expression
-                                (parenthesized_expression
+                                left: (parenthesized_expression
                                   (identifier))
-                                (parenthesized_expression
+                                right: (parenthesized_expression
                                   (identifier))))
                             (parenthesized_expression
                               (integer)))))
                       (expression_statement
                         (call_expression
-                          (identifier)
-                          (arguments
+                          callee: (identifier)
+                          arguments: (arguments
                             (string
                               (string_content))
                             (integer))))
                       (expression_statement
                         (call_expression
-                          (identifier)
-                          (arguments
+                          callee: (identifier)
+                          arguments: (arguments
                             (string
                               (string_content))
                             (identifier))))
                       (expression_statement
                         (call_expression
-                          (identifier)
-                          (arguments
+                          callee: (identifier)
+                          arguments: (arguments
                             (string
                               (string_content))
                             (identifier))))))
                   (expression_statement
                     (call_expression
-                      (identifier)
-                      (arguments
+                      callee: (identifier)
+                      arguments: (arguments
                         (string
                           (string_content))
                         (identifier))))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier))))
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (identifier)))))))
         (block
           (local_declaration
             (variable_declaration
-              (identifier)
-              (binary_expression
-                (parenthesized_expression
+              name: (identifier)
+              value: (binary_expression
+                left: (parenthesized_expression
                   (ternary_expression
-                    (parenthesized_expression
+                    condition: (parenthesized_expression
                       (parenthesized_expression
                         (binary_expression
-                          (integer)
-                          (parenthesized_expression
+                          left: (integer)
+                          right: (parenthesized_expression
                             (binary_expression
-                              (field_access_expression
-                                (identifier)
-                                (field_identifier))
-                              (integer))))))
-                    (parenthesized_expression
+                              left: (field_access_expression
+                                receiver: (identifier)
+                                field: (field_identifier))
+                              right: (integer))))))
+                    consequence: (parenthesized_expression
                       (parenthesized_expression
                         (binary_expression
-                          (slot_access_expression
-                            (identifier)
-                            (string
+                          left: (slot_access_expression
+                            receiver: (identifier)
+                            key: (string
                               (string_content)))
-                          (integer))))
-                    (parenthesized_expression
+                          right: (integer))))
+                    alternative: (parenthesized_expression
                       (parenthesized_expression
                         (binary_expression
-                          (parenthesized_expression
+                          left: (parenthesized_expression
                             (unary_expression
-                              (integer)))
-                          (parenthesized_expression
+                              argument: (integer)))
+                          right: (parenthesized_expression
                             (parenthesized_expression
                               (binary_expression
-                                (binary_expression
-                                  (parenthesized_expression
+                                left: (binary_expression
+                                  left: (parenthesized_expression
                                     (binary_expression
-                                      (slot_access_expression
-                                        (identifier)
-                                        (string
+                                      left: (slot_access_expression
+                                        receiver: (identifier)
+                                        key: (string
                                           (string_content)))
-                                      (parenthesized_expression
+                                      right: (parenthesized_expression
                                         (binary_expression
-                                          (parenthesized_expression
+                                          left: (parenthesized_expression
                                             (integer))
-                                          (parenthesized_expression
+                                          right: (parenthesized_expression
                                             (unary_expression
-                                              (integer)))))))
-                                  (parenthesized_expression
+                                              argument: (integer)))))))
+                                  right: (parenthesized_expression
                                     (binary_expression
-                                      (slot_access_expression
-                                        (identifier)
-                                        (integer))
-                                      (parenthesized_expression
+                                      left: (slot_access_expression
+                                        receiver: (identifier)
+                                        key: (integer))
+                                      right: (parenthesized_expression
                                         (binary_expression
-                                          (slot_access_expression
-                                            (identifier)
-                                            (string
+                                          left: (slot_access_expression
+                                            receiver: (identifier)
+                                            key: (string
                                               (string_content)))
-                                          (parenthesized_expression
+                                          right: (parenthesized_expression
                                             (ternary_expression
-                                              (parenthesized_expression
+                                              condition: (parenthesized_expression
                                                 (parenthesized_expression
                                                   (binary_expression
-                                                    (identifier)
-                                                    (unary_expression
-                                                      (integer)))))
-                                              (parenthesized_expression
+                                                    left: (identifier)
+                                                    right: (unary_expression
+                                                      argument: (integer)))))
+                                              consequence: (parenthesized_expression
                                                 (unary_expression
-                                                  (integer)))
-                                              (parenthesized_expression
+                                                  argument: (integer)))
+                                              alternative: (parenthesized_expression
                                                 (parenthesized_expression
                                                   (binary_expression
-                                                    (parenthesized_expression
+                                                    left: (parenthesized_expression
                                                       (integer))
-                                                    (parenthesized_expression
+                                                    right: (parenthesized_expression
                                                       (integer))))))))))))
-                                (call_expression
-                                  (identifier)
-                                  (arguments))))))))))
-                (parenthesized_expression
+                                right: (call_expression
+                                  callee: (identifier)
+                                  arguments: (arguments))))))))))
+                right: (parenthesized_expression
                   (ternary_expression
-                    (parenthesized_expression
+                    condition: (parenthesized_expression
                       (parenthesized_expression
                         (binary_expression
-                          (identifier)
-                          (identifier))))
-                    (parenthesized_expression
+                          left: (identifier)
+                          right: (identifier))))
+                    consequence: (parenthesized_expression
                       (parenthesized_expression
                         (ternary_expression
-                          (parenthesized_expression
+                          condition: (parenthesized_expression
                             (parenthesized_expression
                               (binary_expression
-                                (call_expression
-                                  (identifier)
-                                  (arguments))
-                                (parenthesized_expression
+                                left: (call_expression
+                                  callee: (identifier)
+                                  arguments: (arguments))
+                                right: (parenthesized_expression
                                   (ternary_expression
-                                    (parenthesized_expression
+                                    condition: (parenthesized_expression
                                       (parenthesized_expression
                                         (binary_expression
-                                          (unary_expression
-                                            (integer))
-                                          (unary_expression
-                                            (integer)))))
-                                    (parenthesized_expression
+                                          left: (unary_expression
+                                            argument: (integer))
+                                          right: (unary_expression
+                                            argument: (integer)))))
+                                    consequence: (parenthesized_expression
                                       (integer))
-                                    (parenthesized_expression
+                                    alternative: (parenthesized_expression
                                       (parenthesized_expression
                                         (binary_expression
-                                          (slot_access_expression
-                                            (identifier)
-                                            (integer))
-                                          (identifier)))))))))
-                          (parenthesized_expression
+                                          left: (slot_access_expression
+                                            receiver: (identifier)
+                                            key: (integer))
+                                          right: (identifier)))))))))
+                          consequence: (parenthesized_expression
                             (unary_expression
-                              (integer)))
-                          (parenthesized_expression
+                              argument: (integer)))
+                          alternative: (parenthesized_expression
                             (binary_expression
-                              (identifier)
-                              (parenthesized_expression
+                              left: (identifier)
+                              right: (parenthesized_expression
                                 (binary_expression
-                                  (slot_access_expression
-                                    (identifier)
-                                    (integer))
-                                  (identifier))))))))
-                    (parenthesized_expression
+                                  left: (slot_access_expression
+                                    receiver: (identifier)
+                                    key: (integer))
+                                  right: (identifier))))))))
+                    alternative: (parenthesized_expression
                       (unary_expression
-                        (integer))))))))
+                        argument: (integer))))))))
           (do_while_statement
-            (expression_statement
+            body: (expression_statement
               (call_expression
-                (identifier)
-                (arguments
+                callee: (identifier)
+                arguments: (arguments
                   (string
                     (string_content))
                   (integer))))
-            (binary_expression
-              (increment_expression
-                (identifier))
-              (parenthesized_expression
+            condition: (binary_expression
+              left: (increment_expression
+                argument: (identifier))
+              right: (parenthesized_expression
                 (binary_expression
-                  (slot_access_expression
-                    (identifier)
-                    (string
+                  left: (slot_access_expression
+                    receiver: (identifier)
+                    key: (string
                       (string_content)))
-                  (parenthesized_expression
+                  right: (parenthesized_expression
                     (binary_expression
-                      (parenthesized_expression
+                      left: (parenthesized_expression
                         (binary_expression
-                          (binary_expression
-                            (integer)
-                            (parenthesized_expression
+                          left: (binary_expression
+                            left: (integer)
+                            right: (parenthesized_expression
                               (ternary_expression
-                                (parenthesized_expression
+                                condition: (parenthesized_expression
                                   (parenthesized_expression
                                     (binary_expression
-                                      (integer)
-                                      (parenthesized_expression
+                                      left: (integer)
+                                      right: (parenthesized_expression
                                         (binary_expression
-                                          (slot_access_expression
-                                            (identifier)
-                                            (integer))
-                                          (integer))))))
-                                (parenthesized_expression
+                                          left: (slot_access_expression
+                                            receiver: (identifier)
+                                            key: (integer))
+                                          right: (integer))))))
+                                consequence: (parenthesized_expression
                                   (unary_expression
-                                    (integer)))
-                                (parenthesized_expression
+                                    argument: (integer)))
+                                alternative: (parenthesized_expression
                                   (integer)))))
-                          (parenthesized_expression
+                          right: (parenthesized_expression
                             (ternary_expression
-                              (parenthesized_expression
+                              condition: (parenthesized_expression
                                 (parenthesized_expression
                                   (binary_expression
-                                    (integer)
-                                    (parenthesized_expression
+                                    left: (integer)
+                                    right: (parenthesized_expression
                                       (ternary_expression
-                                        (parenthesized_expression
+                                        condition: (parenthesized_expression
                                           (parenthesized_expression
                                             (binary_expression
-                                              (parenthesized_expression
+                                              left: (parenthesized_expression
                                                 (binary_expression
-                                                  (field_access_expression
-                                                    (identifier)
-                                                    (field_identifier))
-                                                  (unary_expression
-                                                    (integer))))
-                                              (parenthesized_expression
+                                                  left: (field_access_expression
+                                                    receiver: (identifier)
+                                                    field: (field_identifier))
+                                                  right: (unary_expression
+                                                    argument: (integer))))
+                                              right: (parenthesized_expression
                                                 (binary_expression
-                                                  (slot_access_expression
-                                                    (identifier)
-                                                    (string
+                                                  left: (slot_access_expression
+                                                    receiver: (identifier)
+                                                    key: (string
                                                       (string_content)))
-                                                  (unary_expression
-                                                    (integer)))))))
-                                        (parenthesized_expression
+                                                  right: (unary_expression
+                                                    argument: (integer)))))))
+                                        consequence: (parenthesized_expression
                                           (integer))
-                                        (parenthesized_expression
+                                        alternative: (parenthesized_expression
                                           (integer)))))))
-                              (parenthesized_expression
+                              consequence: (parenthesized_expression
                                 (integer))
-                              (parenthesized_expression
+                              alternative: (parenthesized_expression
                                 (integer))))))
-                      (parenthesized_expression
+                      right: (parenthesized_expression
                         (integer)))))))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (unary_expression
-                (integer)))))
+                argument: (integer)))))
         (block
           (local_declaration
             (variable_declaration
-              (identifier)
-              (parenthesized_expression
+              name: (identifier)
+              value: (parenthesized_expression
                 (ternary_expression
-                  (parenthesized_expression
+                  condition: (parenthesized_expression
                     (parenthesized_expression
                       (binary_expression
-                        (integer)
-                        (parenthesized_expression
+                        left: (integer)
+                        right: (parenthesized_expression
                           (binary_expression
-                            (parenthesized_expression
+                            left: (parenthesized_expression
                               (binary_expression
-                                (parenthesized_expression
+                                left: (parenthesized_expression
                                   (identifier))
-                                (integer)))
-                            (parenthesized_expression
+                                right: (integer)))
+                            right: (parenthesized_expression
                               (unary_expression
-                                (integer))))))))
-                  (parenthesized_expression
+                                argument: (integer))))))))
+                  consequence: (parenthesized_expression
                     (unary_expression
-                      (integer)))
-                  (parenthesized_expression
+                      argument: (integer)))
+                  alternative: (parenthesized_expression
                     (integer))))))
           (while_statement
-            (binary_expression
-              (increment_expression
-                (identifier))
-              (integer))
-            (block
+            condition: (binary_expression
+              left: (increment_expression
+                argument: (identifier))
+              right: (integer))
+            body: (block
               (expression_statement
                 (call_expression
-                  (identifier)
-                  (arguments
+                  callee: (identifier)
+                  arguments: (arguments
                     (string
                       (string_content))
                     (integer)))))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))
               (identifier))))))
     (catch_clause
-      (identifier)
-      (block
+      name: (identifier)
+      body: (block
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (identifier))))))))

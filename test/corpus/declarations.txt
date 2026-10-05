@@ -13,41 +13,41 @@ local [h i] = j
 (source_file
   (local_declaration
     (variable_declaration
-      (identifier))
+      name: (identifier))
     (variable_declaration
-      (identifier)
-      (integer))
+      name: (identifier)
+      value: (integer))
     (variable_declaration
-      (identifier)
-      (type_annotation
+      name: (identifier)
+      type: (type_annotation
         (type)
         (type))
-      (integer)))
+      value: (integer)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (type_annotation
+      name: (identifier)
+      type: (type_annotation
         (type)
         (type))
-      (integer)))
+      value: (integer)))
   (local_declaration
-    (table_pattern
+    pattern: (table_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type))
-        (string
+        default: (string
           (string_content))))
-    (identifier))
+    value: (identifier))
   (local_declaration
-    (array_pattern
+    pattern: (array_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)))
-    (identifier)))
+        name: (identifier)))
+    value: (identifier)))
 
 ================================================================================
 Function declarations
@@ -65,51 +65,51 @@ let function [nodiscard] j(x) { return x }
 
 (source_file
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type))
-        (integer))
+        default: (integer))
       (parameter
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier))))
+            name: (identifier))))
       (parameter
-        (identifier)
-        (integer)))
-    (type_annotation
+        name: (identifier)
+        default: (integer)))
+    return_type: (type_annotation
       (type)
       (type))
-    (block
+    body: (block
       (return_statement
         (null))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (vararg_parameter
-        (type_annotation
+        type: (type_annotation
           (type))))
-    (block))
+    body: (block))
   (function_declaration
     (function_attributes)
-    (identifier)
-    (parameters)
-    (block))
+    name: (identifier)
+    parameters: (parameters)
+    body: (block))
   (local_declaration
-    (identifier)
-    (parameters)
-    (block))
+    name: (identifier)
+    parameters: (parameters)
+    body: (block))
   (local_declaration
     (function_attributes)
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)))
-    (block
+        name: (identifier)))
+    body: (block
       (return_statement
         (identifier)))))
 
@@ -137,57 +137,57 @@ local class Local {}
 
 (source_file
   (class_declaration
-    (identifier)
-    (class_body))
+    name: (identifier)
+    body: (class_body))
   (class_declaration
-    (identifier)
-    (identifier)
-    (class_body
+    name: (identifier)
+    base: (identifier)
+    body: (class_body
       (docstring)
       (slot
-        (identifier)
-        (integer))
+        key: (identifier)
+        value: (integer))
       (slot
-        (identifier)
-        (integer))
+        key: (identifier)
+        value: (integer))
       (computed_slot
-        (identifier)
-        (integer))
+        key: (identifier)
+        value: (integer))
       (computed_slot
-        (identifier)
-        (integer))
+        key: (identifier)
+        value: (integer))
       (method
-        (identifier)
-        (parameters
+        name: (identifier)
+        parameters: (parameters
           (parameter
-            (identifier)))
-        (block
+            name: (identifier)))
+        body: (block
           (expression_statement
             (call_expression
-              (field_access_expression
-                (base)
-                (field_identifier))
-              (arguments
+              callee: (field_access_expression
+                receiver: (base)
+                field: (field_identifier))
+              arguments: (arguments
                 (identifier))))))
       (method
-        (identifier)
-        (parameters)
-        (block
+        name: (identifier)
+        parameters: (parameters)
+        body: (block
           (return_statement
             (field_access_expression
-              (this)
-              (field_identifier)))))
+              receiver: (this)
+              field: (field_identifier)))))
       (method
-        (identifier)
-        (parameters)
-        (block))
+        name: (identifier)
+        parameters: (parameters)
+        body: (block))
       (method
-        (identifier)
-        (parameters)
-        (block))))
+        name: (identifier)
+        parameters: (parameters)
+        body: (block))))
   (local_declaration
-    (identifier)
-    (class_body)))
+    name: (identifier)
+    body: (class_body)))
 
 ================================================================================
 Enum declarations
@@ -208,35 +208,35 @@ global enum Mode { A, B }
 
 (source_file
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier))
+      name: (identifier))
     (enum_member
-      (identifier)
-      (integer))
+      name: (identifier)
+      value: (integer))
     (enum_member
-      (identifier)
-      (negative_literal
+      name: (identifier)
+      value: (negative_literal
         (integer)))
     (enum_member
-      (identifier)
-      (string
+      name: (identifier)
+      value: (string
         (string_content)))
     (enum_member
-      (identifier)
-      (float))
+      name: (identifier)
+      value: (float))
     (enum_member
-      (identifier)
-      (true))
+      name: (identifier)
+      value: (true))
     (enum_member
-      (identifier)
-      (null)))
+      name: (identifier)
+      value: (null)))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier))
+      name: (identifier))
     (enum_member
-      (identifier))))
+      name: (identifier))))
 
 ================================================================================
 Const declarations
@@ -250,20 +250,20 @@ global const VERSION = "1.0"
 
 (source_file
   (const_declaration
-    (identifier)
-    (integer))
+    name: (identifier)
+    value: (integer))
   (const_declaration
     (function_attributes)
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)))
-    (block
+        name: (identifier)))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (integer)))))
+          left: (identifier)
+          right: (integer)))))
   (const_declaration
-    (identifier)
-    (string
+    name: (identifier)
+    value: (string
       (string_content))))

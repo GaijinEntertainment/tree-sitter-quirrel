@@ -13,33 +13,33 @@ x = y ? z : w
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (identifier)))
+      left: (identifier)
+      right: (identifier)))
   (expression_statement
     (newslot_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))
-      (identifier)))
+      left: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))
+      right: (identifier)))
   (expression_statement
     (compound_assignment_expression
-      (slot_access_expression
-        (identifier)
-        (identifier))
-      (integer)))
+      left: (slot_access_expression
+        receiver: (identifier)
+        key: (identifier))
+      right: (integer)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (assignment_expression
-        (identifier)
-        (identifier))))
+      name: (identifier)
+      value: (assignment_expression
+        left: (identifier)
+        right: (identifier))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (ternary_expression
-        (identifier)
-        (identifier)
-        (identifier)))))
+      left: (identifier)
+      right: (ternary_expression
+        condition: (identifier)
+        consequence: (identifier)
+        alternative: (identifier)))))
 
 ================================================================================
 Binary operator precedence
@@ -56,62 +56,62 @@ x = a <=> b != c >>> d
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (binary_expression
-          (identifier)
-          (binary_expression
-            (identifier)
-            (identifier)))
-        (binary_expression
-          (binary_expression
-            (identifier)
-            (identifier))
-          (identifier)))))
+      left: (identifier)
+      right: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (binary_expression
+            left: (identifier)
+            right: (identifier)))
+        right: (binary_expression
+          left: (binary_expression
+            left: (identifier)
+            right: (identifier))
+          right: (identifier)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (identifier)
-        (binary_expression
-          (identifier)
-          (binary_expression
-            (identifier)
-            (binary_expression
-              (identifier)
-              (binary_expression
-                (identifier)
-                (binary_expression
-                  (identifier)
-                  (binary_expression
-                    (identifier)
-                    (binary_expression
-                      (identifier)
-                      (binary_expression
-                        (identifier)
-                        (identifier))))))))))))
+      left: (identifier)
+      right: (binary_expression
+        left: (identifier)
+        right: (binary_expression
+          left: (identifier)
+          right: (binary_expression
+            left: (identifier)
+            right: (binary_expression
+              left: (identifier)
+              right: (binary_expression
+                left: (identifier)
+                right: (binary_expression
+                  left: (identifier)
+                  right: (binary_expression
+                    left: (identifier)
+                    right: (binary_expression
+                      left: (identifier)
+                      right: (binary_expression
+                        left: (identifier)
+                        right: (identifier))))))))))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (identifier)
-        (identifier))))
+      left: (identifier)
+      right: (binary_expression
+        left: (identifier)
+        right: (identifier))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (identifier)
-        (identifier))))
+      left: (identifier)
+      right: (binary_expression
+        left: (identifier)
+        right: (identifier))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (binary_expression
-          (identifier)
-          (identifier))
-        (binary_expression
-          (identifier)
-          (identifier))))))
+      left: (identifier)
+      right: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (identifier))
+        right: (binary_expression
+          left: (identifier)
+          right: (identifier))))))
 
 ================================================================================
 Unary and update operators
@@ -132,61 +132,61 @@ a--
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (unary_expression
-        (call_expression
-          (field_access_expression
-            (identifier)
-            (field_identifier))
-          (arguments)))))
+      left: (identifier)
+      right: (unary_expression
+        argument: (call_expression
+          callee: (field_access_expression
+            receiver: (identifier)
+            field: (field_identifier))
+          arguments: (arguments)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (unary_expression
-        (unary_expression
-          (identifier)))))
+      left: (identifier)
+      right: (unary_expression
+        argument: (unary_expression
+          argument: (identifier)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (binary_expression
-          (unary_expression
-            (identifier))
-          (unary_expression
-            (identifier)))
-        (unary_expression
-          (identifier)))))
+      left: (identifier)
+      right: (binary_expression
+        left: (binary_expression
+          left: (unary_expression
+            argument: (identifier))
+          right: (unary_expression
+            argument: (identifier)))
+        right: (unary_expression
+          argument: (identifier)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (unary_expression
-        (identifier))))
+      left: (identifier)
+      right: (unary_expression
+        argument: (identifier))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (unary_expression
-        (array
+      left: (identifier)
+      right: (unary_expression
+        argument: (array
           (integer)
           (integer)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (unary_expression
-        (table
+      left: (identifier)
+      right: (unary_expression
+        argument: (table
           (slot
-            (identifier)
-            (integer))))))
+            key: (identifier)
+            value: (integer))))))
   (expression_statement
     (increment_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))))
+      argument: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))))
   (expression_statement
     (increment_expression
-      (identifier)))
+      argument: (identifier)))
   (expression_statement
     (increment_expression
-      (identifier))))
+      argument: (identifier))))
 
 ================================================================================
 Delete operator
@@ -202,14 +202,14 @@ delete a[1]
   (directive)
   (expression_statement
     (unary_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))))
+      argument: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))))
   (expression_statement
     (unary_expression
-      (slot_access_expression
-        (identifier)
-        (integer)))))
+      argument: (slot_access_expression
+        receiver: (identifier)
+        key: (integer)))))
 
 ================================================================================
 Member, index and call chains
@@ -229,57 +229,57 @@ x = f
 (source_file
   (expression_statement
     (call_expression
-      (slot_access_expression
-        (call_expression
-          (field_access_expression
-            (field_access_expression
-              (identifier)
-              (field_identifier))
-            (field_identifier))
-          (arguments
+      callee: (slot_access_expression
+        receiver: (call_expression
+          callee: (field_access_expression
+            receiver: (field_access_expression
+              receiver: (identifier)
+              field: (field_identifier))
+            field: (field_identifier))
+          arguments: (arguments
             (identifier)))
-        (identifier))
-      (arguments
+        key: (identifier))
+      arguments: (arguments
         (identifier))))
   (expression_statement
     (call_expression
-      (slot_access_expression
-        (field_access_expression
-          (identifier)
-          (field_identifier))
-        (identifier))
-      (arguments
+      callee: (slot_access_expression
+        receiver: (field_access_expression
+          receiver: (identifier)
+          field: (field_identifier))
+        key: (identifier))
+      arguments: (arguments
         (identifier))))
   (expression_statement
     (binary_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))
-      (field_access_expression
-        (identifier)
-        (field_identifier))))
+      left: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))
+      right: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))))
   (expression_statement
     (field_access_expression
-      (root_table_access
-        (identifier))
-      (field_identifier)))
+      receiver: (root_table_access
+        name: (identifier))
+      field: (field_identifier)))
   (expression_statement
     (call_expression
-      (field_access_expression
-        (base)
-        (field_identifier))
-      (arguments
+      callee: (field_access_expression
+        receiver: (base)
+        field: (field_identifier))
+      arguments: (arguments
         (this))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (field_access_expression
-        (call_expression
-          (field_access_expression
-            (identifier)
-            (field_identifier))
-          (arguments))
-        (field_identifier)))))
+      left: (identifier)
+      right: (field_access_expression
+        receiver: (call_expression
+          callee: (field_access_expression
+            receiver: (identifier)
+            field: (field_identifier))
+          arguments: (arguments))
+        field: (field_identifier)))))
 
 ================================================================================
 Clone operator on an array
@@ -292,14 +292,14 @@ x = clone [a].extend(b)
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (unary_expression
-        (call_expression
-          (field_access_expression
-            (array
+      left: (identifier)
+      right: (unary_expression
+        argument: (call_expression
+          callee: (field_access_expression
+            receiver: (array
               (identifier))
-            (field_identifier))
-          (arguments
+            field: (field_identifier))
+          arguments: (arguments
             (identifier)))))))
 
 ================================================================================
@@ -318,63 +318,63 @@ k = class (Base) { x = 1 }
 (source_file
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (lambda_expression
-          (parameters
+          parameters: (parameters
             (parameter
-              (identifier)))
-          (binary_expression
-            (identifier)
-            (integer))))))
+              name: (identifier)))
+          body: (binary_expression
+            left: (identifier)
+            right: (integer))))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (lambda_expression
+      left: (identifier)
+      right: (lambda_expression
         (function_attributes)
-        (identifier)
-        (parameters
+        name: (identifier)
+        parameters: (parameters
           (parameter
-            (identifier))
+            name: (identifier))
           (parameter
-            (identifier)
-            (integer)))
-        (binary_expression
-          (identifier)
-          (identifier)))))
+            name: (identifier)
+            default: (integer)))
+        body: (binary_expression
+          left: (identifier)
+          right: (identifier)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (lambda_expression
-        (parameters)
-        (unary_expression
-          (identifier)))))
+      left: (identifier)
+      right: (lambda_expression
+        parameters: (parameters)
+        body: (unary_expression
+          argument: (identifier)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (function_expression
-        (parameters
+      left: (identifier)
+      right: (function_expression
+        parameters: (parameters
           (parameter
-            (identifier)))
-        (block
+            name: (identifier)))
+        body: (block
           (return_statement
             (identifier))))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (function_expression
-        (identifier)
-        (parameters)
-        (block))))
+      left: (identifier)
+      right: (function_expression
+        name: (identifier)
+        parameters: (parameters)
+        body: (block))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (class_expression
-        (identifier)
-        (class_body
+      left: (identifier)
+      right: (class_expression
+        base: (identifier)
+        body: (class_body
           (slot
-            (identifier)
-            (integer)))))))
+            key: (identifier)
+            value: (integer)))))))
 
 ================================================================================
 Arrays and tables
@@ -398,8 +398,8 @@ s = { a, b c = 1 }
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (array
+      left: (identifier)
+      right: (array
         (integer)
         (integer)
         (integer)
@@ -407,45 +407,45 @@ s = { a, b c = 1 }
           (identifier)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (table
+      left: (identifier)
+      right: (table
         (slot
-          (identifier)
-          (integer))
+          key: (identifier)
+          value: (integer))
         (shorthand_slot
-          (identifier))
+          key: (identifier))
         (quoted_key_slot
-          (string
+          key: (string
             (string_content))
-          (integer))
+          value: (integer))
         (computed_slot
-          (identifier)
-          (integer))
+          key: (identifier)
+          value: (integer))
         (spread
           (identifier))
         (method
-          (identifier)
-          (parameters)
-          (block))
+          name: (identifier)
+          parameters: (parameters)
+          body: (block))
         (method
-          (identifier)
-          (parameters)
-          (block))
+          name: (identifier)
+          parameters: (parameters)
+          body: (block))
         (method
-          (identifier)
-          (parameters)
-          (block)))))
+          name: (identifier)
+          parameters: (parameters)
+          body: (block)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (table
+      left: (identifier)
+      right: (table
         (shorthand_slot
-          (identifier))
+          key: (identifier))
         (shorthand_slot
-          (identifier))
+          key: (identifier))
         (slot
-          (identifier)
-          (integer))))))
+          key: (identifier)
+          value: (integer))))))
 
 ================================================================================
 Code block expression
@@ -460,12 +460,12 @@ x = $${ local a = 1; a }
   (directive)
   (expression_statement
     (assignment_expression
-      (identifier)
-      (code_block_expression
+      left: (identifier)
+      right: (code_block_expression
         (local_declaration
           (variable_declaration
-            (identifier)
-            (integer)))
+            name: (identifier)
+            value: (integer)))
         (expression_statement
           (identifier))))))
 
@@ -484,25 +484,25 @@ local constructor = 3
 (source_file
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer)))
+      name: (identifier)
+      value: (integer)))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (identifier)
-        (identifier))))
+      left: (identifier)
+      right: (binary_expression
+        left: (identifier)
+        right: (identifier))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (field_access_expression
-        (identifier)
-        (field_identifier))))
+      left: (identifier)
+      right: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer)))
+      name: (identifier)
+      value: (integer)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer))))
+      name: (identifier)
+      value: (integer))))

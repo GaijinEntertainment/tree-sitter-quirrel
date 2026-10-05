@@ -11,20 +11,20 @@ d()
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments))))
+      callee: (identifier)
+      arguments: (arguments))))
 
 ================================================================================
 Statements after a closing brace on one line
@@ -38,28 +38,28 @@ function f() {} f()
 
 (source_file
   (if_statement
-    (identifier)
-    (block))
+    condition: (identifier)
+    then_branch: (block))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments)))
+      callee: (identifier)
+      arguments: (arguments)))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (table)))
+      left: (identifier)
+      right: (table)))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (function_declaration
-    (identifier)
-    (parameters)
-    (block))
+    name: (identifier)
+    parameters: (parameters)
+    body: (block))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments))))
+      callee: (identifier)
+      arguments: (arguments))))
 
 ================================================================================
 Expressions continue across line ends
@@ -81,31 +81,31 @@ w = f
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (identifier)
-        (binary_expression
-          (identifier)
-          (identifier)))))
+      left: (identifier)
+      right: (binary_expression
+        left: (identifier)
+        right: (binary_expression
+          left: (identifier)
+          right: (identifier)))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (ternary_expression
-        (identifier)
-        (integer)
-        (integer))))
+      left: (identifier)
+      right: (ternary_expression
+        condition: (identifier)
+        consequence: (integer)
+        alternative: (integer))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (identifier)
-        (identifier))))
+      left: (identifier)
+      right: (binary_expression
+        left: (identifier)
+        right: (identifier))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (call_expression
-        (identifier)
-        (arguments
+      left: (identifier)
+      right: (call_expression
+        callee: (identifier)
+        arguments: (arguments
           (integer))))))
 
 ================================================================================
@@ -122,7 +122,7 @@ x
     (identifier))
   (expression_statement
     (increment_expression
-      (identifier))))
+      argument: (identifier))))
 
 ================================================================================
 Return value only on the same line
@@ -137,14 +137,14 @@ function f() {
 
 (source_file
   (function_declaration
-    (identifier)
-    (parameters)
-    (block
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
       (return_statement)
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments))))))
+          callee: (identifier)
+          arguments: (arguments))))))
 
 ================================================================================
 Block comment without a line end does not end a statement
@@ -157,8 +157,8 @@ x = 1 /* comment */ + 2
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (integer)
+      left: (identifier)
+      right: (binary_expression
+        left: (integer)
         (comment)
-        (integer)))))
+        right: (integer)))))

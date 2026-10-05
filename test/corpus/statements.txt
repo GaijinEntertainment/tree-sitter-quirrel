@@ -15,32 +15,32 @@ else {
 
 (source_file
   (if_statement
-    (identifier)
-    (expression_statement
+    condition: (identifier)
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments)))
-    (expression_statement
+        callee: (identifier)
+        arguments: (arguments)))
+    else_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments))))
+        callee: (identifier)
+        arguments: (arguments))))
   (if_statement
-    (identifier)
-    (expression_statement
+    condition: (identifier)
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments)))
-    (if_statement
-      (identifier)
-      (expression_statement
+        callee: (identifier)
+        arguments: (arguments)))
+    else_branch: (if_statement
+      condition: (identifier)
+      then_branch: (expression_statement
         (call_expression
-          (identifier)
-          (arguments)))
-      (block
+          callee: (identifier)
+          arguments: (arguments)))
+      else_branch: (block
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments)))))))
+            callee: (identifier)
+            arguments: (arguments)))))))
 
 ================================================================================
 If statement with a declaration condition
@@ -53,33 +53,33 @@ if (local b = h()) g(b)
 
 (source_file
   (if_statement
-    (local_declaration
+    declaration: (local_declaration
       (variable_declaration
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type))
-        (call_expression
-          (identifier)
-          (arguments))))
-    (binary_expression
-      (identifier)
-      (integer))
-    (expression_statement
+        value: (call_expression
+          callee: (identifier)
+          arguments: (arguments))))
+    condition: (binary_expression
+      left: (identifier)
+      right: (integer))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (if_statement
-    (local_declaration
+    declaration: (local_declaration
       (variable_declaration
-        (identifier)
-        (call_expression
-          (identifier)
-          (arguments))))
-    (expression_statement
+        name: (identifier)
+        value: (call_expression
+          callee: (identifier)
+          arguments: (arguments))))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier))))))
 
 ================================================================================
@@ -102,99 +102,99 @@ foreach ([a b] in pairs) f(a, b)
 
 (source_file
   (while_statement
-    (binary_expression
-      (identifier)
-      (integer))
-    (expression_statement
+    condition: (binary_expression
+      left: (identifier)
+      right: (integer))
+    body: (expression_statement
       (increment_expression
-        (identifier))))
+        argument: (identifier))))
   (do_while_statement
-    (block
+    body: (block
       (expression_statement
         (increment_expression
-          (identifier))))
-    (binary_expression
-      (identifier)
-      (integer)))
+          argument: (identifier))))
+    condition: (binary_expression
+      left: (identifier)
+      right: (integer)))
   (for_statement
-    (local_declaration
+    initializer: (local_declaration
       (variable_declaration
-        (identifier)
-        (integer))
+        name: (identifier)
+        value: (integer))
       (variable_declaration
-        (identifier)
-        (integer)))
-    (binary_expression
-      (identifier)
-      (integer))
-    (comma_expression
+        name: (identifier)
+        value: (integer)))
+    condition: (binary_expression
+      left: (identifier)
+      right: (integer))
+    step: (comma_expression
       (increment_expression
-        (identifier))
+        argument: (identifier))
       (increment_expression
-        (identifier)))
-    (expression_statement
+        argument: (identifier)))
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)
           (identifier)))))
   (for_statement
-    (break_statement))
+    body: (break_statement))
   (for_statement
-    (assignment_expression
-      (identifier)
-      (integer))
-    (binary_expression
-      (identifier)
-      (identifier))
-    (increment_expression
-      (identifier))
-    (continue_statement))
+    initializer: (assignment_expression
+      left: (identifier)
+      right: (integer))
+    condition: (binary_expression
+      left: (identifier)
+      right: (identifier))
+    step: (increment_expression
+      argument: (identifier))
+    body: (continue_statement))
   (foreach_statement
-    (identifier)
-    (identifier)
-    (expression_statement
+    value: (identifier)
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (foreach_statement
-    (identifier)
-    (identifier)
-    (identifier)
-    (expression_statement
+    index: (identifier)
+    value: (identifier)
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)
           (identifier)))))
   (foreach_statement
-    (identifier)
-    (table_pattern
+    index: (identifier)
+    value: (table_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)
-        (integer)))
-    (identifier)
-    (expression_statement
+        name: (identifier)
+        default: (integer)))
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)
           (identifier)
           (identifier)))))
   (foreach_statement
-    (array_pattern
+    value: (array_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)))
-    (identifier)
-    (expression_statement
+        name: (identifier)))
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)
           (identifier))))))
 
@@ -217,21 +217,21 @@ switch (x) {
 (source_file
   (directive)
   (switch_statement
-    (identifier)
+    expression: (identifier)
     (switch_case
-      (integer))
+      value: (integer))
     (switch_case
-      (integer)
+      value: (integer)
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments)))
+          callee: (identifier)
+          arguments: (arguments)))
       (break_statement))
     (default_case
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments))))))
+          callee: (identifier)
+          arguments: (arguments))))))
 
 ================================================================================
 Try statement with typed catches
@@ -250,39 +250,39 @@ try f() catch (e) g()
 
 (source_file
   (try_statement
-    (block
+    body: (block
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments))))
+          callee: (identifier)
+          arguments: (arguments))))
     (catch_clause
-      (identifier)
-      (identifier)
-      (block
+      class: (identifier)
+      name: (identifier)
+      body: (block
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (identifier))))))
     (catch_clause
-      (identifier)
-      (block
+      name: (identifier)
+      body: (block
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (identifier)))))))
   (try_statement
-    (expression_statement
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments)))
+        callee: (identifier)
+        arguments: (arguments)))
     (catch_clause
-      (identifier)
-      (expression_statement
+      name: (identifier)
+      body: (expression_statement
         (call_expression
-          (identifier)
-          (arguments))))))
+          callee: (identifier)
+          arguments: (arguments))))))
 
 ================================================================================
 Jump statements
@@ -299,9 +299,9 @@ throw "error"
 
 (source_file
   (function_declaration
-    (identifier)
-    (parameters)
-    (block
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
       (yield_statement
         (integer))
       (yield_statement)
@@ -326,8 +326,8 @@ Empty statements and blocks
   (block
     (expression_statement
       (call_expression
-        (identifier)
-        (arguments)))
+        callee: (identifier)
+        arguments: (arguments)))
     (empty_statement)))
 
 ================================================================================
@@ -350,11 +350,11 @@ f(#pos:10:4 1)
   (docstring)
   (expression_statement
     (assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (directive)
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (integer)))))
