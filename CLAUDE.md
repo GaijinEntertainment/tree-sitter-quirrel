@@ -57,8 +57,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - `examples/` - Quirrel files that the CI workflow parses.
 - `test/corpus/` - corpus tests, one file per topic. `:error` marks an input that must produce ERROR.
 - `test/corpus/compiler/` - inputs of the compiler tests, copied unchanged from `testData/` of the compiler. Each test
-  names its source file, and its tree comes from `tree-sitter test --update`. When the grammar moves to a new Quirrel
-  version, copy the inputs again, update the trees, and review the difference.
+  names its source file, and its tree is the output of `tree-sitter parse` without the positions. When the grammar
+  moves to a new Quirrel version, copy the inputs again, write the trees again, and review the difference.
 
 ## Rules
 
@@ -150,6 +150,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   Only test inputs of the compiler in `prog/1stPartyLibs/quirrel/quirrel/testData/` may fail, and only those that the
   compiler rejects too. The `sq` tool of the Quirrel source tree shows the error of the compiler:
   `sq -parse-only file.nut`.
+- Write the expected tree of a new corpus test with its field names. `tree-sitter test --update` writes a new tree
+  without them, and the test then ignores the fields.
 - After a change to `queries/highlights.scm` or `queries/tags.scm`, run `tree-sitter test`, which runs the
   assertions in `test/highlight/` and `test/tags/`.
 - The CLI caches one compiled parser per grammar name. After you parse with another grammar named `quirrel`, such as a

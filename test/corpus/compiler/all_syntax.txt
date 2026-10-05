@@ -455,33 +455,33 @@ println("done")
 
 (source_file
   (import_statement
-    (string
+    module: (string
       (string_content))
     (import_slot
-      (identifier))
+      name: (identifier))
     (import_slot
-      (identifier)
-      (identifier)))
+      name: (identifier)
+      alias: (identifier)))
   (import_statement
-    (string
+    module: (string
       (string_content))
     (wildcard_import))
   (import_statement
-    (string
+    module: (string
       (string_content)))
   (import_statement
-    (string
+    module: (string
       (string_content))
-    (identifier))
+    alias: (identifier))
   (local_declaration
-    (table_pattern
+    pattern: (table_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)))
-    (call_expression
-      (identifier)
-      (arguments
+        name: (identifier)))
+    value: (call_expression
+      callee: (identifier)
+      arguments: (arguments
         (string
           (string_content)))))
   (block
@@ -492,287 +492,287 @@ println("done")
     (expression_statement
       (null)))
   (if_statement
-    (binary_expression
-      (file_macro)
-      (line_macro))
-    (expression_statement
+    condition: (binary_expression
+      left: (file_macro)
+      right: (line_macro))
+    then_branch: (expression_statement
       (null)))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments)))
+      callee: (identifier)
+      arguments: (arguments)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table)))
+      name: (identifier)
+      value: (table)))
   (enum_declaration
-    (identifier))
+    name: (identifier))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier)))
+      name: (identifier)))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier)))
+      name: (identifier)))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier))
+      name: (identifier))
     (enum_member
-      (identifier)))
+      name: (identifier)))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier))
+      name: (identifier))
     (enum_member
-      (identifier)))
+      name: (identifier)))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier))
+      name: (identifier))
     (enum_member
-      (identifier)))
+      name: (identifier)))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier)
-      (negative_literal
+      name: (identifier)
+      value: (negative_literal
         (integer)))
     (enum_member
-      (identifier)))
+      name: (identifier)))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier)
-      (integer))
+      name: (identifier)
+      value: (integer))
     (enum_member
-      (identifier)
-      (string
+      name: (identifier)
+      value: (string
         (string_content))))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier))
+      name: (identifier))
     (enum_member
-      (identifier)
-      (string
+      name: (identifier)
+      value: (string
         (string_content))))
   (enum_declaration
-    (identifier)
+    name: (identifier)
     (enum_member
-      (identifier)
-      (null)))
+      name: (identifier)
+      value: (null)))
   (directive)
   (const_declaration
-    (identifier)
-    (integer))
+    name: (identifier)
+    value: (integer))
   (const_declaration
-    (identifier)
-    (string
+    name: (identifier)
+    value: (string
       (string_content)))
   (const_declaration
-    (identifier)
-    (array
+    name: (identifier)
+    value: (array
       (string
         (string_content))
       (string
         (string_content))))
   (const_declaration
-    (identifier)
-    (table
+    name: (identifier)
+    value: (table
       (slot
-        (identifier)
-        (string
+        key: (identifier)
+        value: (string
           (string_content)))))
   (const_declaration
-    (identifier)
-    (true))
+    name: (identifier)
+    value: (true))
   (local_declaration
     (variable_declaration
-      (identifier)))
+      name: (identifier)))
   (local_declaration
     (variable_declaration
-      (identifier))
+      name: (identifier))
     (variable_declaration
-      (identifier)))
+      name: (identifier)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (null)))
+      name: (identifier)
+      value: (null)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer)))
+      name: (identifier)
+      value: (integer)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (float)))
+      name: (identifier)
+      value: (float)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (float)))
+      name: (identifier)
+      value: (float)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (float)))
+      name: (identifier)
+      value: (float)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (float)))
+      name: (identifier)
+      value: (float)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (float))))
+      name: (identifier)
+      value: (unary_expression
+        argument: (float))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (true)))
+      name: (identifier)
+      value: (true)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (false)))
+      name: (identifier)
+      value: (false)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (string
+      name: (identifier)
+      value: (string
         (escape_sequence)
         (string_content)
         (escape_sequence))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (verbatim_string)))
+      name: (identifier)
+      value: (verbatim_string)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (interpolated_string
+      name: (identifier)
+      value: (interpolated_string
         (string_content)
         (hole
           (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (call_expression
-        (field_access_expression
-          (parenthesized_expression
+      name: (identifier)
+      value: (call_expression
+        callee: (field_access_expression
+          receiver: (parenthesized_expression
             (integer))
-          (field_identifier))
-        (arguments))))
+          field: (field_identifier))
+        arguments: (arguments))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (call_expression
-        (field_access_expression
-          (parenthesized_expression
+      name: (identifier)
+      value: (call_expression
+        callee: (field_access_expression
+          receiver: (parenthesized_expression
             (float))
-          (field_identifier))
-        (arguments))))
+          field: (field_identifier))
+        arguments: (arguments))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer))
+      name: (identifier)
+      value: (integer))
     (variable_declaration
-      (identifier)
-      (integer)))
+      name: (identifier)
+      value: (integer)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (field_access_expression
-        (identifier)
-        (field_identifier))))
+      name: (identifier)
+      value: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (assignment_expression
-        (identifier)
+      name: (identifier)
+      value: (assignment_expression
+        left: (identifier)
+        right: (integer))))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (integer)))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (integer)))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (character)))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (character)))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (call_expression
+        callee: (field_access_expression
+          receiver: (character)
+          field: (field_identifier))
+        arguments: (arguments))))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (array)))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (array
         (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer)))
-  (local_declaration
-    (variable_declaration
-      (identifier)
-      (integer)))
-  (local_declaration
-    (variable_declaration
-      (identifier)
-      (character)))
-  (local_declaration
-    (variable_declaration
-      (identifier)
-      (character)))
-  (local_declaration
-    (variable_declaration
-      (identifier)
-      (call_expression
-        (field_access_expression
-          (character)
-          (field_identifier))
-        (arguments))))
-  (local_declaration
-    (variable_declaration
-      (identifier)
-      (array)))
-  (local_declaration
-    (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
-        (integer))))
-  (local_declaration
-    (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer)
         (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer)
         (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer)
         (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer)
         (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer)
         (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (spread
           (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer)
         (spread
           (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (integer)
         (spread
           (identifier))
@@ -784,341 +784,341 @@ println("done")
             (identifier)))
         (spread
           (call_expression
-            (parenthesized_expression
+            callee: (parenthesized_expression
               (lambda_expression
-                (parameters)
-                (null)))
-            (arguments))))))
+                parameters: (parameters)
+                body: (null)))
+            arguments: (arguments))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table)))
+      name: (identifier)
+      value: (table)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (slot
-          (identifier)
-          (integer)))))
+          key: (identifier)
+          value: (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (quoted_key_slot
-          (string
+          key: (string
             (string_content))
-          (integer)))))
+          value: (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (computed_slot
-          (string
+          key: (string
             (string_content))
-          (integer)))))
+          value: (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (computed_slot
-          (null)
-          (integer)))))
+          key: (null)
+          value: (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (computed_slot
-          (parenthesized_expression
+          key: (parenthesized_expression
             (table
               (slot
-                (identifier)
-                (integer))))
-          (integer)))))
+                key: (identifier)
+                value: (integer))))
+          value: (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (shorthand_slot
-          (identifier)))))
+          key: (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (shorthand_slot
-          (identifier))
+          key: (identifier))
         (shorthand_slot
-          (identifier)))))
+          key: (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (call_expression
-        (field_access_expression
+      name: (identifier)
+      value: (call_expression
+        callee: (field_access_expression
+          receiver: (table
+            (slot
+              key: (identifier)
+              value: (integer)))
+          field: (field_identifier))
+        arguments: (arguments
           (table
             (slot
-              (identifier)
-              (integer)))
-          (field_identifier))
-        (arguments
-          (table
-            (slot
-              (identifier)
-              (integer)))))))
+              key: (identifier)
+              value: (integer)))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (table
+      name: (identifier)
+      value: (unary_expression
+        argument: (table
           (slot
-            (identifier)
-            (integer))))))
+            key: (identifier)
+            value: (integer))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (spread
           (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (spread
           (identifier))
         (slot
-          (identifier)
-          (integer))
+          key: (identifier)
+          value: (integer))
         (spread
           (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (table
+      name: (identifier)
+      value: (table
         (spread
           (identifier))
         (slot
-          (identifier)
-          (integer))
+          key: (identifier)
+          value: (integer))
         (spread
           (identifier))
         (spread
           (call_expression
-            (parenthesized_expression
+            callee: (parenthesized_expression
               (lambda_expression
-                (parameters)
-                (null)))
-            (arguments))))))
+                parameters: (parameters)
+                body: (null)))
+            arguments: (arguments))))))
   (expression_statement
     (newslot_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))
-      (string
+      left: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))
+      right: (string
         (string_content))))
   (expression_statement
     (newslot_expression
-      (slot_access_expression
-        (identifier)
-        (string
+      left: (slot_access_expression
+        receiver: (identifier)
+        key: (string
           (string_content)))
-      (string
+      right: (string
         (string_content))))
   (local_declaration
-    (table_pattern
+    pattern: (table_pattern
       (pattern_field
-        (identifier)))
-    (identifier))
+        name: (identifier)))
+    value: (identifier))
   (block
     (local_declaration
-      (table_pattern
+      pattern: (table_pattern
         (pattern_field
-          (identifier)))
-      (identifier)))
+          name: (identifier)))
+      value: (identifier)))
   (block
     (local_declaration
-      (table_pattern
+      pattern: (table_pattern
         (pattern_field
-          (identifier)
-          (integer))
+          name: (identifier)
+          default: (integer))
         (pattern_field
-          (identifier)))
-      (identifier))
+          name: (identifier)))
+      value: (identifier))
     (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (block
     (local_declaration
-      (table_pattern
+      pattern: (table_pattern
         (pattern_field
-          (identifier)
-          (type_annotation
+          name: (identifier)
+          type: (type_annotation
             (type))
-          (integer))
+          default: (integer))
         (pattern_field
-          (identifier)
-          (type_annotation
+          name: (identifier)
+          type: (type_annotation
             (type)
             (type)
             (type))))
-      (identifier))
+      value: (identifier))
     (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (local_declaration
-    (array_pattern
+    pattern: (array_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)))
-    (identifier))
+        name: (identifier)))
+    value: (identifier))
   (local_declaration
-    (array_pattern
+    pattern: (array_pattern
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)))
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))))
-    (identifier))
+    value: (identifier))
   (local_declaration
-    (array_pattern
+    pattern: (array_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))))
-    (identifier))
+    value: (identifier))
   (local_declaration
-    (array_pattern
+    pattern: (array_pattern
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)))
       (pattern_field
-        (identifier)))
-    (identifier))
+        name: (identifier)))
+    value: (identifier))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type))))
-    (type_annotation
+    return_type: (type_annotation
       (type))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (integer)
-          (identifier)))))
+          left: (integer)
+          right: (identifier)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)))
       (vararg_parameter
-        (type_annotation
+        type: (type_annotation
           (type))))
-    (type_annotation
+    return_type: (type_annotation
       (type))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (integer)
-          (identifier)))))
+          left: (integer)
+          right: (identifier)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))))
-    (type_annotation
+    return_type: (type_annotation
       (type)
       (type))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (float)
-          (parenthesized_expression
+          left: (float)
+          right: (parenthesized_expression
             (binary_expression
-              (identifier)
-              (integer)))))))
+              left: (identifier)
+              right: (integer)))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))
-        (null)))
-    (type_annotation
+        default: (null)))
+    return_type: (type_annotation
       (type)
       (type))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (float)
-          (parenthesized_expression
+          left: (float)
+          right: (parenthesized_expression
             (binary_expression
-              (identifier)
-              (integer)))))))
+              left: (identifier)
+              right: (integer)))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))))
-    (type_annotation
+    return_type: (type_annotation
       (type)
       (type))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (float)
-          (parenthesized_expression
+          left: (float)
+          right: (parenthesized_expression
             (binary_expression
-              (identifier)
-              (integer)))))))
+              left: (identifier)
+              right: (integer)))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))
-        (null)))
-    (type_annotation
+        default: (null)))
+    return_type: (type_annotation
       (type)
       (type))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (float)
-          (parenthesized_expression
+          left: (float)
+          right: (parenthesized_expression
             (binary_expression
-              (identifier)
-              (integer)))))))
+              left: (identifier)
+              right: (integer)))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type)
           (type)
@@ -1136,24 +1136,24 @@ println("done")
           (type)
           (type)))
       (parameter
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type))))
-    (type_annotation
+    return_type: (type_annotation
       (type))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (identifier)))))
+          left: (identifier)
+          right: (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (lambda_expression
-        (parameters
+      name: (identifier)
+      value: (lambda_expression
+        parameters: (parameters
           (parameter
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type)
               (type)
               (type)
@@ -1171,810 +1171,810 @@ println("done")
               (type)
               (type)))
           (parameter
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type))))
-        (type_annotation
+        return_type: (type_annotation
           (type))
-        (parenthesized_expression
+        body: (parenthesized_expression
           (binary_expression
-            (identifier)
-            (identifier))))))
+            left: (identifier)
+            right: (identifier))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (lambda_expression
-        (identifier)
-        (parameters
+      name: (identifier)
+      value: (lambda_expression
+        name: (identifier)
+        parameters: (parameters
           (parameter
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type)
               (type)
               (type)
               (type)))
           (parameter
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type))))
-        (type_annotation
+        return_type: (type_annotation
           (type))
-        (parenthesized_expression
+        body: (parenthesized_expression
           (binary_expression
-            (identifier)
-            (identifier))))))
+            left: (identifier)
+            right: (identifier))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (parenthesized_expression
+      name: (identifier)
+      value: (parenthesized_expression
         (lambda_expression
           (function_attributes)
-          (identifier)
-          (parameters
+          name: (identifier)
+          parameters: (parameters
             (parameter
-              (identifier)
-              (type_annotation
+              name: (identifier)
+              type: (type_annotation
                 (type)
                 (type)
                 (type)
                 (type)))
             (parameter
-              (identifier)
-              (type_annotation
+              name: (identifier)
+              type: (type_annotation
                 (type))))
-          (type_annotation
+          return_type: (type_annotation
             (type))
-          (parenthesized_expression
+          body: (parenthesized_expression
             (binary_expression
-              (identifier)
-              (identifier)))))))
+              left: (identifier)
+              right: (identifier)))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (type_annotation
+      name: (identifier)
+      type: (type_annotation
         (type))
-      (integer)))
+      value: (integer)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (type_annotation
+      name: (identifier)
+      type: (type_annotation
         (type))
-      (table)))
+      value: (table)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (type_annotation
+      name: (identifier)
+      type: (type_annotation
         (type)
         (type))
-      (table)))
+      value: (table)))
   (class_declaration
-    (identifier)
-    (class_body
+    name: (identifier)
+    body: (class_body
       (slot
-        (identifier)
-        (true))
+        key: (identifier)
+        value: (true))
       (slot
-        (identifier)
-        (false))
+        key: (identifier)
+        value: (false))
       (method
-        (identifier)
-        (parameters)
-        (block))
+        name: (identifier)
+        parameters: (parameters)
+        body: (block))
       (method
-        (identifier)
-        (parameters)
-        (block))
+        name: (identifier)
+        parameters: (parameters)
+        body: (block))
       (slot
-        (identifier)
-        (function_expression
-          (parameters)
-          (block
+        key: (identifier)
+        value: (function_expression
+          parameters: (parameters)
+          body: (block
             (expression_statement
               (call_expression
-                (field_access_expression
-                  (this)
-                  (field_identifier))
-                (arguments))))))
+                callee: (field_access_expression
+                  receiver: (this)
+                  field: (field_identifier))
+                arguments: (arguments))))))
       (slot
-        (identifier)
-        (function_expression
-          (identifier)
-          (parameters)
-          (block
+        key: (identifier)
+        value: (function_expression
+          name: (identifier)
+          parameters: (parameters)
+          body: (block
             (expression_statement
               (call_expression
-                (field_access_expression
-                  (this)
-                  (field_identifier))
-                (arguments))))))
+                callee: (field_access_expression
+                  receiver: (this)
+                  field: (field_identifier))
+                arguments: (arguments))))))
       (slot
-        (identifier)
-        (lambda_expression
-          (parameters)
-          (string
+        key: (identifier)
+        value: (lambda_expression
+          parameters: (parameters)
+          body: (string
             (string_content))))
       (slot
-        (identifier)
-        (lambda_expression
-          (identifier)
-          (parameters)
-          (string
+        key: (identifier)
+        value: (lambda_expression
+          name: (identifier)
+          parameters: (parameters)
+          body: (string
             (string_content))))
       (slot
-        (identifier)
-        (function_expression
-          (parameters
+        key: (identifier)
+        value: (function_expression
+          parameters: (parameters
             (parameter
-              (identifier)))
-          (block
+              name: (identifier)))
+          body: (block
             (expression_statement
               (call_expression
-                (slot_access_expression
-                  (this)
-                  (identifier))
-                (arguments)))
+                callee: (slot_access_expression
+                  receiver: (this)
+                  key: (identifier))
+                arguments: (arguments)))
             (expression_statement
               (call_expression
-                (field_access_expression
-                  (this)
-                  (field_identifier))
-                (arguments)))
+                callee: (field_access_expression
+                  receiver: (this)
+                  field: (field_identifier))
+                arguments: (arguments)))
             (expression_statement
               (newslot_expression
-                (field_access_expression
-                  (root_table_access
-                    (identifier))
-                  (field_identifier))
-                (integer))))))))
+                left: (field_access_expression
+                  receiver: (root_table_access
+                    name: (identifier))
+                  field: (field_identifier))
+                right: (integer))))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (call_expression
-        (identifier)
-        (arguments))))
+      name: (identifier)
+      value: (call_expression
+        callee: (identifier)
+        arguments: (arguments))))
   (expression_statement
     (call_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))
-      (arguments)))
+      callee: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))
+      arguments: (arguments)))
   (expression_statement
     (call_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))
-      (arguments)))
+      callee: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))
+      arguments: (arguments)))
   (expression_statement
     (call_expression
-      (slot_access_expression
-        (identifier)
-        (string
+      callee: (slot_access_expression
+        receiver: (identifier)
+        key: (string
           (string_content)))
-      (arguments)))
+      arguments: (arguments)))
   (expression_statement
     (call_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))
-      (arguments)))
+      callee: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))
+      arguments: (arguments)))
   (if_statement
-    (binary_expression
-      (identifier)
-      (identifier))
-    (block
+    condition: (binary_expression
+      left: (identifier)
+      right: (identifier))
+    then_branch: (block
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (string
               (string_content)))))))
   (function_declaration
-    (identifier)
-    (parameters)
-    (block))
+    name: (identifier)
+    parameters: (parameters)
+    body: (block))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (function_expression
-        (parameters)
-        (block
+      name: (identifier)
+      value: (function_expression
+        parameters: (parameters)
+        body: (block
           (expression_statement
             (call_expression
-              (field_access_expression
-                (this)
-                (field_identifier))
-              (arguments)))))))
+              callee: (field_access_expression
+                receiver: (this)
+                field: (field_identifier))
+              arguments: (arguments)))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (function_expression
-        (identifier)
-        (parameters)
-        (block
+      name: (identifier)
+      value: (function_expression
+        name: (identifier)
+        parameters: (parameters)
+        body: (block
           (expression_statement
             (call_expression
-              (field_access_expression
-                (this)
-                (field_identifier))
-              (arguments)))))))
+              callee: (field_access_expression
+                receiver: (this)
+                field: (field_identifier))
+              arguments: (arguments)))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (lambda_expression
-        (parameters)
-        (string
+      name: (identifier)
+      value: (lambda_expression
+        parameters: (parameters)
+        body: (string
           (string_content)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (lambda_expression
-        (identifier)
-        (parameters)
-        (string
+      name: (identifier)
+      value: (lambda_expression
+        name: (identifier)
+        parameters: (parameters)
+        body: (string
           (string_content)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (function_expression
-        (parameters
+      name: (identifier)
+      value: (function_expression
+        parameters: (parameters
           (parameter
-            (identifier)))
-        (block
+            name: (identifier)))
+        body: (block
           (expression_statement
             (call_expression
-              (slot_access_expression
-                (this)
-                (identifier))
-              (arguments)))))))
+              callee: (slot_access_expression
+                receiver: (this)
+                key: (identifier))
+              arguments: (arguments)))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (lambda_expression
+      name: (identifier)
+      value: (lambda_expression
         (function_attributes)
-        (identifier)
-        (parameters)
-        (string
+        name: (identifier)
+        parameters: (parameters)
+        body: (string
           (string_content)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (lambda_expression
+      name: (identifier)
+      value: (lambda_expression
         (function_attributes)
-        (identifier)
-        (parameters)
-        (string
+        name: (identifier)
+        parameters: (parameters)
+        body: (string
           (string_content)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (lambda_expression
+      name: (identifier)
+      value: (lambda_expression
         (function_attributes)
-        (identifier)
-        (parameters)
-        (string
+        name: (identifier)
+        parameters: (parameters)
+        body: (string
           (string_content)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)))
-    (block
+        name: (identifier)))
+    body: (block
       (return_statement
         (identifier))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (identifier)))
-    (block
+        name: (identifier)))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (identifier)))))
+          left: (identifier)
+          right: (identifier)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (identifier)))
-    (block
+        name: (identifier)))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (binary_expression
-            (identifier)
-            (identifier))))))
+          left: (identifier)
+          right: (binary_expression
+            left: (identifier)
+            right: (identifier))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (vararg_parameter))
-    (block
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (call_expression
-            (field_access_expression
-              (identifier)
-              (field_identifier))
-            (arguments))))))
+          left: (identifier)
+          right: (call_expression
+            callee: (field_access_expression
+              receiver: (identifier)
+              field: (field_identifier))
+            arguments: (arguments))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)
-        (array
+        name: (identifier)
+        default: (array
           (integer)
           (integer))))
-    (block
+    body: (block
       (return_statement
         (slot_access_expression
-          (identifier)
-          (integer)))))
+          receiver: (identifier)
+          key: (integer)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (identifier)
-        (null)))
-    (block
+        name: (identifier)
+        default: (null)))
+    body: (block
       (return_statement
         (identifier))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (identifier)
-        (table
+        name: (identifier)
+        default: (table
           (slot
-            (identifier)
-            (integer)))))
-    (block
+            key: (identifier)
+            value: (integer)))))
+    body: (block
       (return_statement
         (identifier))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (identifier)
-        (table
+        name: (identifier)
+        default: (table
           (slot
-            (identifier)
-            (integer)))))
-    (block
+            key: (identifier)
+            value: (integer)))))
+    body: (block
       (return_statement
         (identifier))))
   (function_declaration
     (function_attributes)
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)))
-    (block
+        name: (identifier)))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (identifier)))))
+          left: (identifier)
+          right: (identifier)))))
   (function_declaration
     (function_attributes)
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier)))
-    (block
+        name: (identifier)))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (identifier)))))
+          left: (identifier)
+          right: (identifier)))))
   (function_declaration
-    (identifier)
-    (parameters)
-    (block
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
       (yield_statement
         (integer))
       (yield_statement
         (integer))))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (unary_expression
-          (call_expression
-            (identifier)
-            (arguments))))))
+          argument: (call_expression
+            callee: (identifier)
+            arguments: (arguments))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier)))))
-    (block
+            name: (identifier)))))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (integer)))))
+          left: (identifier)
+          right: (integer)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (array_pattern
+        pattern: (array_pattern
           (pattern_field
-            (identifier)))))
-    (block
+            name: (identifier)))))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (integer)))))
+          left: (identifier)
+          right: (integer)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (array_pattern
+        pattern: (array_pattern
           (pattern_field
-            (identifier))))
+            name: (identifier))))
       (parameter
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier)))))
-    (block
+            name: (identifier)))))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (identifier)))))
+          left: (identifier)
+          right: (identifier)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (array_pattern
+        pattern: (array_pattern
           (pattern_field
-            (identifier))
+            name: (identifier))
           (pattern_field
-            (identifier))
+            name: (identifier))
           (pattern_field
-            (identifier))))
+            name: (identifier))))
       (parameter
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier)))))
-    (block
+            name: (identifier)))))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (identifier)))))
+          left: (identifier)
+          right: (identifier)))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier)
-            (null)))))
-    (block
+            name: (identifier)
+            default: (null)))))
+    body: (block
       (return_statement
         (binary_expression
-          (identifier)
-          (parenthesized_expression
+          left: (identifier)
+          right: (parenthesized_expression
             (binary_expression
-              (identifier)
-              (integer)))))))
+              left: (identifier)
+              right: (integer)))))))
   (function_declaration
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (identifier))
+        name: (identifier))
       (parameter
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier)
-            (null))
+            name: (identifier)
+            default: (null))
           (pattern_field
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type)
               (type))
-            (integer)))))
-    (block
+            default: (integer)))))
+    body: (block
       (return_statement
         (binary_expression
-          (binary_expression
-            (identifier)
-            (parenthesized_expression
+          left: (binary_expression
+            left: (identifier)
+            right: (parenthesized_expression
               (binary_expression
-                (identifier)
-                (integer))))
-          (identifier)))))
+                left: (identifier)
+                right: (integer))))
+          right: (identifier)))))
   (function_declaration
     (function_attributes)
-    (identifier)
-    (parameters
+    name: (identifier)
+    parameters: (parameters
       (parameter
-        (array_pattern
+        pattern: (array_pattern
           (pattern_field
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type))
-            (lambda_expression
-              (parameters)
-              (lambda_expression
-                (parameters)
-                (lambda_expression
-                  (parameters)
-                  (null)))))
+            default: (lambda_expression
+              parameters: (parameters)
+              body: (lambda_expression
+                parameters: (parameters)
+                body: (lambda_expression
+                  parameters: (parameters)
+                  body: (null)))))
           (pattern_field
-            (identifier))
+            name: (identifier))
           (pattern_field
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type))
-            (string
+            default: (string
               (string_content)))
           (pattern_field
-            (identifier)
-            (string
+            name: (identifier)
+            default: (string
               (string_content)))))
       (parameter
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier)
-            (null))
+            name: (identifier)
+            default: (null))
           (pattern_field
-            (identifier)
-            (type_annotation
+            name: (identifier)
+            type: (type_annotation
               (type)
               (type))
-            (integer))))
+            default: (integer))))
       (vararg_parameter))
-    (block
+    body: (block
       (local_declaration
-        (table_pattern
+        pattern: (table_pattern
           (pattern_field
-            (identifier))
+            name: (identifier))
           (pattern_field
-            (identifier)))
-        (identifier))
+            name: (identifier)))
+        value: (identifier))
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments)))
+          callee: (identifier)
+          arguments: (arguments)))
       (return_statement
         (binary_expression
-          (binary_expression
-            (identifier)
-            (parenthesized_expression
+          left: (binary_expression
+            left: (identifier)
+            right: (parenthesized_expression
               (binary_expression
-                (identifier)
-                (integer))))
-          (identifier)))))
+                left: (identifier)
+                right: (integer))))
+          right: (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (parenthesized_expression
+      name: (identifier)
+      value: (unary_expression
+        argument: (parenthesized_expression
           (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (parenthesized_expression
+      name: (identifier)
+      value: (unary_expression
+        argument: (parenthesized_expression
           (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (parenthesized_expression
+      name: (identifier)
+      value: (unary_expression
+        argument: (parenthesized_expression
           (integer)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (integer))))
+      name: (identifier)
+      value: (unary_expression
+        argument: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (integer))))
+      name: (identifier)
+      value: (unary_expression
+        argument: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (unary_expression
-        (integer))))
+      name: (identifier)
+      value: (unary_expression
+        argument: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (string
+      name: (identifier)
+      value: (binary_expression
+        left: (string
           (string_content))
-        (table
+        right: (table
           (slot
-            (identifier)
-            (integer))))))
+            key: (identifier)
+            value: (integer))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (string
+      name: (identifier)
+      value: (binary_expression
+        left: (string
           (string_content))
-        (table
+        right: (table
           (slot
-            (identifier)
-            (integer))))))
+            key: (identifier)
+            value: (integer))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (binary_expression
-        (integer)
-        (integer))))
+      name: (identifier)
+      value: (binary_expression
+        left: (integer)
+        right: (integer))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer)))
+      name: (identifier)
+      value: (integer)))
   (expression_statement
     (increment_expression
-      (identifier)))
+      argument: (identifier)))
   (expression_statement
     (increment_expression
-      (identifier)))
+      argument: (identifier)))
   (expression_statement
     (increment_expression
-      (identifier)))
+      argument: (identifier)))
   (expression_statement
     (increment_expression
-      (identifier)))
+      argument: (identifier)))
   (expression_statement
     (compound_assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (expression_statement
     (compound_assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (expression_statement
     (compound_assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (expression_statement
     (compound_assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (expression_statement
     (compound_assignment_expression
-      (identifier)
-      (integer)))
+      left: (identifier)
+      right: (integer)))
   (comment)
   (comment)
   (comment)
@@ -1983,12 +1983,12 @@ println("done")
   (comment)
   (comment)
   (if_statement
-    (base)
-    (block
+    condition: (base)
+    then_branch: (block
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (string
               (string_content)))))))
   (block
@@ -1999,161 +1999,161 @@ println("done")
     (empty_statement)
     (empty_statement))
   (if_statement
-    (binary_expression
-      (integer)
-      (integer))
-    (expression_statement
+    condition: (binary_expression
+      left: (integer)
+      right: (integer))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (integer)))))
   (if_statement
-    (binary_expression
-      (integer)
-      (integer))
-    (expression_statement
+    condition: (binary_expression
+      left: (integer)
+      right: (integer))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (integer))))
-    (expression_statement
+    else_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (integer)
           (integer)))))
   (if_statement
-    (binary_expression
-      (integer)
-      (integer))
-    (expression_statement
+    condition: (binary_expression
+      left: (integer)
+      right: (integer))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (integer))))
-    (if_statement
-      (binary_expression
-        (integer)
-        (integer))
-      (expression_statement
+    else_branch: (if_statement
+      condition: (binary_expression
+        left: (integer)
+        right: (integer))
+      then_branch: (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (integer)
             (integer))))
-      (expression_statement
+      else_branch: (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (integer)
             (integer))))))
   (if_statement
-    (local_declaration
+    declaration: (local_declaration
       (variable_declaration
-        (identifier)
-        (identifier)))
-    (expression_statement
+        name: (identifier)
+        value: (identifier)))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (if_statement
-    (local_declaration
+    declaration: (local_declaration
       (variable_declaration
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))
-        (identifier)))
-    (expression_statement
+        value: (identifier)))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier))))
-    (expression_statement
+    else_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (binary_expression
-            (identifier)
-            (integer))))))
+            left: (identifier)
+            right: (integer))))))
   (if_statement
-    (local_declaration
+    declaration: (local_declaration
       (variable_declaration
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type))
-        (identifier)))
-    (binary_expression
-      (identifier)
-      (unary_expression
-        (integer)))
-    (expression_statement
+        value: (identifier)))
+    condition: (binary_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (integer)))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (if_statement
-    (local_declaration
+    declaration: (local_declaration
       (variable_declaration
-        (identifier)
-        (identifier)))
-    (expression_statement
+        name: (identifier)
+        value: (identifier)))
+    then_branch: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier))))
-    (if_statement
-      (local_declaration
+    else_branch: (if_statement
+      declaration: (local_declaration
         (variable_declaration
-          (identifier)
-          (identifier)))
-      (expression_statement
+          name: (identifier)
+          value: (identifier)))
+      then_branch: (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (string
               (string_content)))))))
   (while_statement
-    (increment_expression
-      (identifier))
-    (expression_statement
+    condition: (increment_expression
+      argument: (identifier))
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (integer)))))
   (do_while_statement
-    (expression_statement
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (integer))))
-    (binary_expression
-      (increment_expression
-        (identifier))
-      (integer)))
+    condition: (binary_expression
+      left: (increment_expression
+        argument: (identifier))
+      right: (integer)))
   (foreach_statement
-    (identifier)
-    (identifier)
-    (expression_statement
+    value: (identifier)
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (foreach_statement
-    (identifier)
-    (identifier)
-    (identifier)
-    (expression_statement
+    index: (identifier)
+    value: (identifier)
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)
           (identifier)))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (array
           (integer)
           (integer)
@@ -2165,220 +2165,220 @@ println("done")
           (string
             (string_content))))))
   (foreach_statement
-    (array_pattern
+    value: (array_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)))
-    (identifier)
-    (expression_statement
+        name: (identifier)))
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)
           (identifier)
           (identifier)))))
   (foreach_statement
-    (array_pattern
+    value: (array_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)))
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))
-        (null)))
-    (identifier)
-    (block
+        default: (null)))
+    container: (identifier)
+    body: (block
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (identifier)
             (identifier)
             (identifier))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array
+      name: (identifier)
+      value: (array
         (table
           (slot
-            (identifier)
-            (integer))
+            key: (identifier)
+            value: (integer))
           (slot
-            (identifier)
-            (string
+            key: (identifier)
+            value: (string
               (string_content))))
         (table
           (slot
-            (identifier)
-            (integer))
+            key: (identifier)
+            value: (integer))
           (slot
-            (identifier)
-            (string
+            key: (identifier)
+            value: (string
               (string_content)))))))
   (foreach_statement
-    (table_pattern
+    value: (table_pattern
       (pattern_field
-        (identifier))
+        name: (identifier))
       (pattern_field
-        (identifier)))
-    (identifier)
-    (expression_statement
+        name: (identifier)))
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)
           (identifier)))))
   (foreach_statement
-    (table_pattern
+    value: (table_pattern
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)))
       (pattern_field
-        (identifier)
-        (type_annotation
+        name: (identifier)
+        type: (type_annotation
           (type)
           (type))
-        (null)))
-    (identifier)
-    (block
+        default: (null)))
+    container: (identifier)
+    body: (block
       (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (identifier)
             (identifier))))))
   (for_statement
-    (break_statement))
+    body: (break_statement))
   (for_statement
-    (local_declaration
+    initializer: (local_declaration
       (variable_declaration
-        (identifier)
-        (integer)))
-    (binary_expression
-      (identifier)
-      (integer))
-    (increment_expression
-      (identifier))
-    (continue_statement))
+        name: (identifier)
+        value: (integer)))
+    condition: (binary_expression
+      left: (identifier)
+      right: (integer))
+    step: (increment_expression
+      argument: (identifier))
+    body: (continue_statement))
   (for_statement
-    (local_declaration
+    initializer: (local_declaration
       (variable_declaration
-        (identifier)
-        (integer)))
-    (binary_expression
-      (identifier)
-      (integer))
-    (comma_expression
+        name: (identifier)
+        value: (integer)))
+    condition: (binary_expression
+      left: (identifier)
+      right: (integer))
+    step: (comma_expression
       (compound_assignment_expression
-        (identifier)
-        (integer))
+        left: (identifier)
+        right: (integer))
       (increment_expression
-        (identifier)))
-    (continue_statement))
+        argument: (identifier)))
+    body: (continue_statement))
   (try_statement
-    (expression_statement
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (integer))))
     (catch_clause
-      (identifier)
-      (expression_statement
+      name: (identifier)
+      body: (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (integer))))))
   (try_statement
-    (throw_statement
+    body: (throw_statement
       (null))
     (catch_clause
-      (identifier)
-      (expression_statement
+      name: (identifier)
+      body: (expression_statement
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (integer))))))
   (class_declaration
-    (identifier)
-    (class_body))
+    name: (identifier)
+    body: (class_body))
   (class_declaration
-    (identifier)
-    (class_body))
+    name: (identifier)
+    body: (class_body))
   (try_statement
-    (block
+    body: (block
       (throw_statement
         (call_expression
-          (identifier)
-          (arguments))))
+          callee: (identifier)
+          arguments: (arguments))))
     (catch_clause
-      (identifier)
-      (identifier)
-      (block
+      class: (identifier)
+      name: (identifier)
+      body: (block
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content)))))))
     (catch_clause
-      (identifier)
-      (identifier)
-      (block
+      class: (identifier)
+      name: (identifier)
+      body: (block
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content)))))))
     (catch_clause
-      (identifier)
-      (block
+      name: (identifier)
+      body: (block
         (expression_statement
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (string
                 (string_content))))))))
   (directive)
   (local_declaration
     (variable_declaration
-      (identifier)
-      (call_expression
-        (identifier)
-        (arguments))))
+      name: (identifier)
+      value: (call_expression
+        callee: (identifier)
+        arguments: (arguments))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (array)))
+      name: (identifier)
+      value: (array)))
   (foreach_statement
-    (identifier)
-    (identifier)
-    (identifier)
-    (expression_statement
+    index: (identifier)
+    value: (identifier)
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (field_access_expression
-          (identifier)
-          (field_identifier))
-        (arguments
+        callee: (field_access_expression
+          receiver: (identifier)
+          field: (field_identifier))
+        arguments: (arguments
           (interpolated_string
             (hole
               (identifier))
             (string_content)
             (hole
               (ternary_expression
-                (binary_expression
-                  (call_expression
-                    (field_access_expression
-                      (array
+                condition: (binary_expression
+                  left: (call_expression
+                    callee: (field_access_expression
+                      receiver: (array
                         (string
                           (string_content))
                         (string
@@ -2387,97 +2387,97 @@ println("done")
                           (string_content))
                         (string
                           (string_content)))
-                      (field_identifier))
-                    (arguments
+                      field: (field_identifier))
+                    arguments: (arguments
                       (call_expression
-                        (identifier)
-                        (arguments
+                        callee: (identifier)
+                        arguments: (arguments
                           (identifier)))))
-                  (integer))
-                (identifier)
-                (call_expression
-                  (identifier)
-                  (arguments
+                  right: (integer))
+                consequence: (identifier)
+                alternative: (call_expression
+                  callee: (identifier)
+                  arguments: (arguments
                     (identifier))))))))))
   (expression_statement
     (call_expression
-      (field_access_expression
-        (identifier)
-        (field_identifier))
-      (arguments)))
+      callee: (field_access_expression
+        receiver: (identifier)
+        field: (field_identifier))
+      arguments: (arguments)))
   (foreach_statement
-    (identifier)
-    (identifier)
-    (identifier)
-    (expression_statement
+    index: (identifier)
+    value: (identifier)
+    container: (identifier)
+    body: (expression_statement
       (call_expression
-        (identifier)
-        (arguments
+        callee: (identifier)
+        arguments: (arguments
           (identifier)))))
   (class_declaration
-    (identifier)
-    (class_body
+    name: (identifier)
+    body: (class_body
       (docstring)
       (method
-        (identifier)
-        (parameters)
-        (block
+        name: (identifier)
+        parameters: (parameters)
+        body: (block
           (return_statement
             (integer))))))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (call_expression
-        (identifier)
-        (arguments))))
+      name: (identifier)
+      value: (call_expression
+        callee: (identifier)
+        arguments: (arguments))))
   (function_declaration
-    (identifier)
-    (parameters)
-    (block
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
       (return_statement
         (table
           (slot
-            (identifier)
-            (integer))
+            key: (identifier)
+            value: (integer))
           (slot
-            (identifier)
-            (function_expression
-              (parameters)
-              (block
+            key: (identifier)
+            value: (function_expression
+              parameters: (parameters)
+              body: (block
                 (docstring)
                 (return_statement
                   (integer)))))))))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (identifier))))))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (identifier))))))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (call_expression
-          (identifier)
-          (arguments
+          callee: (identifier)
+          arguments: (arguments
             (field_access_expression
-              (call_expression
-                (identifier)
-                (arguments))
-              (field_identifier)))))))
+              receiver: (call_expression
+                callee: (identifier)
+                arguments: (arguments))
+              field: (field_identifier)))))))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (string
           (string_content))))))

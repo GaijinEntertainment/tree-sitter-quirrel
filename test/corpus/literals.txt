@@ -9,8 +9,8 @@ x = [0, 1_000, 0x_FF_00, 0X1f, 1., 1.5, 1.e5, 1e+5, 2E-3, 1_e5, 0.5]
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (array
+      left: (identifier)
+      right: (array
         (integer)
         (integer)
         (integer)
@@ -38,8 +38,8 @@ d = '\n'
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (string
+      left: (identifier)
+      right: (string
         (string_content)
         (escape_sequence)
         (string_content)
@@ -53,16 +53,16 @@ d = '\n'
         (escape_sequence))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (verbatim_string)))
+      left: (identifier)
+      right: (verbatim_string)))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (character)))
+      left: (identifier)
+      right: (character)))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (character))))
+      left: (identifier)
+      right: (character))))
 
 ================================================================================
 Template strings
@@ -76,13 +76,13 @@ b = $"a}b"
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (interpolated_string
+      left: (identifier)
+      right: (interpolated_string
         (string_content)
         (hole
           (binary_expression
-            (identifier)
-            (integer)))
+            left: (identifier)
+            right: (integer)))
         (string_content)
         (escape_sequence)
         (string_content)
@@ -90,15 +90,15 @@ b = $"a}b"
         (string_content)
         (hole
           (call_expression
-            (identifier)
-            (arguments
+            callee: (identifier)
+            arguments: (arguments
               (interpolated_string
                 (hole
                   (identifier)))))))))
   (expression_statement
     (assignment_expression
-      (identifier)
-      (interpolated_string
+      left: (identifier)
+      right: (interpolated_string
         (string_content)))))
 
 ================================================================================
@@ -112,8 +112,8 @@ x = [null, true, false, this, __LINE__, __FILE__]
 (source_file
   (expression_statement
     (assignment_expression
-      (identifier)
-      (array
+      left: (identifier)
+      right: (array
         (null)
         (true)
         (false)
@@ -136,9 +136,9 @@ x = 1 /* block */ + 2
   (comment)
   (expression_statement
     (assignment_expression
-      (identifier)
-      (binary_expression
-        (integer)
+      left: (identifier)
+      right: (binary_expression
+        left: (integer)
         (comment)
-        (integer))))
+        right: (integer))))
   (comment))

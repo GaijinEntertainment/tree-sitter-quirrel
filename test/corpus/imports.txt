@@ -14,27 +14,27 @@ let z = 1
 (source_file
   (directive)
   (import_statement
-    (string
+    module: (string
       (string_content))
-    (identifier))
+    alias: (identifier))
   (import_statement
-    (string
+    module: (string
       (string_content))
     (import_slot
-      (identifier))
+      name: (identifier))
     (import_slot
-      (identifier)
-      (identifier))
+      name: (identifier)
+      alias: (identifier))
     (wildcard_import))
   (import_statement
-    (string
+    module: (string
       (string_content))
     (import_slot
-      (identifier)))
+      name: (identifier)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer))))
+      name: (identifier)
+      value: (integer))))
 
 ================================================================================
 Imports after expression statements
@@ -50,20 +50,20 @@ let x = 1
 
 (source_file
   (import_statement
-    (string
+    module: (string
       (string_content)))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments)))
+      callee: (identifier)
+      arguments: (arguments)))
   (return_statement)
   (import_statement
-    (string
+    module: (string
       (string_content)))
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer))))
+      name: (identifier)
+      value: (integer))))
 
 ================================================================================
 Import keywords as names after the import region
@@ -78,17 +78,17 @@ import <- 2
 (source_file
   (local_declaration
     (variable_declaration
-      (identifier)
-      (integer)))
+      name: (identifier)
+      value: (integer)))
   (expression_statement
     (call_expression
-      (identifier)
-      (arguments
+      callee: (identifier)
+      arguments: (arguments
         (integer))))
   (expression_statement
     (newslot_expression
-      (identifier)
-      (integer))))
+      left: (identifier)
+      right: (integer))))
 
 ================================================================================
 Import inside the first statement
@@ -102,10 +102,10 @@ if (enabled) {
 
 (source_file
   (if_statement
-    (identifier)
-    (block
+    condition: (identifier)
+    then_branch: (block
       (import_statement
-        (string
+        module: (string
           (string_content))
         (import_slot
-          (identifier))))))
+          name: (identifier))))))
