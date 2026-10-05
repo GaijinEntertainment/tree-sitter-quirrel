@@ -5,8 +5,12 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 ## Reference
 
 - The authority is the compiler in `prog/1stPartyLibs/quirrel/quirrel/squirrel/compiler/` of the Dagor tree:
-  `lexer.cpp`, `parser.cpp`, `parser.h`, and `sqtypeparser.cpp`. GaijinEntertainment/DagorEngine on GitHub has the same
-  files. Settle each grammar question in that code, not in the Quirrel docs.
+  `lexer.cpp`, `parser.cpp`, `parser.h`, and `sqtypeparser.cpp`. Settle each grammar question in that code, not in the
+  Quirrel docs.
+- Two releases of the compiler are in use: Quirrel 4.41 of GaijinEntertainment/quirrel and GaijinEntertainment/DagorEngine
+  on GitHub, and Quirrel 4.43 of the Dagor master branch. The grammar accepts the input of both. Only 4.41 has the
+  `#forbid-auto-freeze` and `#allow-auto-freeze` directives, and only 4.43 accepts a spread right after a shorthand slot
+  with no comma between them (`{ a ...b }`).
 - The grammar is a clean-room implementation. No file, rule, or test comes from another Quirrel or Squirrel tree-sitter
   grammar. Do not read one when you change this grammar.
 - An input that the compiler accepts in some language mode parses without ERROR or MISSING nodes. An input that every
@@ -80,8 +84,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   invalid run returns `_malformed_number`, which no rule accepts. Number limits stay unchecked.
 - The import region is open only at the top level: `_import_marker` makes `import` and `from` start an import at the
   start of a prelude statement. Nested statement lists accept an import in any position.
-- `TYPE_NAMES` follows `sq_type_string_to_mask` in `sqtypeparser.cpp`, and `DIRECTIVES` follows the directive table in
-  `parser.cpp`.
+- `TYPE_NAMES` follows `sq_type_string_to_mask` in `sqtypeparser.cpp`, and `DIRECTIVES` holds the directive tables in
+  `parser.cpp` of both compiler releases.
 - Every corpus input without `:error` compiles in some language mode, and every `:error` input fails in every mode.
   Check a new case with the compiler before you add it.
 - In `queries/highlights.scm`, a later pattern overrides an earlier one in both tree-sitter-highlight and Neovim. Put a
