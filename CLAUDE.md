@@ -52,8 +52,7 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - `package-lock.json`, `Cargo.lock`, `go.sum`, `Package.resolved` - lockfiles that npm, cargo, go, and swift write when
   they resolve the dependencies of the manifests. Commit them with the manifest change.
 - `.github/` - the CI and publish workflows, dependabot, and issue templates.
-  The publish workflow authenticates to crates.io, PyPI, and npm with trusted publishing; only the first npm release
-  needs a token.
+  The publish workflow authenticates to crates.io, PyPI, and npm with trusted publishing and holds no registry token.
 - `eslint.config.mjs` - the lint configuration for `grammar.js` (`npm run lint`).
 - `examples/` - Quirrel files that the CI workflow parses.
 - `test/corpus/` - corpus tests, one file per topic. `:error` marks an input that must produce ERROR.
@@ -132,10 +131,11 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   - crates.io accepts a trusted publisher only for a crate that exists. Publish the first version from the release
     commit with `cargo publish` and the API token of a crate owner before you push the tag. Then add the trusted
     publisher: repository `GaijinEntertainment/tree-sitter-quirrel`, workflow `publish.yml`, environment `crates`.
-  - npm accepts a trusted publisher only for a package that exists. Give the first release a granular access token in
-    the `NPM_TOKEN` secret of the `npm` environment. After that release, add the trusted publisher (organization
-    `GaijinEntertainment`, repository `tree-sitter-quirrel`, workflow `publish.yml`, environment `npm`, with
-    `npm publish` allowed), delete the secret, and revoke the token.
+  - npm accepts a trusted publisher only for a package that exists. Create the package with a placeholder: from a
+    directory that holds only a `package.json` with the name `tree-sitter-quirrel` and the version `0.0.0`, run
+    `npm publish` as a maintainer. Then add the trusted publisher (organization `GaijinEntertainment`, repository
+    `tree-sitter-quirrel`, workflow `publish.yml`, environment `npm`, with `npm publish` allowed). After the first
+    release, deprecate the version `0.0.0`.
 - The GitHub release attests its artifacts, and npm records provenance; both need a public repository.
 - A job that can mint an OIDC token (`id-token: write`) runs only GitHub's own actions and the registry's own publishing
   action. The publish workflow downloads the tree-sitter CLI and checks its SHA-256 for that reason.
