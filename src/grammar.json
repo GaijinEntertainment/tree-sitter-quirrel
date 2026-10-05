@@ -2231,6 +2231,18 @@
           },
           "named": false,
           "value": "}"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_after_block"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },

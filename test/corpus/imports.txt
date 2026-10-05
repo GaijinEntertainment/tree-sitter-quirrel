@@ -151,6 +151,29 @@ function f() { import = 1 }
           right: (integer))))))
 
 ================================================================================
+Import keywords as names after a declaration without braces in a try body
+================================================================================
+
+try enum E { A }
+catch (e) { from = import }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (try_statement
+    body: (enum_declaration
+      name: (identifier)
+      (enum_member
+        name: (identifier)))
+    (catch_clause
+      name: (identifier)
+      body: (block
+        (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (identifier)))))))
+
+================================================================================
 Import inside the first statement
 ================================================================================
 

@@ -22,8 +22,6 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   and `$${ ... }` parse everywhere. A file that uses the forms of two modes also parses, although no single mode
   accepts it, as in `x = clone y` followed by `clone--`.
 - The compiler rejects this input, and the grammar accepts it. Keep the list current:
-  - An import after a `try` or `catch` body that is a declaration or a control statement without braces, as in
-    `try local x = 1 catch (e) { import "m" }`. A marker for the end of such a body costs about 2,200 parser states.
   - A second docstring that is a statement of a `$${ ... }` code block. The compiler gives that docstring to the
     function, lambda, class, or table around the block, and the scanner has no scope for a lambda or a table.
 - The grammar does not check what the compiler checks after it reads the syntax: the nesting depth of an expression
@@ -180,6 +178,11 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   statement and `_after_block` after a function body, and the scanner never returns either. While imports are open,
   the scanner returns `_import_marker` before `import` or `from` at the start of a statement, and each import
   statement needs that token.
+- The body of a `try` or of a catch clause has no statement end, so no marker shows that a declaration or a control
+  statement without braces has ended there. The scanner reads the first word of each such body at `_try_start` and at
+  `_catch_marker`, keeps the answer in the record of the `try`, and closes the imports at the next `_catch_marker`. A
+  marker after the body in the grammar costs about 2,200 parser states. A `switch` statement closes the imports
+  through `_after_block` after its `}`, because `switch` at the start of a body can also be a name.
 - A scan that changes the scanner state returns a token, the `_terminator_reset` extra when no other token applies,
   because the runtime keeps the state only with a token.
 - `TYPE_NAMES` follows `sq_type_string_to_mask` in `sqtypeparser.cpp`, and `DIRECTIVES` holds the directive tables in
