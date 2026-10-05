@@ -567,7 +567,8 @@ export default grammar({
 
     docstring: $ => seq($._docstring_start, $._docstring_text),
 
-    _docstring_text: _ => token(seq('@@"', repeat(choice(/[^"]/, '""')), '"')),
+    // constraint: the compiler takes the character after `@@` as the opening quote and does not check it
+    _docstring_text: _ => token(seq('@@', /[\s\S]/, repeat(choice(/[^"]/, '""')), '"')),
 
     local_declaration: $ => seq(
       choice('local', 'let'),

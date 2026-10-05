@@ -159,6 +159,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   body opens an entry, and `_docstring_scope_end` before the `}` closes it. `_docstring_start` is a zero-width token
   before each docstring, and the scan returns no token for the second docstring of a scope. A code block opens an
   entry that takes each docstring. The scanner keeps 512 entries, and a deeper scope takes each docstring.
+- The lexer of the compiler takes the character after `@@` as the opening quote of a docstring and does not check
+  it, so `@@x doc"` is a docstring. The docstring token and the scans that look for a docstring follow that.
 - The scanner never returns `_after_postfix_update` either. Its presence in `valid_symbols` marks the position after a
   postfix update, where `_index_bracket` is not valid but a binary minus on the next line continues the expression.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
