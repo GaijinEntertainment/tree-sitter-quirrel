@@ -27,7 +27,6 @@ enum TokenType {
   IMPORT_MARKER,
   SAME_LINE_TYPE_BAR,
   CONST_DECLARATION_END,
-  AFTER_POSTFIX_UPDATE,
   BEFORE_IMPORT_ALIAS,
   FOREACH_INDEX_MARKER,
   ENUM_MEMBERS_MARKER,
@@ -55,6 +54,7 @@ enum { OPEN_TRY = 1, AS_CATCH_BODY = 2, BODY_CLOSES_IMPORTS = 4, OPEN_TRY_FLAGS_
 // constraint: the runtime restores this state from the last external token, so each scan that changes it returns one
 typedef struct {
   bool after_terminator;
+  bool after_postfix_update;
   bool imports_closed;
   bool next_try_is_catch_body;
   bool catch_types_lost;
@@ -707,7 +707,7 @@ void *tree_sitter_quirrel_external_scanner_create(void) { return ts_calloc(1, si
 
 void tree_sitter_quirrel_external_scanner_destroy(void *payload) { ts_free(payload); }
 
-enum { SCOPES_OFFSET = 4 + sizeof(uint16_t) + sizeof(uint32_t) };
+enum { FLAGS_SIZE = 5, SCOPES_OFFSET = FLAGS_SIZE + sizeof(uint16_t) + sizeof(uint32_t) };
 
 static unsigned recorded_scopes(const Scanner *scanner) {
   return scanner->open_scopes < DOCSTRING_SCOPES_MAX ? scanner->open_scopes + 1 : DOCSTRING_SCOPES_MAX;
@@ -717,11 +717,12 @@ unsigned tree_sitter_quirrel_external_scanner_serialize(void *payload, char *buf
   Scanner *scanner = payload;
   unsigned types_offset = SCOPES_OFFSET + recorded_scopes(scanner);
   buffer[0] = (char)scanner->after_terminator;
-  buffer[1] = (char)scanner->imports_closed;
-  buffer[2] = (char)scanner->next_try_is_catch_body;
-  buffer[3] = (char)scanner->catch_types_lost;
-  memcpy(buffer + 4, &scanner->catch_types_size, sizeof scanner->catch_types_size);
-  memcpy(buffer + 4 + sizeof scanner->catch_types_size, &scanner->open_scopes, sizeof scanner->open_scopes);
+  buffer[1] = (char)scanner->after_postfix_update;
+  buffer[2] = (char)scanner->imports_closed;
+  buffer[3] = (char)scanner->next_try_is_catch_body;
+  buffer[4] = (char)scanner->catch_types_lost;
+  memcpy(buffer + FLAGS_SIZE, &scanner->catch_types_size, sizeof scanner->catch_types_size);
+  memcpy(buffer + FLAGS_SIZE + sizeof scanner->catch_types_size, &scanner->open_scopes, sizeof scanner->open_scopes);
   memcpy(buffer + SCOPES_OFFSET, scanner->scopes, recorded_scopes(scanner));
   memcpy(buffer + types_offset, scanner->catch_types, scanner->catch_types_size);
   return types_offset + scanner->catch_types_size;
@@ -730,6 +731,7 @@ unsigned tree_sitter_quirrel_external_scanner_serialize(void *payload, char *buf
 void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
   Scanner *scanner = payload;
   scanner->after_terminator = false;
+  scanner->after_postfix_update = false;
   scanner->imports_closed = false;
   scanner->next_try_is_catch_body = false;
   scanner->catch_types_lost = false;
@@ -740,11 +742,12 @@ void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char 
     return;
   }
   scanner->after_terminator = buffer[0] != 0;
-  scanner->imports_closed = buffer[1] != 0;
-  scanner->next_try_is_catch_body = buffer[2] != 0;
-  scanner->catch_types_lost = buffer[3] != 0;
-  memcpy(&scanner->catch_types_size, buffer + 4, sizeof scanner->catch_types_size);
-  memcpy(&scanner->open_scopes, buffer + 4 + sizeof scanner->catch_types_size, sizeof scanner->open_scopes);
+  scanner->after_postfix_update = buffer[1] != 0;
+  scanner->imports_closed = buffer[2] != 0;
+  scanner->next_try_is_catch_body = buffer[3] != 0;
+  scanner->catch_types_lost = buffer[4] != 0;
+  memcpy(&scanner->catch_types_size, buffer + FLAGS_SIZE, sizeof scanner->catch_types_size);
+  memcpy(&scanner->open_scopes, buffer + FLAGS_SIZE + sizeof scanner->catch_types_size, sizeof scanner->open_scopes);
   memcpy(scanner->scopes, buffer + SCOPES_OFFSET, recorded_scopes(scanner));
   memcpy(scanner->catch_types, buffer + SCOPES_OFFSET + recorded_scopes(scanner), scanner->catch_types_size);
 }
@@ -911,7 +914,13 @@ static bool scan_docstring_start(Scanner *scanner, TSLexer *lexer) {
   return accept(lexer, DOCSTRING_START);
 }
 
-static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool after_terminator) {
+static bool scan_token(
+  Scanner *scanner,
+  TSLexer *lexer,
+  const bool *valid_symbols,
+  bool after_terminator,
+  bool after_postfix_update
+) {
   if (valid_symbols[TEMPLATE_CHARS]) {
     return scan_template_chars(lexer);
   }
@@ -1030,7 +1039,7 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   // constraint: the compiler takes no postfix operator after `x++`, but a binary operator can follow it
   Continuations can_take = {
     .call = expression_ended,
-    .binary_minus = expression_ended || valid_symbols[AFTER_POSTFIX_UPDATE],
+    .binary_minus = expression_ended || after_postfix_update,
     .import_alias = valid_symbols[BEFORE_IMPORT_ALIAS],
   };
   if (continues_statement(lexer, &can_take)) {
@@ -1046,6 +1055,7 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
 bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   Scanner *scanner = payload;
   bool after_terminator = scanner->after_terminator;
+  bool after_postfix_update = scanner->after_postfix_update;
   scanner->after_terminator = false;
 
   if (valid_symbols[ERROR_SENTINEL]) {
@@ -1059,7 +1069,9 @@ bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, co
     return accept(lexer, valid_symbols[AFTER_OPENING_ITEM] ? AFTER_OPENING_ITEM : AFTER_BLOCK);
   }
   bool changes_state = after_terminator;
-  if (scan_token(scanner, lexer, valid_symbols, after_terminator)) {
+  if (scan_token(scanner, lexer, valid_symbols, after_terminator, after_postfix_update)) {
+    scanner->after_postfix_update =
+      lexer->result_symbol == POSTFIX_INCREMENT || lexer->result_symbol == POSTFIX_DECREMENT;
     // constraint: the parser ends the innermost `try` when it takes a statement end where a catch clause can follow
     bool ends_statement = lexer->result_symbol == AUTOMATIC_SEMICOLON || lexer->result_symbol == SEMICOLON;
     if (ends_statement && valid_symbols[CATCH_MARKER]) {
@@ -1067,5 +1079,6 @@ bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, co
     }
     return true;
   }
+  scanner->after_postfix_update = false;
   return changes_state && valid_symbols[TERMINATOR_RESET] && accept(lexer, TERMINATOR_RESET);
 }
