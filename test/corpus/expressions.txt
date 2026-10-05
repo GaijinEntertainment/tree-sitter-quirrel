@@ -355,6 +355,35 @@ x = clone [a].extend(b)
             (identifier)))))))
 
 ================================================================================
+Clone operator on a prefix update, and a postfix update of the name clone
+================================================================================
+
+x = clone --a
+y = clone ++b.c
+clone--
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (increment_expression
+          argument: (identifier)))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (increment_expression
+          argument: (field_access_expression
+            receiver: (identifier)
+            field: (field_identifier))))))
+  (expression_statement
+    (increment_expression
+      argument: (identifier))))
+
+================================================================================
 Lambdas and function expressions
 ================================================================================
 

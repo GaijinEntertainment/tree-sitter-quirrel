@@ -3640,6 +3640,72 @@
         ]
       }
     },
+    "clone_update_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "operator",
+          "content": {
+            "type": "STRING",
+            "value": "clone"
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "argument",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "clone_prefix_increment_expression"
+            },
+            "named": true,
+            "value": "increment_expression"
+          }
+        }
+      ]
+    },
+    "clone_prefix_increment_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "operator",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_postfix_increment"
+                },
+                "named": false,
+                "value": "++"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_postfix_decrement"
+                },
+                "named": false,
+                "value": "--"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "argument",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_unary_operand"
+          }
+        }
+      ]
+    },
     "_expression": {
       "type": "CHOICE",
       "members": [
@@ -3680,6 +3746,15 @@
         {
           "type": "SYMBOL",
           "name": "unary_expression"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "clone_update_expression"
+          },
+          "named": true,
+          "value": "unary_expression"
         },
         {
           "type": "SYMBOL",
@@ -4806,6 +4881,72 @@
         ]
       }
     },
+    "outer_clone_update_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "operator",
+          "content": {
+            "type": "STRING",
+            "value": "clone"
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "argument",
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "outer_clone_prefix_increment_expression"
+            },
+            "named": true,
+            "value": "increment_expression"
+          }
+        }
+      ]
+    },
+    "outer_clone_prefix_increment_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "operator",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_postfix_increment"
+                },
+                "named": false,
+                "value": "++"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_postfix_decrement"
+                },
+                "named": false,
+                "value": "--"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "argument",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_outer_unary_operand"
+          }
+        }
+      ]
+    },
     "_outer_expression": {
       "type": "CHOICE",
       "members": [
@@ -4868,6 +5009,15 @@
           "content": {
             "type": "SYMBOL",
             "name": "outer_unary_expression"
+          },
+          "named": true,
+          "value": "unary_expression"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "outer_clone_update_expression"
           },
           "named": true,
           "value": "unary_expression"
@@ -6055,6 +6205,15 @@
           "content": {
             "type": "SYMBOL",
             "name": "statement_unary_expression"
+          },
+          "named": true,
+          "value": "unary_expression"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "outer_clone_update_expression"
           },
           "named": true,
           "value": "unary_expression"
@@ -8406,6 +8565,14 @@
     [
       "_contextual_name",
       "switch_statement"
+    ],
+    [
+      "_contextual_name",
+      "clone_update_expression"
+    ],
+    [
+      "_contextual_name",
+      "outer_clone_update_expression"
     ]
   ],
   "precedences": [],

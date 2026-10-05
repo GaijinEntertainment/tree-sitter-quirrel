@@ -40,6 +40,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   of a binary operator, both operands of `??`, `||`, and `&&`, the condition of `? :`, and the receiver of a postfix
   operator. The `outer_` and `statement_` copies are the expressions that keep it; the rules without a prefix are the
   expressions that lost it, and their `parenthesized_expression` holds no `=`.
+- After the word `clone` the scanner returns `++` and `--` as postfix tokens, because `clone` can be a name. The
+  `clone_update_expression` rules take those tokens as the prefix update that the clone operator applies to, and the
+  conflict with `_contextual_name` lets the parser try both readings of `clone --x`.
 - An `=` cannot follow a complete lambda body, because the body takes every token that continues an expression. The
   lambda rule ends with an optional `=` that `_never_returned` rejects.
 - `src/scanner.c` - statement ends (the automatic `;`), the `}` and `;` that end a statement, the postfix tokens that a

@@ -144,6 +144,17 @@ function expressionSpine(prefix) {
         field('operator', choice('++', '--')),
         field('argument', hidden($, '_unary_operand')),
       )),
+
+      // constraint: `clone` is also a name, so the scanner returns the `++` or `--` after it as a postfix token
+      [ruleName('clone_update_expression')]: $ => seq(
+        field('operator', 'clone'),
+        field('argument', alias($[ruleName('clone_prefix_increment_expression')], $.increment_expression)),
+      ),
+
+      [ruleName('clone_prefix_increment_expression')]: $ => seq(
+        field('operator', choice(alias($._postfix_increment, '++'), alias($._postfix_decrement, '--'))),
+        field('argument', hidden($, '_unary_operand')),
+      ),
     }),
 
     [`${prefix}_expression`]: $ => choice(
@@ -157,6 +168,7 @@ function expressionSpine(prefix) {
 
     [`${prefix}_unary_operand`]: $ => choice(
       node($, 'unary_expression'),
+      alias($[operand.ruleName('clone_update_expression')], $.unary_expression),
       operand.node($, 'increment_expression'),
       alias($[ruleName('postfix_increment_expression')], $.increment_expression),
       hidden($, '_postfix_operand'),
@@ -349,6 +361,8 @@ export default grammar({
 
   conflicts: $ => [
     [$._contextual_name, $.switch_statement],
+    [$._contextual_name, $.clone_update_expression],
+    [$._contextual_name, $.outer_clone_update_expression],
   ],
 
   rules: {
