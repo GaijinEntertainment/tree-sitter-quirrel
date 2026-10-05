@@ -432,6 +432,7 @@ export default grammar({
     $._unchecked_docstring_scope_start,
     $._docstring_scope_end,
     $._try_start,
+    $._const_semicolon,
     $._never_returned,
     $._error_sentinel,
   ],
@@ -527,9 +528,11 @@ export default grammar({
       alias($._semicolon, $.empty_statement),
     ),
 
+    // constraint: the compiler reads the `;` after a `const` declaration with a value as a part of the declaration
     _unterminated_statement: $ => choice(
       $._prelude_statement,
       $._opening_statement_without_block,
+      seq(alias($.const_value_declaration, $.const_declaration), $._const_semicolon),
       prec.right(seq($.block, optional($._after_block))),
     ),
 
@@ -624,6 +627,15 @@ export default grammar({
         seq(field('name', $._name), '=', field('value', $._expression), $._const_declaration_end),
         seq('function', optional($.function_attributes), field('name', $._name), $._function_tail),
       ),
+    ),
+
+    const_value_declaration: $ => seq(
+      optional('global'),
+      'const',
+      field('name', $._name),
+      '=',
+      field('value', $._expression),
+      $._const_declaration_end,
     ),
 
     enum_declaration: $ => seq(

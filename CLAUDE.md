@@ -130,7 +130,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   statement, so `x = {};` is two statements, and `else` or the `while` of a `do` loop cannot follow that `;`.
 - A `const` declaration with a value ends only at `;`, a line end, `}`, or the text end; a `}` before it does not end
   it, as in `const A = {} x = 1`. The zero-width `_const_declaration_end` holds that check, and the statement end
-  follows it.
+  follows it. The compiler reads the `;` as a part of the declaration. The body of a `try` or a `catch` has no
+  statement end, so the declaration takes its `;` there as `_const_semicolon`: `try const A = 1; catch (e) {}`. That
+  token has no node, which keeps the `body` field to one node.
 - The compiler takes no postfix operator after a postfix update and reads `--` as one token there. The update rule
   therefore ends with an optional `--` that `_never_returned` rejects; where the next operand can start, as in
   `[a++ --b]`, the left associativity of the rule ends the update first.

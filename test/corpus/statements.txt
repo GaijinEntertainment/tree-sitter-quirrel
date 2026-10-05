@@ -302,6 +302,30 @@ catch (e) {}
       body: (block))))
 
 ================================================================================
+A const declaration in a try body and in a catch body takes its semicolon
+================================================================================
+
+try const K = 1; catch (A e) const L = {}
+; catch (e) {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (try_statement
+    body: (const_declaration
+      name: (identifier)
+      value: (integer))
+    (catch_clause
+      class: (identifier)
+      name: (identifier)
+      body: (const_declaration
+        name: (identifier)
+        value: (table)))
+    (catch_clause
+      name: (identifier)
+      body: (block))))
+
+================================================================================
 The same catch type after a nested try statement that an else or a do loop ends
 ================================================================================
 

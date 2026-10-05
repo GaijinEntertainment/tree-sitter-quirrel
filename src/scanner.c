@@ -39,6 +39,7 @@ enum TokenType {
   UNCHECKED_DOCSTRING_SCOPE_START,
   DOCSTRING_SCOPE_END,
   TRY_START,
+  CONST_SEMICOLON,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
@@ -932,6 +933,9 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (c == ';') {
     if (ends_const_declaration) {
       return accept(lexer, CONST_DECLARATION_END);
+    }
+    if (valid_symbols[CONST_SEMICOLON]) {
+      return !gap.crossed_comment && accept_terminator(scanner, lexer, CONST_SEMICOLON);
     }
     // constraint: the compiler takes a `;` on the line of the `}` or `;` that ended a statement as an empty statement
     if (after_terminator && !gap.newline && may_terminate) {
