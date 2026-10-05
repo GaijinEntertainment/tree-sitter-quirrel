@@ -105,6 +105,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - An alias of an inline `seq` applies to each element. Alias a named rule.
 - A contextual keyword used as a name, and a type name, is an aliased token, so that its node is a leaf. A keyword
   capture in `queries/highlights.scm` then does not color a name.
+- `constructor` is a keyword token of the compiler and a reserved word here. The compiler takes it as a name where it
+  calls `Expect(TK_IDENTIFIER)`; those places use `_name`. Where the compiler compares the token with `TK_IDENTIFIER`
+  itself, `constructor` is not a name; those places use `_plain_name` or `identifier`: an import name, a slot key, and
+  the variable of a typed catch.
 - The runtime restores the scanner state from the last external token. While `after_terminator` is set, each scan
   therefore returns a token, the zero-width `_terminator_reset` extra when no other token applies.
 - A `}` or `;` that ends a statement sets `after_terminator`. One `}` or `;` ends each statement that it closes, as in

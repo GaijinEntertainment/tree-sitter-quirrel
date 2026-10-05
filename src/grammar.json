@@ -2112,7 +2112,7 @@
           "name": "name",
           "content": {
             "type": "SYMBOL",
-            "name": "_name"
+            "name": "_plain_name"
           }
         },
         {
@@ -2259,7 +2259,7 @@
         }
       ]
     },
-    "_slot_name": {
+    "_plain_name": {
       "type": "CHOICE",
       "members": [
         {
@@ -3316,7 +3316,7 @@
           "name": "key",
           "content": {
             "type": "SYMBOL",
-            "name": "_slot_name"
+            "name": "_plain_name"
           }
         },
         {
@@ -9383,7 +9383,7 @@
           "name": "key",
           "content": {
             "type": "SYMBOL",
-            "name": "_slot_name"
+            "name": "_plain_name"
           }
         },
         {
@@ -9405,7 +9405,7 @@
       "name": "key",
       "content": {
         "type": "SYMBOL",
-        "name": "_slot_name"
+        "name": "_plain_name"
       }
     },
     "quoted_key_slot": {
@@ -10242,6 +10242,10 @@
       {
         "type": "STRING",
         "value": "await"
+      },
+      {
+        "type": "STRING",
+        "value": "constructor"
       }
     ]
   }

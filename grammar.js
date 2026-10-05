@@ -426,6 +426,7 @@ export default grammar({
       'while', 'do', 'if', 'else', 'break', 'continue', 'return', 'null', 'function', 'local', 'for', 'foreach',
       'in', 'typeof', 'base', 'delete', 'try', 'catch', 'throw', 'yield', 'resume', 'this', 'class', 'instanceof',
       'true', 'false', 'static', 'enum', 'const', '__LINE__', '__FILE__', 'global', 'not', 'let', 'async', 'await',
+      'constructor',
     ],
   },
 
@@ -691,7 +692,7 @@ export default grammar({
       'catch',
       '(',
       field('class', $._name),
-      field('name', $._name),
+      field('name', $._plain_name),
       ')',
       field('body', $._unterminated_body),
     ),
@@ -717,7 +718,8 @@ export default grammar({
 
     _name: $ => choice($.identifier, $._contextual_name, alias('constructor', $.identifier)),
 
-    _slot_name: $ => choice($.identifier, $._contextual_name),
+    // constraint: the compiler takes the `constructor` keyword as a name only where it expects an identifier by rule
+    _plain_name: $ => choice($.identifier, $._contextual_name),
 
     _contextual_name: $ => choice(...CONTEXTUAL_NAMES.map(name => alias(name, $.identifier))),
 
@@ -797,7 +799,7 @@ export default grammar({
       $.docstring,
     ),
 
-    class_slot: $ => seq(optional('static'), field('key', $._slot_name), '=', field('value', $._expression)),
+    class_slot: $ => seq(optional('static'), field('key', $._plain_name), '=', field('value', $._expression)),
 
     class_computed_slot: $ => seq(
       optional('static'),
@@ -885,9 +887,9 @@ export default grammar({
       alias($.function_method, $.method),
     ),
 
-    slot: $ => seq(field('key', $._slot_name), '=', field('value', $._expression)),
+    slot: $ => seq(field('key', $._plain_name), '=', field('value', $._expression)),
 
-    shorthand_slot: $ => field('key', $._slot_name),
+    shorthand_slot: $ => field('key', $._plain_name),
 
     quoted_key_slot: $ => seq(field('key', choice($.string, $.verbatim_string)), ':', field('value', $._expression)),
 
