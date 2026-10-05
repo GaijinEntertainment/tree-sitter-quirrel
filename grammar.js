@@ -41,8 +41,30 @@ const DIRECTIVES = [
   'allow-compiler-internals',
 ];
 
-const ESCAPE = /\\(x[0-9a-fA-F]{1,2}|u[0-9a-fA-F]{1,4}|U[0-9a-fA-F]{1,8}|[tabnrvf0\\"'])/;
-const TEMPLATE_ESCAPE = /\\(x[0-9a-fA-F]{1,2}|u[0-9a-fA-F]{1,4}|U[0-9a-fA-F]{1,8}|[tabnrvf0\\"'{}])/;
+const HEX = '[0-9a-fA-F]';
+const SURROGATE = `[dD][89a-fA-F]${HEX}{2}`;
+const NOT_SURROGATE = `([0-9a-ce-fA-CE-F]${HEX}{3}|[dD][0-7]${HEX}{2})`;
+
+// constraint: the compiler reads up to 4 digits after `\u`, 8 after `\U`; a surrogate or a value above 0x10FFFF errors
+const UNICODE_ESCAPE = [
+  `u(${HEX}{1,3}|${NOT_SURROGATE})`,
+  `U(${HEX}{1,3}|${NOT_SURROGATE}|[1-9a-fA-F]${HEX}{4}|0${NOT_SURROGATE})`,
+  `U0{0,2}(0[1-9a-fA-F]${HEX}{4}|00${NOT_SURROGATE}|10${HEX}{4})`,
+].join('|');
+const INVALID_UNICODE_ESCAPE = new RegExp('\\\\(' + [
+  `u${SURROGATE}`,
+  `U0{0,4}${SURROGATE}`,
+  `U0{0,2}([2-9a-fA-F]${HEX}{5}|1[1-9a-fA-F]${HEX}{4})`,
+  `U[1-9a-fA-F]${HEX}{6,7}`,
+  `U0[1-9a-fA-F]${HEX}{6}`,
+].join('|') + ')');
+
+// constraint: a character literal holds one byte, so a unicode escape in it stays below 0x80
+const CHARACTER_ESCAPE = new RegExp(
+  `\\\\(x${HEX}{1,2}|u(${HEX}|0{0,2}[0-7]${HEX})|U(${HEX}|0{0,6}[0-7]${HEX})|[tabnrvf0\\\\"'])`,
+);
+const ESCAPE = new RegExp(`\\\\(x${HEX}{1,2}|${UNICODE_ESCAPE}|[tabnrvf0\\\\"'])`);
+const TEMPLATE_ESCAPE = new RegExp(`\\\\(x${HEX}{1,2}|${UNICODE_ESCAPE}|[tabnrvf0\\\\"'{}])`);
 const BINARY_OPERATORS = [
   [prec.right, PREC.NULL_COALESCE, '??'],
   [prec.right, PREC.OR, '||'],
@@ -250,6 +272,7 @@ export default grammar({
     $._name_adjacent,
     $._import_marker,
     $._same_line_type_bar,
+    $._never_returned,
     $._error_sentinel,
   ],
 
@@ -791,17 +814,23 @@ export default grammar({
 
     string: $ => seq(
       '"',
-      repeat(choice(alias(token.immediate(prec(1, /[^"\\\n]+/)), $.string_content), $.escape_sequence)),
+      repeat(choice(
+        alias(token.immediate(prec(1, /[^"\\\n]+/)), $.string_content),
+        $.escape_sequence,
+        $._invalid_unicode_escape,
+      )),
       token.immediate('"'),
     ),
 
     escape_sequence: _ => token.immediate(ESCAPE),
 
+    _invalid_unicode_escape: $ => seq(token.immediate(INVALID_UNICODE_ESCAPE), $._never_returned),
+
     verbatim_string: _ => token(seq('@"', repeat(choice(/[^"]/, '""')), '"')),
 
     character: _ => token(seq(
       '\'',
-      choice(/[\x00-\x09\x0b-\x26\x28-\x5b\x5d-\x7f]/, ESCAPE),
+      choice(/[\x00-\x09\x0b-\x26\x28-\x5b\x5d-\x7f]/, CHARACTER_ESCAPE),
       '\'',
     )),
 
@@ -810,6 +839,7 @@ export default grammar({
       repeat(choice(
         alias($._template_chars, $.string_content),
         alias(token.immediate(TEMPLATE_ESCAPE), $.escape_sequence),
+        $._invalid_unicode_escape,
         $.hole,
       )),
       '"',
