@@ -4460,24 +4460,15 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_after_postfix_update"
+                    "type": "STRING",
+                    "value": "--"
                   },
                   {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "--"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_never_returned"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_never_returned"
                   }
                 ]
               },
@@ -5740,24 +5731,15 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_after_postfix_update"
+                    "type": "STRING",
+                    "value": "--"
                   },
                   {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "--"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_never_returned"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_never_returned"
                   }
                 ]
               },
@@ -6282,24 +6264,15 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_after_postfix_update"
+                    "type": "STRING",
+                    "value": "--"
                   },
                   {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "--"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_never_returned"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_never_returned"
                   }
                 ]
               },
@@ -7597,24 +7570,15 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_after_postfix_update"
+                    "type": "STRING",
+                    "value": "--"
                   },
                   {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "--"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_never_returned"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_never_returned"
                   }
                 ]
               },
@@ -8971,24 +8935,15 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_after_postfix_update"
+                    "type": "STRING",
+                    "value": "--"
                   },
                   {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "--"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_never_returned"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_never_returned"
                   }
                 ]
               },
@@ -9266,24 +9221,15 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_after_postfix_update"
+                    "type": "STRING",
+                    "value": "--"
                   },
                   {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "--"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_never_returned"
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_never_returned"
                   }
                 ]
               },
@@ -10707,10 +10653,6 @@
     {
       "type": "SYMBOL",
       "name": "_const_declaration_end"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_after_postfix_update"
     },
     {
       "type": "SYMBOL",
