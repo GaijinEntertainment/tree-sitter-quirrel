@@ -421,6 +421,8 @@ x = clone
 const [1]
 y = clone
 function() {}
+try {} catch (A e) z = clone
+const [1]
 
 --------------------------------------------------------------------------------
 
@@ -438,7 +440,19 @@ function() {}
       right: (unary_expression
         argument: (function_expression
           parameters: (parameters)
-          body: (block))))))
+          body: (block)))))
+  (try_statement
+    body: (block)
+    (catch_clause
+      class: (identifier)
+      name: (identifier)
+      body: (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (unary_expression
+            argument: (unary_expression
+              argument: (array
+                (integer)))))))))
 
 ================================================================================
 Clone operator on a prefix update, and a postfix update of the name clone

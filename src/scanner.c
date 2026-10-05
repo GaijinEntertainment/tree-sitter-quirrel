@@ -503,12 +503,9 @@ static bool next_word_starts_import(TSLexer *lexer) {
 
 // constraint: where `clone` is an operator, the compiler reads its operand from the next line; these words start an
 // operand there and no statement, except in the declaration forms `const name =`, `const function`, and `class name`
-static bool starts_operand_and_no_statement(TSLexer *lexer) {
-  char word[16];
+static bool starts_operand_and_no_statement(TSLexer *lexer, const char *word) {
+  char name[16];
   Gap gap = {false, false, false, false};
-  if (!read_word(lexer, word, sizeof word)) {
-    return false;
-  }
   if (strcmp(word, "function") == 0 || strcmp(word, "async") == 0) {
     return true;
   }
@@ -520,7 +517,7 @@ static bool starts_operand_and_no_statement(TSLexer *lexer) {
   if (!is_word_char(lexer->lookahead) || is_digit(lexer->lookahead)) {
     return !gap.slash && !gap.directive;
   }
-  if (!is_const || !read_word(lexer, word, sizeof word) || strcmp(word, "function") == 0) {
+  if (!is_const || !read_word(lexer, name, sizeof name) || strcmp(name, "function") == 0) {
     return false;
   }
   skip_gap(lexer, &gap);
@@ -901,11 +898,20 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (expression_ended && (c == '[' || c == '?' || c == '+' || c == '-')) {
     return scan_postfix(lexer, valid_symbols, &gap, statement_end);
   }
+  bool takes_operand_from_next_line = valid_symbols[AFTER_CLONE] && gap.newline;
+  char word[16];
   if (c == 'c' && valid_symbols[CATCH_MARKER]) {
-    if (is_next_word(lexer, "catch")) {
+    bool has_word = read_word(lexer, word, sizeof word);
+    if (has_word && strcmp(word, "catch") == 0) {
       return is_valid_catch_chain(lexer) && accept(lexer, CATCH_MARKER);
     }
-    return may_terminate && line_break && accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
+    if (!may_terminate || !line_break) {
+      return false;
+    }
+    if (takes_operand_from_next_line && has_word && starts_operand_and_no_statement(lexer, word)) {
+      return false;
+    }
+    return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
   }
   if (!may_terminate || !line_break) {
     if (is_digit(c)) {
@@ -926,7 +932,8 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (continues_statement(lexer, &can_take)) {
     return false;
   }
-  if (valid_symbols[AFTER_CLONE] && gap.newline && starts_operand_and_no_statement(lexer)) {
+  bool has_word = takes_operand_from_next_line && read_word(lexer, word, sizeof word);
+  if (has_word && starts_operand_and_no_statement(lexer, word)) {
     return false;
   }
   return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
