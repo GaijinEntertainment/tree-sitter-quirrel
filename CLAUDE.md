@@ -125,7 +125,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The `protect-release-tags` ruleset forbids moving or deleting a `v*` tag. When a publish job fails for a reason
   outside the repository, run the failed jobs again; when the fix is a commit, release the next version.
 - Before the first tag, set up the registries once:
-  - In the repository settings, create the environments `crates`, `pypi`, and `npm`.
+  - In the repository settings, create the environments `crates`, `pypi`, and `npm`, and limit each to deployments
+    from `v*` tags.
   - On PyPI, add a pending trusted publisher for the project `tree-sitter-quirrel`: owner `GaijinEntertainment`,
     repository `tree-sitter-quirrel`, workflow `publish.yml`, environment `pypi`.
   - crates.io accepts a trusted publisher only for a crate that exists. Publish the first version from the release
