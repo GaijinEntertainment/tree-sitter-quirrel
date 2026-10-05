@@ -111,6 +111,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - To release, set the version with `tree-sitter version X.Y.P`, then run `tree-sitter generate`, because
   `src/parser.c` holds the version too, and update the lockfiles with `cargo update --workspace --offline` and
   `npm install --package-lock-only --ignore-scripts`. Commit, and push the tag `vX.Y.P`.
+- The Go module path ends in `/vX`, as Go requires from major version 2. A new Quirrel major version changes the path
+  in `go.mod` and in the import of `bindings/go/binding_test.go`.
 - The tag starts `.github/workflows/publish.yml`. It checks that the tag matches `tree-sitter.json`, creates the GitHub
   release with attested artifacts, and publishes to crates.io, PyPI, and npm. A registry that already has the version
   is skipped.

@@ -1,4 +1,4 @@
-module github.com/GaijinEntertainment/tree-sitter-quirrel
+module github.com/GaijinEntertainment/tree-sitter-quirrel/v4
 
 go 1.23
 
