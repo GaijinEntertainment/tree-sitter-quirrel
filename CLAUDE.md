@@ -109,8 +109,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   `_never_returned` rejects them.
 - `constructor` is a keyword token of the compiler and a reserved word here. The compiler takes it as a name where it
   calls `Expect(TK_IDENTIFIER)`; those places use `_name`. Where the compiler compares the token with `TK_IDENTIFIER`
-  itself, `constructor` is not a name; those places use `_plain_name` or `identifier`: an import name, a slot key, and
-  the variable of a typed catch.
+  itself, `constructor` is not a name; those places use `_plain_name` or `identifier`: an import name, a slot key, the
+  variable of a typed catch, and the name of a function expression or a lambda.
 - The runtime restores the scanner state from the last external token. While `after_terminator` is set, each scan
   therefore returns a token, the zero-width `_terminator_reset` extra when no other token applies.
 - A `}` or `;` that ends a statement sets `after_terminator`. One `}` or `;` ends each statement that it closes, as in
