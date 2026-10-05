@@ -747,6 +747,19 @@
       }
     },
     "docstring": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_docstring_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_docstring_text"
+        }
+      ]
+    },
+    "_docstring_text": {
       "type": "TOKEN",
       "content": {
         "type": "SEQ",
@@ -2767,8 +2780,13 @@
           "type": "FIELD",
           "name": "body",
           "content": {
-            "type": "SYMBOL",
-            "name": "block"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_function_block"
+            },
+            "named": true,
+            "value": "block"
           }
         },
         {
@@ -2782,6 +2800,39 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "_function_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_docstring_scope_start"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_statement_item"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_docstring_scope_end"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_close_brace"
+          },
+          "named": false,
+          "value": "}"
         }
       ]
     },
@@ -3425,6 +3476,10 @@
           "value": "{"
         },
         {
+          "type": "SYMBOL",
+          "name": "_docstring_scope_start"
+        },
+        {
           "type": "REPEAT",
           "content": {
             "type": "SEQ",
@@ -3452,6 +3507,10 @@
               }
             ]
           }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_docstring_scope_end"
         },
         {
           "type": "ALIAS",
@@ -10113,11 +10172,19 @@
           "value": "$${"
         },
         {
+          "type": "SYMBOL",
+          "name": "_unchecked_docstring_scope_start"
+        },
+        {
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
             "name": "_statement_item"
           }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_docstring_scope_end"
         },
         {
           "type": "ALIAS",
@@ -10546,6 +10613,22 @@
     {
       "type": "SYMBOL",
       "name": "_after_block"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_docstring_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_docstring_scope_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_unchecked_docstring_scope_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_docstring_scope_end"
     },
     {
       "type": "SYMBOL",

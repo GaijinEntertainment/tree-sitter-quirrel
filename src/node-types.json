@@ -1818,6 +1818,11 @@
     }
   },
   {
+    "type": "docstring",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "enum_declaration",
     "named": true,
     "fields": {
@@ -5731,10 +5736,6 @@
   {
     "type": "do",
     "named": false
-  },
-  {
-    "type": "docstring",
-    "named": true
   },
   {
     "type": "else",

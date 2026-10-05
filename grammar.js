@@ -427,6 +427,10 @@ export default grammar({
     $._after_clone,
     $._after_opening_item,
     $._after_block,
+    $._docstring_start,
+    $._docstring_scope_start,
+    $._unchecked_docstring_scope_start,
+    $._docstring_scope_end,
     $._never_returned,
     $._error_sentinel,
   ],
@@ -556,7 +560,9 @@ export default grammar({
 
     directive: _ => token(seq('#', optional('default:'), choice(...DIRECTIVES))),
 
-    docstring: _ => token(seq('@@"', repeat(choice(/[^"]/, '""')), '"')),
+    docstring: $ => seq($._docstring_start, $._docstring_text),
+
+    _docstring_text: _ => token(seq('@@"', repeat(choice(/[^"]/, '""')), '"')),
 
     local_declaration: $ => seq(
       choice('local', 'let'),
@@ -784,8 +790,16 @@ export default grammar({
     _function_tail: $ => seq(
       field('parameters', $.parameters),
       optional(field('return_type', $.type_annotation)),
-      field('body', $.block),
+      field('body', alias($._function_block, $.block)),
       optional($._after_block),
+    ),
+
+    _function_block: $ => seq(
+      '{',
+      $._docstring_scope_start,
+      repeat($._statement_item),
+      $._docstring_scope_end,
+      alias($._close_brace, '}'),
     ),
 
     parameters: $ => seq(
@@ -837,7 +851,9 @@ export default grammar({
 
     class_body: $ => seq(
       '{',
+      $._docstring_scope_start,
       repeat(seq($._class_member, optional(alias($._semicolon, ';')))),
+      $._docstring_scope_end,
       alias($._close_brace, '}'),
     ),
 
@@ -968,7 +984,13 @@ export default grammar({
 
     class_expression: $ => seq('class', $._class_tail),
 
-    code_block_expression: $ => seq('$${', repeat($._statement_item), alias($._close_brace, '}')),
+    code_block_expression: $ => seq(
+      '$${',
+      $._unchecked_docstring_scope_start,
+      repeat($._statement_item),
+      $._docstring_scope_end,
+      alias($._close_brace, '}'),
+    ),
 
     string: $ => seq(
       '"',

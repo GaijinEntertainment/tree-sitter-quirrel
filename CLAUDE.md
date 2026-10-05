@@ -23,8 +23,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler rejects this input, and the grammar accepts it. Keep the list current:
   - An import after a `try` or `catch` body that is a declaration or a control statement without braces, as in
     `try local x = 1 catch (e) { import "m" }`. A marker for the end of such a body costs about 2,200 parser states.
-- The grammar does not check what the compiler checks after it reads the syntax: the number of docstrings in a
-  function, the nesting depth of an expression, and the checks of the code generator.
+  - A second docstring that is a statement of a `$${ ... }` code block. The compiler gives that docstring to the
+    function, lambda, class, or table around the block, and the scanner has no scope for a lambda or a table.
+- The grammar does not check what the compiler checks after it reads the syntax: the nesting depth of an expression
+  and the checks of the code generator.
 
 ## Where things live
 
@@ -142,6 +144,11 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   catch clauses that follow outside brackets, up to the next `try` outside brackets, because a `catch` joins the
   nearest `try`. The scan returns no token when two types are equal or a clause follows the catch-all clause. It steps
   over strings, template strings, and comments, and it stops at 32 nested template strings.
+- The compiler takes one docstring in a file, in a function body, and in a class body, and none in a table. The
+  scanner keeps one entry for each open scope: `_docstring_scope_start` after the `{` of a function body or a class
+  body opens an entry, and `_docstring_scope_end` before the `}` closes it. `_docstring_start` is a zero-width token
+  before each docstring, and the scan returns no token for the second docstring of a scope. A code block opens an
+  entry that takes each docstring. The scanner keeps 512 entries, and a deeper scope takes each docstring.
 - The scanner never returns `_after_postfix_update` either. Its presence in `valid_symbols` marks the position after a
   postfix update, where `_index_bracket` is not valid but a binary minus on the next line continues the expression.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
