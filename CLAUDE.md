@@ -15,6 +15,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   grammar. Do not read one when you change this grammar.
 - An input that the compiler accepts in some language mode parses without ERROR or MISSING nodes. An input that every
   mode rejects produces ERROR wherever the grammar can see the defect.
+- `has_error` of the root node is the verdict of a parse. A recovery that inserts a missing `_automatic_semicolon`
+  leaves no ERROR or MISSING node for a tree walk, and `tree-sitter parse` then reports a successful parse.
 - The grammar accepts the input of every language mode, because a directive in the file and the host application set
   the mode. `switch`, `case`, `default`, and `clone` therefore parse both as keywords and as names, and `delete`, `::`,
   and `$${ ... }` parse everywhere.
