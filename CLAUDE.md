@@ -22,7 +22,6 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   and `$${ ... }` parse everywhere.
 - The compiler rejects this input with state that a grammar does not keep, and the grammar accepts it on purpose. Keep
   the list current:
-  - `=` inside parentheses in any expression. The compiler accepts it only where a plain assignment is allowed.
   - A relational operator after `not in`, as in `a not in b < c`. The compiler ends the relational chain after
     `not in`.
   - An import in a nested statement list. The compiler accepts it only while each statement that has ended in the file
@@ -36,6 +35,13 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - `grammar.js` - statements, expressions, and names. `expressionSpine` and `postfixSpine` build copies of the
   expression rules: the `statement_` copy starts an expression statement, where `{`, `function`, `class`, `const`, and
   `async` start other statements, and the `clone_` copy reads `clone [` as the clone operator on an array.
+- The compiler allows `=` only where an expression statement, an initializer, a `for` clause, a pattern default, or a
+  lambda body starts, and keeps that permission through parentheses, the operand of a unary operator, the left operand
+  of a binary operator, both operands of `??`, `||`, and `&&`, the condition of `? :`, and the receiver of a postfix
+  operator. The `outer_` and `statement_` copies are the expressions that keep it; the rules without a prefix are the
+  expressions that lost it, and their `parenthesized_expression` holds no `=`.
+- An `=` cannot follow a complete lambda body, because the body takes every token that continues an expression. The
+  lambda rule ends with an optional `=` that `_never_returned` rejects.
 - `src/scanner.c` - statement ends (the automatic `;`), the `}` and `;` that end a statement, the postfix tokens that a
   line end changes (`[`, `?[`, `++`, `--`), numbers, template string text, the `.name` adjacency marker, the import
   marker, the same-line `|` of a declaration type, and the ignored text after a NUL byte.
