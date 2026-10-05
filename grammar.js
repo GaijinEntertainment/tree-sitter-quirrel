@@ -538,7 +538,7 @@ export default grammar({
         seq('function', optional($.function_attributes), field('name', $._name), $._function_tail),
         seq('class', field('name', $._name), $._class_tail),
         sep1($.variable_declaration, ','),
-        seq(field('pattern', $._pattern), '=', field('value', $._expression)),
+        seq(field('pattern', $._declaration_pattern), '=', field('value', $._expression)),
       ),
     ),
 
@@ -553,6 +553,20 @@ export default grammar({
     table_pattern: $ => seq('{', repeat(seq($.pattern_field, optional(','))), alias($._close_brace, '}')),
 
     array_pattern: $ => seq('[', repeat(seq($.pattern_field, optional(','))), ']'),
+
+    // constraint: the compiler requires a name in the pattern of a declaration, but not in a parameter or `foreach`
+    _declaration_pattern: $ => choice(
+      alias($.declaration_table_pattern, $.table_pattern),
+      alias($.declaration_array_pattern, $.array_pattern),
+    ),
+
+    declaration_table_pattern: $ => seq(
+      '{',
+      repeat1(seq($.pattern_field, optional(','))),
+      alias($._close_brace, '}'),
+    ),
+
+    declaration_array_pattern: $ => seq('[', repeat1(seq($.pattern_field, optional(','))), ']'),
 
     pattern_field: $ => seq(
       field('name', $._name),
@@ -655,7 +669,7 @@ export default grammar({
       'local',
       choice(
         sep1($.variable_declaration, ','),
-        seq(field('pattern', $._pattern), '=', field('value', $._expression)),
+        seq(field('pattern', $._declaration_pattern), '=', field('value', $._expression)),
       ),
     ),
 

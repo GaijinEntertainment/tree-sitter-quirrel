@@ -267,3 +267,26 @@ global const VERSION = "1.0"
     name: (identifier)
     value: (string
       (string_content))))
+
+================================================================================
+Empty pattern in a parameter and in a foreach
+================================================================================
+
+function f({}, []) {}
+foreach ({} in x) {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    parameters: (parameters
+      (parameter
+        pattern: (table_pattern))
+      (parameter
+        pattern: (array_pattern)))
+    body: (block))
+  (foreach_statement
+    value: (table_pattern)
+    container: (identifier)
+    body: (block)))
