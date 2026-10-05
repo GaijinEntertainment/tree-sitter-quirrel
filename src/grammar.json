@@ -373,21 +373,8 @@
               "type": "CHOICE",
               "members": [
                 {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "STRING",
-                      "value": "as"
-                    },
-                    {
-                      "type": "FIELD",
-                      "name": "alias",
-                      "content": {
-                        "type": "SYMBOL",
-                        "name": "identifier"
-                      }
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "_import_alias"
                 },
                 {
                   "type": "BLANK"
@@ -426,13 +413,8 @@
                       "name": "import_slot"
                     },
                     {
-                      "type": "ALIAS",
-                      "content": {
-                        "type": "STRING",
-                        "value": "*"
-                      },
-                      "named": true,
-                      "value": "wildcard_import"
+                      "type": "SYMBOL",
+                      "name": "_wildcard_import_slot"
                     }
                   ]
                 },
@@ -453,13 +435,8 @@
                             "name": "import_slot"
                           },
                           {
-                            "type": "ALIAS",
-                            "content": {
-                              "type": "STRING",
-                              "value": "*"
-                            },
-                            "named": true,
-                            "value": "wildcard_import"
+                            "type": "SYMBOL",
+                            "name": "_wildcard_import_slot"
                           }
                         ]
                       }
@@ -500,19 +477,76 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SEQ",
+              "type": "SYMBOL",
+              "name": "_import_alias"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "_import_alias": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "as"
+            },
+            {
+              "type": "FIELD",
+              "name": "alias",
+              "content": {
+                "type": "SYMBOL",
+                "name": "identifier"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_before_import_alias"
+        }
+      ]
+    },
+    "_wildcard_import_slot": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "STRING",
+            "value": "*"
+          },
+          "named": true,
+          "value": "wildcard_import"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "CHOICE",
               "members": [
                 {
-                  "type": "STRING",
-                  "value": "as"
+                  "type": "SYMBOL",
+                  "name": "_before_import_alias"
                 },
                 {
-                  "type": "FIELD",
-                  "name": "alias",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "identifier"
-                  }
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "as"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_never_returned"
+                    }
+                  ]
                 }
               ]
             },
@@ -10078,6 +10112,10 @@
     {
       "type": "SYMBOL",
       "name": "_after_postfix_update"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_before_import_alias"
     },
     {
       "type": "SYMBOL",
