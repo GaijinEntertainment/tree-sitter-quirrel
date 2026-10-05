@@ -767,7 +767,15 @@ static bool read_word_outside_brackets(TSLexer *lexer, CodeNesting *nesting, cha
   }
 }
 
-static bool repeats_catch_type(TSLexer *lexer, CodeNesting *nesting, NameList *types) {
+typedef struct {
+  NameList types;
+  bool has_catch_all;
+} CatchChain;
+
+static bool breaks_catch_chain(TSLexer *lexer, CodeNesting *nesting, CatchChain *chain) {
+  if (chain->has_catch_all) {
+    return true;
+  }
   Gap gap = {false, false, false, false};
   skip_gap(lexer, &gap);
   if (lexer->lookahead != '(') {
@@ -779,33 +787,35 @@ static bool repeats_catch_type(TSLexer *lexer, CodeNesting *nesting, NameList *t
   if (!starts_name(lexer->lookahead)) {
     return false;
   }
-  unsigned type = types->size;
-  read_name(lexer, types);
+  unsigned type = chain->types.size;
+  read_name(lexer, &chain->types);
   skip_gap(lexer, &gap);
-  if (!starts_name(lexer->lookahead)) {
-    types->size = type;
-    return false;
+  if (starts_name(lexer->lookahead)) {
+    return name_list_holds_last_name_twice(&chain->types, type);
   }
-  return name_list_holds_last_name_twice(types, type);
+  chain->types.size = type;
+  chain->has_catch_all = lexer->lookahead == ')';
+  return false;
 }
 
-// constraint: the compiler rejects a `try` that has two catch clauses for one type
+// constraint: the compiler gives a `catch` to the nearest `try`, and rejects a second clause for one type and a clause
+// after the catch-all clause
 // shortcut: the scan stops at 32 nested template strings - use a growing list when deeper text needs the check
-static bool has_no_repeated_catch_type(TSLexer *lexer) {
-  NameList types = {NULL, 0, 0, 0};
+static bool is_valid_catch_chain(TSLexer *lexer) {
+  CatchChain chain = {{NULL, 0, 0, 0}, false};
   CodeNesting nesting = {0, {0}, 0, false};
   char word[8];
-  bool has_duplicate = repeats_catch_type(lexer, &nesting, &types);
-  while (!has_duplicate && read_word_outside_brackets(lexer, &nesting, word, sizeof(word))) {
+  bool is_broken = breaks_catch_chain(lexer, &nesting, &chain);
+  while (!is_broken && read_word_outside_brackets(lexer, &nesting, word, sizeof(word))) {
     if (strcmp(word, "try") == 0) {
       break;
     }
     if (strcmp(word, "catch") == 0) {
-      has_duplicate = repeats_catch_type(lexer, &nesting, &types);
+      is_broken = breaks_catch_chain(lexer, &nesting, &chain);
     }
   }
-  ts_free(types.text);
-  return !has_duplicate;
+  ts_free(chain.types.text);
+  return !is_broken;
 }
 
 void *tree_sitter_quirrel_external_scanner_create(void) { return ts_calloc(1, sizeof(Scanner)); }
@@ -893,7 +903,7 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   }
   if (c == 'c' && valid_symbols[CATCH_MARKER]) {
     if (is_next_word(lexer, "catch")) {
-      return has_no_repeated_catch_type(lexer) && accept(lexer, CATCH_MARKER);
+      return is_valid_catch_chain(lexer) && accept(lexer, CATCH_MARKER);
     }
     return may_terminate && line_break && accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
   }

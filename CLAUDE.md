@@ -140,8 +140,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   and compares the first 4096 members.
 - `_catch_marker` is a zero-width token before each `catch`. Its scan reads ahead and compares the type names of the
   catch clauses that follow outside brackets, up to the next `try` outside brackets, because a `catch` joins the
-  nearest `try`. The scan returns no token when two types are equal. It steps over strings, template strings, and
-  comments, and it stops at 32 nested template strings.
+  nearest `try`. The scan returns no token when two types are equal or a clause follows the catch-all clause. It steps
+  over strings, template strings, and comments, and it stops at 32 nested template strings.
 - The scanner never returns `_after_postfix_update` either. Its presence in `valid_symbols` marks the position after a
   postfix update, where `_index_bracket` is not valid but a binary minus on the next line continues the expression.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
