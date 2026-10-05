@@ -26,6 +26,7 @@ enum TokenType {
   NAME_ADJACENT,
   IMPORT_MARKER,
   SAME_LINE_TYPE_BAR,
+  CONST_DECLARATION_END,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
@@ -160,9 +161,15 @@ static bool accept_terminator(Scanner *scanner, TSLexer *lexer, enum TokenType t
 }
 
 // constraint: the compiler lets one `}` or `;` end each statement that it closes, so nested bodies take one `;` each
-static bool accept_automatic_semicolon(Scanner *scanner, TSLexer *lexer, bool after_terminator, const Gap *gap) {
+static bool accept_statement_end(
+  Scanner *scanner,
+  TSLexer *lexer,
+  enum TokenType statement_end,
+  bool after_terminator,
+  const Gap *gap
+) {
   scanner->after_terminator = after_terminator && !gap->newline;
-  return accept(lexer, AUTOMATIC_SEMICOLON);
+  return accept(lexer, statement_end);
 }
 
 static void advance_digit(TSLexer *lexer) {
@@ -380,7 +387,7 @@ static bool scan_in_error_recovery(Scanner *scanner, TSLexer *lexer) {
 }
 
 // constraint: the compiler takes `[`, `?[`, `++` and `--` as postfix operators only on the line of their operand
-static bool scan_postfix(TSLexer *lexer, const bool *valid_symbols, const Gap *gap, bool may_terminate) {
+static bool scan_postfix(TSLexer *lexer, const bool *valid_symbols, const Gap *gap, enum TokenType statement_end) {
   int32_t c = lexer->lookahead;
   if (c == '[') {
     if (gap->crossed_comment) {
@@ -407,7 +414,7 @@ static bool scan_postfix(TSLexer *lexer, const bool *valid_symbols, const Gap *g
     return false;
   }
   if (gap->newline) {
-    return may_terminate && accept(lexer, AUTOMATIC_SEMICOLON);
+    return valid_symbols[statement_end] && accept(lexer, statement_end);
   }
   enum TokenType token = c == '+' ? POSTFIX_INCREMENT : POSTFIX_DECREMENT;
   if (!valid_symbols[token] || gap->crossed_comment) {
@@ -501,12 +508,15 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   Gap gap = {false, false, false, false};
   skip_gap(lexer, &gap);
 
-  bool may_terminate = valid_symbols[AUTOMATIC_SEMICOLON];
+  // constraint: the compiler ends a `const` declaration only at `;`, a line end, `}`, or the text end, also after `}`
+  bool ends_const_declaration = valid_symbols[CONST_DECLARATION_END];
+  enum TokenType statement_end = ends_const_declaration ? CONST_DECLARATION_END : AUTOMATIC_SEMICOLON;
+  bool may_terminate = valid_symbols[statement_end];
   bool expression_ended = valid_symbols[INDEX_BRACKET];
-  bool line_break = gap.newline || after_terminator;
+  bool line_break = gap.newline || (after_terminator && !ends_const_declaration);
 
   if (gap.directive) {
-    return may_terminate && accept(lexer, AUTOMATIC_SEMICOLON);
+    return may_terminate && accept(lexer, statement_end);
   }
   if (gap.slash) {
     return false;
@@ -515,7 +525,7 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   int32_t c = lexer->lookahead;
   if (at_text_end(lexer)) {
     if (may_terminate) {
-      return accept(lexer, AUTOMATIC_SEMICOLON);
+      return accept(lexer, statement_end);
     }
     if (!lexer->eof(lexer) && !gap.crossed_comment) {
       return scan_text_after_nul(lexer);
@@ -524,11 +534,14 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   }
   if (c == '}') {
     if (may_terminate) {
-      return accept(lexer, AUTOMATIC_SEMICOLON);
+      return accept(lexer, statement_end);
     }
     return valid_symbols[CLOSE_BRACE] && !gap.crossed_comment && accept_terminator(scanner, lexer, CLOSE_BRACE);
   }
   if (c == ';') {
+    if (ends_const_declaration) {
+      return accept(lexer, CONST_DECLARATION_END);
+    }
     return valid_symbols[SEMICOLON] && !gap.crossed_comment && accept_terminator(scanner, lexer, SEMICOLON);
   }
   if (c == '|' && valid_symbols[SAME_LINE_TYPE_BAR] && !gap.newline) {
@@ -537,7 +550,7 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     return accept(lexer, SAME_LINE_TYPE_BAR);
   }
   if (expression_ended && (c == '[' || c == '?' || c == '+' || c == '-')) {
-    return scan_postfix(lexer, valid_symbols, &gap, may_terminate);
+    return scan_postfix(lexer, valid_symbols, &gap, statement_end);
   }
   if (!may_terminate || !line_break) {
     if (is_digit(c)) {
@@ -547,12 +560,12 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   }
   if ((c == 'e' && valid_symbols[ELSE_MARKER]) || (c == 'c' && valid_symbols[CATCH_MARKER])) {
     return !next_word_is(lexer, c == 'e' ? "else" : "catch") &&
-           accept_automatic_semicolon(scanner, lexer, after_terminator, &gap);
+           accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
   }
   if (continues_statement(lexer, expression_ended)) {
     return false;
   }
-  return accept_automatic_semicolon(scanner, lexer, after_terminator, &gap);
+  return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
 }
 
 bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {

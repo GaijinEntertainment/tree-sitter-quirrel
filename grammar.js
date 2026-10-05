@@ -272,6 +272,7 @@ export default grammar({
     $._name_adjacent,
     $._import_marker,
     $._same_line_type_bar,
+    $._const_declaration_end,
     $._never_returned,
     $._error_sentinel,
   ],
@@ -421,7 +422,7 @@ export default grammar({
       optional('global'),
       'const',
       choice(
-        seq(field('name', $._name), '=', field('value', $._expression)),
+        seq(field('name', $._name), '=', field('value', $._expression), $._const_declaration_end),
         seq('function', optional($.function_attributes), field('name', $._name), $._function_tail),
       ),
     ),

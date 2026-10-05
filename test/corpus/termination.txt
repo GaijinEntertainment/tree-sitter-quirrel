@@ -115,6 +115,43 @@ function f() { for (;;) foreach (x in y) z; w }
         (identifier)))))
 
 ================================================================================
+A const declaration ends at a semicolon, a line end, or a closing brace
+================================================================================
+
+const A = {}
+const B = {}; const C = 1
+function f() { const D = {} }
+if (x) const E = {}
+else y
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (const_declaration
+    name: (identifier)
+    value: (table))
+  (const_declaration
+    name: (identifier)
+    value: (table))
+  (const_declaration
+    name: (identifier)
+    value: (integer))
+  (function_declaration
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (const_declaration
+        name: (identifier)
+        value: (table))))
+  (if_statement
+    condition: (identifier)
+    then_branch: (const_declaration
+      name: (identifier)
+      value: (table))
+    else_branch: (expression_statement
+      (identifier))))
+
+================================================================================
 Expressions continue across line ends
 ================================================================================
 

@@ -89,6 +89,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   therefore returns a token, the zero-width `_terminator_reset` extra when no other token applies.
 - A `}` or `;` that ends a statement sets `after_terminator`. One `}` or `;` ends each statement that it closes, as in
   `if (a) if (b) c; d`, so an automatic `;` that needs the flag keeps it for the statement around it.
+- A `const` declaration with a value ends only at `;`, a line end, `}`, or the text end; a `}` before it does not end
+  it, as in `const A = {} x = 1`. The zero-width `_const_declaration_end` holds that check, and the statement end
+  follows it.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
   longer token for input that a shorter valid token matches in part: `_invalid_unicode_escape` takes all of `\uD800`,
   of which `\uD80` is a valid escape.
