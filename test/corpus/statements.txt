@@ -302,6 +302,22 @@ catch (e) {}
       body: (block))))
 
 ================================================================================
+Return without a value before a catch on the next line
+================================================================================
+
+try return
+catch (e) {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (try_statement
+    body: (return_statement)
+    (catch_clause
+      name: (identifier)
+      body: (block))))
+
+================================================================================
 A const declaration in a try body and in a catch body takes its semicolon
 ================================================================================
 
