@@ -176,10 +176,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler takes `import` and `from` as keywords at the start of a statement until a statement has ended that is
   not an import, a directive, `;`, an expression statement, `return`, `yield`, `break`, `continue`, or `throw`. The
   end of a function body counts as such a statement. After that, the two words are names. The scanner keeps this in
-  `imports_closed`, which never goes back to false: `_after_opening_item` is valid after the terminator of such a
-  statement and `_after_block` after a function body, and the scanner never returns either. While imports are open,
-  the scanner returns `_import_marker` before `import` or `from` at the start of a statement, and each import
-  statement needs that token.
+  `imports_closed`, which never goes back to false. `_after_opening_item` after the terminator of such a statement
+  and `_after_block` after a function body are zero-width tokens, and the scanner returns one where it closes the
+  imports. While imports are open, the scanner returns `_import_marker` before `import` or `from` at the start of a
+  statement, and each import statement needs that token.
 - The body of a `try` or of a catch clause has no statement end, so no marker shows that a declaration or a control
   statement without braces has ended there. The scanner reads the first word of each such body at `_try_start` and at
   `_catch_marker`, keeps the answer in the record of the `try`, and closes the imports at the next `_catch_marker`. A
@@ -187,6 +187,15 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   through `_after_block` after its `}`, because `switch` at the start of a body can also be a name.
 - A scan that changes the scanner state returns a token, the `_terminator_reset` extra when no other token applies,
   because the runtime keeps the state only with a token.
+- An incremental parse can reuse a node and then scan in the parser state after the node, not in the state after the
+  last token of the node. The runtime goes back to the tokens of the node only when the old token after the node has
+  changes. Where a node ends at the same place for each reading of the text after it, as after `x++`, after a
+  statement, and after a `try`, a decision or a state change of the scanner must not depend on a symbol that is valid
+  only before the node ends. Put the fact into the scanner state with a token that the scanner returns inside the
+  node. A marker that makes the node longer when it applies, such as `_before_import_alias`, is safe.
+- `tree-sitter fuzz` parses each corpus input again after random edits and their undo, and compares the tree with a
+  fresh parse. Run it after each change to the scanner: the corpus tests and a comparison with the compiler parse
+  from nothing and do not see this kind of defect.
 - `TYPE_NAMES` follows `sq_type_string_to_mask` in `sqtypeparser.cpp`, and `DIRECTIVES` holds the directive tables in
   `parser.cpp` of both compiler releases.
 - Every corpus input without `:error` compiles in some language mode, and every `:error` input fails in every mode.
