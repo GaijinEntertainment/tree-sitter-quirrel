@@ -116,6 +116,41 @@ as b, c
       name: (identifier))))
 
 ================================================================================
+Import in each branch of the first statement, and the word as a name after it
+================================================================================
+
+if (a) {
+  from "m" import x
+} else {
+  import "n"
+}
+function f() { import = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (if_statement
+    condition: (identifier)
+    then_branch: (block
+      (import_statement
+        module: (string
+          (string_content))
+        (import_slot
+          name: (identifier))))
+    else_branch: (block
+      (import_statement
+        module: (string
+          (string_content)))))
+  (function_declaration
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (integer))))))
+
+================================================================================
 Import inside the first statement
 ================================================================================
 

@@ -32,13 +32,16 @@ enum TokenType {
   FOREACH_INDEX_MARKER,
   ENUM_MEMBERS_MARKER,
   AFTER_CLONE,
+  AFTER_OPENING_ITEM,
+  AFTER_BLOCK,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
 
-// constraint: the runtime restores this state from the last external token, so each scan with the flag set returns one
+// constraint: the runtime restores this state from the last external token, so each scan that changes it returns one
 typedef struct {
   bool after_terminator;
+  bool imports_closed;
 } Scanner;
 
 typedef struct {
@@ -690,12 +693,14 @@ void tree_sitter_quirrel_external_scanner_destroy(void *payload) { ts_free(paylo
 unsigned tree_sitter_quirrel_external_scanner_serialize(void *payload, char *buffer) {
   Scanner *scanner = payload;
   buffer[0] = (char)scanner->after_terminator;
-  return 1;
+  buffer[1] = (char)scanner->imports_closed;
+  return 2;
 }
 
 void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
   Scanner *scanner = payload;
-  scanner->after_terminator = length == 1 && buffer[0] != 0;
+  scanner->after_terminator = length == 2 && buffer[0] != 0;
+  scanner->imports_closed = length == 2 && buffer[1] != 0;
 }
 
 static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool after_terminator) {
@@ -764,7 +769,8 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     if (is_digit(c)) {
       return valid_symbols[INTEGER] && scan_number(lexer);
     }
-    return valid_symbols[IMPORT_MARKER] && next_word_starts_import(lexer) && accept(lexer, IMPORT_MARKER);
+    bool starts_import = valid_symbols[IMPORT_MARKER] && !scanner->imports_closed && next_word_starts_import(lexer);
+    return starts_import && accept(lexer, IMPORT_MARKER);
   }
   if ((c == 'e' && valid_symbols[ELSE_MARKER]) || (c == 'c' && valid_symbols[CATCH_MARKER])) {
     return !next_word_is(lexer, c == 'e' ? "else" : "catch") &&
@@ -794,8 +800,12 @@ bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, co
     return scan_in_error_recovery(scanner, lexer);
   }
   lexer->mark_end(lexer);
+  // constraint: the compiler takes `import` and `from` as names once an opening statement or a function body ended
+  bool closes_imports = valid_symbols[AFTER_OPENING_ITEM] || valid_symbols[AFTER_BLOCK];
+  bool changes_state = after_terminator || (closes_imports && !scanner->imports_closed);
+  scanner->imports_closed = scanner->imports_closed || closes_imports;
   if (scan_token(scanner, lexer, valid_symbols, after_terminator)) {
     return true;
   }
-  return after_terminator && valid_symbols[TERMINATOR_RESET] && accept(lexer, TERMINATOR_RESET);
+  return changes_state && valid_symbols[TERMINATOR_RESET] && accept(lexer, TERMINATOR_RESET);
 }
