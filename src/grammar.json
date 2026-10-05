@@ -3586,6 +3586,108 @@
               "type": "SEQ",
               "members": [
                 {
+                  "type": "STRING",
+                  "value": "async"
+                },
+                {
+                  "type": "STRING",
+                  "value": "function"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "function_attributes"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "_add"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_sub"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_mul"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_div"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_unm"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_modulo"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_set"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_get"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_typeof"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_nexti"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_cmp"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_call"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_cloned"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_newslot"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_delslot"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_tostring"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "_lock"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_never_returned"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
                   "type": "FIELD",
                   "name": "name",
                   "content": {
@@ -3670,6 +3772,108 @@
                   "name": "_function_tail"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "async"
+            },
+            {
+              "type": "STRING",
+              "value": "function"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "function_attributes"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "_add"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_sub"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_mul"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_div"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_unm"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_modulo"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_set"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_get"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_typeof"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_nexti"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_cmp"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_call"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_cloned"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_newslot"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_delslot"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_tostring"
+                },
+                {
+                  "type": "STRING",
+                  "value": "_lock"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_never_returned"
             }
           ]
         },
