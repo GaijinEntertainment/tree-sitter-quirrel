@@ -784,7 +784,11 @@
         "members": [
           {
             "type": "STRING",
-            "value": "@@\""
+            "value": "@@"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[\\s\\S]"
           },
           {
             "type": "REPEAT",

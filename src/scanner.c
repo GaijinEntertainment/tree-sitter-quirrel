@@ -764,7 +764,7 @@ static bool body_closes_imports(TSLexer *lexer, char *word, unsigned size) {
       return false;
     }
     advance(lexer);
-    return lexer->lookahead == '"';
+    return !at_text_end(lexer);
   }
   if (!read_word(lexer, word, size)) {
     word[0] = '\0';
@@ -896,7 +896,7 @@ static bool scan_docstring_start(Scanner *scanner, TSLexer *lexer) {
     return false;
   }
   advance(lexer);
-  if (lexer->lookahead != '"') {
+  if (at_text_end(lexer)) {
     return false;
   }
   if (scanner->open_scopes < DOCSTRING_SCOPES_MAX) {
