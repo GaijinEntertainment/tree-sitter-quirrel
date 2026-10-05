@@ -75,7 +75,6 @@ const BINARY_OPERATORS = [
   [prec.left, PREC.BIT_XOR, '^'],
   [prec.left, PREC.BIT_AND, '&'],
   [prec.left, PREC.EQUALITY, choice('==', '!=', '<=>')],
-  [prec.left, PREC.RELATIONAL, choice('<', '>', '<=', '>=', 'in', 'instanceof', seq('not', 'in'))],
   [prec.left, PREC.SHIFT, choice('<<', '>>', '>>>')],
   [prec.left, PREC.ADDITIVE, choice('+', '-')],
   [prec.left, PREC.MULTIPLICATIVE, choice('*', '/', '%')],
@@ -164,7 +163,43 @@ function expressionSpine(prefix) {
       hidden($, '_operand'),
     ),
 
-    [`${prefix}_operand`]: $ => choice(node($, 'binary_expression'), hidden($, '_unary_operand')),
+    [`${prefix}_operand`]: $ => choice(
+      node($, 'binary_expression'),
+      alias($[ruleName('not_in_expression')], $.binary_expression),
+      hidden($, '_relational_operand'),
+    ),
+
+    [`${prefix}_relational_operand`]: $ => choice(
+      alias($[ruleName('relational_expression')], $.binary_expression),
+      hidden($, '_shift_operand'),
+    ),
+
+    [`${prefix}_shift_operand`]: $ => choice(
+      alias($[ruleName('arithmetic_expression')], $.binary_expression),
+      hidden($, '_unary_operand'),
+    ),
+
+    // constraint: the compiler reads the right operand of a relational operator at the level of the shift operators
+    [ruleName('relational_expression')]: $ => prec.left(PREC.RELATIONAL, seq(
+      field('left', hidden($, '_relational_operand')),
+      field('operator', choice('<', '>', '<=', '>=', 'in', 'instanceof')),
+      field('right', $._shift_operand),
+    )),
+
+    // constraint: the compiler ends a chain of relational operators after `not in`
+    [ruleName('not_in_expression')]: $ => prec.left(PREC.RELATIONAL, seq(
+      field('left', hidden($, '_relational_operand')),
+      field('operator', seq('not', 'in')),
+      field('right', $._shift_operand),
+    )),
+
+    [ruleName('arithmetic_expression')]: $ => choice(
+      ...BINARY_OPERATORS.filter(([, level]) => level >= PREC.SHIFT).map(([fn, level, operator]) => fn(level, seq(
+        field('left', hidden($, '_shift_operand')),
+        field('operator', operator),
+        field('right', $._shift_operand),
+      ))),
+    ),
 
     [`${prefix}_unary_operand`]: $ => choice(
       node($, 'unary_expression'),
@@ -224,7 +259,7 @@ function expressionSpine(prefix) {
       field('alternative', $._expression),
     )),
 
-    [ruleName('binary_expression')]: $ => choice(...BINARY_OPERATORS.map(
+    [ruleName('binary_expression')]: $ => choice(...BINARY_OPERATORS.filter(([, level]) => level < PREC.RELATIONAL).map(
       ([fn, level, operator, rightOperandKeepsPlace]) => fn(level, seq(
         field('left', hidden($, '_operand')),
         field('operator', operator),
