@@ -1053,9 +1053,12 @@ bool tree_sitter_quirrel_external_scanner_scan(void *payload, TSLexer *lexer, co
   }
   lexer->mark_end(lexer);
   // constraint: the compiler takes `import` and `from` as names once an opening statement or a function body ended
-  bool closes_imports = valid_symbols[AFTER_OPENING_ITEM] || valid_symbols[AFTER_BLOCK];
-  bool changes_state = after_terminator || (closes_imports && !scanner->imports_closed);
-  scanner->imports_closed = scanner->imports_closed || closes_imports;
+  if (!scanner->imports_closed && (valid_symbols[AFTER_OPENING_ITEM] || valid_symbols[AFTER_BLOCK])) {
+    scanner->imports_closed = true;
+    scanner->after_terminator = after_terminator;
+    return accept(lexer, valid_symbols[AFTER_OPENING_ITEM] ? AFTER_OPENING_ITEM : AFTER_BLOCK);
+  }
+  bool changes_state = after_terminator;
   if (scan_token(scanner, lexer, valid_symbols, after_terminator)) {
     // constraint: the parser ends the innermost `try` when it takes a statement end where a catch clause can follow
     bool ends_statement = lexer->result_symbol == AUTOMATIC_SEMICOLON || lexer->result_symbol == SEMICOLON;
