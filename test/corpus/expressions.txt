@@ -166,6 +166,47 @@ x = a <=> b != c >>> d
           right: (identifier))))))
 
 ================================================================================
+Operators around not in
+================================================================================
+
+x = a < b not in c == d
+y = (a not in b) < c
+z = a not in b << c && d
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (binary_expression
+        left: (binary_expression
+          left: (binary_expression
+            left: (identifier)
+            right: (identifier))
+          right: (identifier))
+        right: (identifier))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (binary_expression
+        left: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (identifier)))
+        right: (identifier))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (binary_expression
+            left: (identifier)
+            right: (identifier)))
+        right: (identifier)))))
+
+================================================================================
 Unary and update operators
 ================================================================================
 

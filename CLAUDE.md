@@ -22,8 +22,6 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   and `$${ ... }` parse everywhere.
 - The compiler rejects this input with state that a grammar does not keep, and the grammar accepts it on purpose. Keep
   the list current:
-  - A relational operator after `not in`, as in `a not in b < c`. The compiler ends the relational chain after
-    `not in`.
   - An import in a nested statement list. The compiler accepts it only while each statement that has ended in the file
     is an import, a directive, `;`, an expression statement, `return`, `yield`, `break`, `continue`, or `throw`.
 - The grammar does not check what the compiler checks after it reads the syntax: the names in a declaration (duplicate
@@ -40,6 +38,11 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   of a binary operator, both operands of `??`, `||`, and `&&`, the condition of `? :`, and the receiver of a postfix
   operator. The `outer_` and `statement_` copies are the expressions that keep it; the rules without a prefix are the
   expressions that lost it, and their `parenthesized_expression` holds no `=`.
+- The compiler ends a chain of relational operators after `not in`, and reads the right operand of each relational
+  operator at the level of the shift operators. Precedence cannot express that: it settles a conflict between two
+  actions, and after `a not in b` no action on `<` conflicts with the shift. The binary rules therefore have operand
+  levels: `_operand` for the operators below the relational ones, `_relational_operand`, and `_shift_operand`. All
+  of them give `binary_expression` nodes.
 - After the word `clone` the scanner returns `++` and `--` as postfix tokens, because `clone` can be a name. The
   `clone_update_expression` rules take those tokens as the prefix update that the clone operator applies to, and the
   conflict with `_contextual_name` lets the parser try both readings of `clone --x`.
