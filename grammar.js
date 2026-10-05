@@ -744,6 +744,7 @@ export default grammar({
       repeat($.switch_case),
       optional($.default_case),
       alias($._close_brace, '}'),
+      optional($._after_block),
     ),
 
     switch_case: $ => prec.left(seq('case', field('value', $._expression), ':', repeat($._statement_item))),

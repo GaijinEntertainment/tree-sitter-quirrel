@@ -49,8 +49,8 @@ enum { DOCSTRING_SCOPES_MAX = 512, CATCH_TYPES_SIZE = 256 };
 
 enum DocstringScope { SCOPE_WITHOUT_DOCSTRING, SCOPE_WITH_DOCSTRING, UNCHECKED_SCOPE };
 
-// constraint: a type name holds none of these bytes, so one of them starts the record of an open `try` in `catch_types`
-enum { OPEN_TRY = 1, OPEN_TRY_AS_CATCH_BODY = 2 };
+// constraint: a type name holds no byte below 8, so a byte of these flags starts the record of an open `try`
+enum { OPEN_TRY = 1, AS_CATCH_BODY = 2, BODY_CLOSES_IMPORTS = 4, OPEN_TRY_FLAGS_END = 8 };
 
 // constraint: the runtime restores this state from the last external token, so each scan that changes it returns one
 typedef struct {
@@ -749,32 +749,67 @@ void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char 
   memcpy(scanner->catch_types, buffer + SCOPES_OFFSET + recorded_scopes(scanner), scanner->catch_types_size);
 }
 
-static void open_try(Scanner *scanner) {
-  char tag = scanner->next_try_is_catch_body ? OPEN_TRY_AS_CATCH_BODY : OPEN_TRY;
+// constraint: the compiler takes `import` as a name after a statement that starts with one of these words or is a
+// docstring, and the body of a `try` or of a catch clause has no statement end that shows it
+static bool body_closes_imports(TSLexer *lexer, char *word, unsigned size) {
+  static const char *const closing_words[] = {
+    "local", "let", "const", "global", "enum", "class", "if", "while", "do", "for", "foreach",
+  };
+  Gap gap = {false, false, false, false};
+  skip_gap(lexer, &gap);
+  word[0] = '\0';
+  if (lexer->lookahead == '@') {
+    advance(lexer);
+    if (lexer->lookahead != '@') {
+      return false;
+    }
+    advance(lexer);
+    return lexer->lookahead == '"';
+  }
+  if (!read_word(lexer, word, size)) {
+    word[0] = '\0';
+    return false;
+  }
+  for (unsigned i = 0; i < sizeof closing_words / sizeof closing_words[0]; i++) {
+    if (strcmp(word, closing_words[i]) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static void open_try(Scanner *scanner, bool body_closes) {
+  int flags = OPEN_TRY;
+  if (scanner->next_try_is_catch_body) {
+    flags |= AS_CATCH_BODY;
+  }
+  if (body_closes) {
+    flags |= BODY_CLOSES_IMPORTS;
+  }
   scanner->next_try_is_catch_body = false;
   if (scanner->catch_types_size == CATCH_TYPES_SIZE) {
     scanner->catch_types_lost = true;
   }
   if (!scanner->catch_types_lost) {
-    scanner->catch_types[scanner->catch_types_size++] = tag;
+    scanner->catch_types[scanner->catch_types_size++] = (char)flags;
   }
 }
 
 static unsigned innermost_try(const Scanner *scanner) {
-  unsigned tag = scanner->catch_types_size - 1;
-  while (tag > 0 && scanner->catch_types[tag] != OPEN_TRY && scanner->catch_types[tag] != OPEN_TRY_AS_CATCH_BODY) {
-    tag--;
+  unsigned flags = scanner->catch_types_size - 1;
+  while (flags > 0 && (scanner->catch_types[flags] == 0 || scanner->catch_types[flags] >= OPEN_TRY_FLAGS_END)) {
+    flags--;
   }
-  return tag;
+  return flags;
 }
 
 // constraint: the compiler ends a `try` that is the body of a catch clause together with the `try` of that clause
 static void close_try(Scanner *scanner) {
   bool ends_outer_try = !scanner->catch_types_lost;
   while (ends_outer_try && scanner->catch_types_size > 0) {
-    unsigned tag = innermost_try(scanner);
-    ends_outer_try = scanner->catch_types[tag] == OPEN_TRY_AS_CATCH_BODY;
-    scanner->catch_types_size = (uint16_t)tag;
+    unsigned flags = innermost_try(scanner);
+    ends_outer_try = (scanner->catch_types[flags] & AS_CATCH_BODY) != 0;
+    scanner->catch_types_size = (uint16_t)flags;
   }
 }
 
@@ -804,8 +839,14 @@ static bool add_catch_type(Scanner *scanner, const NameList *type) {
 static bool scan_catch_clause(Scanner *scanner, TSLexer *lexer) {
   Gap gap = {false, false, false, false};
   NameList type = {NULL, 0, 0, 0};
+  char body_word[16] = "";
   bool is_typed = false;
-  scanner->next_try_is_catch_body = false;
+  bool body_closes = false;
+  bool has_open_try = !scanner->catch_types_lost && scanner->catch_types_size > 0;
+  char *flags = has_open_try ? &scanner->catch_types[innermost_try(scanner)] : NULL;
+  if (flags && (*flags & BODY_CLOSES_IMPORTS)) {
+    scanner->imports_closed = true;
+  }
   skip_gap(lexer, &gap);
   if (lexer->lookahead == '(') {
     advance(lexer);
@@ -821,9 +862,12 @@ static bool scan_catch_clause(Scanner *scanner, TSLexer *lexer) {
     }
     if (lexer->lookahead == ')') {
       advance(lexer);
-      skip_gap(lexer, &gap);
-      scanner->next_try_is_catch_body = is_next_word(lexer, "try");
+      body_closes = body_closes_imports(lexer, body_word, sizeof body_word);
     }
+  }
+  scanner->next_try_is_catch_body = strcmp(body_word, "try") == 0;
+  if (flags) {
+    *flags = (char)((*flags & ~BODY_CLOSES_IMPORTS) | (body_closes ? BODY_CLOSES_IMPORTS : 0));
   }
   bool is_new_type = !is_typed || add_catch_type(scanner, &type);
   ts_free(type.text);
@@ -890,7 +934,8 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     return accept(lexer, UNCHECKED_DOCSTRING_SCOPE_START);
   }
   if (valid_symbols[TRY_START]) {
-    open_try(scanner);
+    char body_word[16];
+    open_try(scanner, body_closes_imports(lexer, body_word, sizeof body_word));
     return accept(lexer, TRY_START);
   }
 
