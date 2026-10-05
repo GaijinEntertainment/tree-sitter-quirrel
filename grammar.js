@@ -733,12 +733,11 @@ export default grammar({
     try_statement: $ => seq('try', field('body', $._unterminated_body), $._catch_clauses),
 
     _catch_clauses: $ => prec.right(choice(
-      seq(alias($.typed_catch_clause, $.catch_clause), optional($._catch_clauses)),
-      alias($.catch_all_clause, $.catch_clause),
+      seq($._catch_marker, alias($.typed_catch_clause, $.catch_clause), optional($._catch_clauses)),
+      seq($._catch_marker, alias($.catch_all_clause, $.catch_clause)),
     )),
 
     typed_catch_clause: $ => seq(
-      optional($._catch_marker),
       'catch',
       '(',
       field('class', $._name),
@@ -748,7 +747,6 @@ export default grammar({
     ),
 
     catch_all_clause: $ => seq(
-      optional($._catch_marker),
       'catch',
       '(',
       field('name', $._name),

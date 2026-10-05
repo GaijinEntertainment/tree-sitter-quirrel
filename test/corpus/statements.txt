@@ -285,6 +285,61 @@ try f() catch (e) g()
           arguments: (arguments))))))
 
 ================================================================================
+Comment before a catch clause
+================================================================================
+
+try {} // k
+catch (e) {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (try_statement
+    body: (block)
+    (comment)
+    (catch_clause
+      name: (identifier)
+      body: (block))))
+
+================================================================================
+The same catch type in a nested try statement
+================================================================================
+
+try {} catch (A e) { try {} catch (A e) {} } catch (B e) {}
+try {} catch (A e) try {} catch (A e) {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (try_statement
+    body: (block)
+    (catch_clause
+      class: (identifier)
+      name: (identifier)
+      body: (block
+        (try_statement
+          body: (block)
+          (catch_clause
+            class: (identifier)
+            name: (identifier)
+            body: (block)))))
+    (catch_clause
+      class: (identifier)
+      name: (identifier)
+      body: (block)))
+  (try_statement
+    body: (block)
+    (catch_clause
+      class: (identifier)
+      name: (identifier)
+      body: (try_statement
+        body: (block)
+        (catch_clause
+          class: (identifier)
+          name: (identifier)
+          body: (block))))))
+
+================================================================================
 Jump statements
 ================================================================================
 
