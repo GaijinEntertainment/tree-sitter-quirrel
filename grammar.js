@@ -933,7 +933,7 @@ export default grammar({
       optional('async'),
       'function',
       optional($.function_attributes),
-      optional(field('name', $._name)),
+      optional(field('name', $._plain_name)),
       $._function_tail,
     ),
 
@@ -944,7 +944,7 @@ export default grammar({
     _lambda: $ => prec.right(PREC.LAMBDA, seq(
       '@',
       optional($.function_attributes),
-      optional(field('name', $._name)),
+      optional(field('name', $._plain_name)),
       field('parameters', $.parameters),
       optional(field('return_type', $.type_annotation)),
       field('body', $._outer_regular_expression),

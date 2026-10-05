@@ -9862,7 +9862,7 @@
               "name": "name",
               "content": {
                 "type": "SYMBOL",
-                "name": "_name"
+                "name": "_plain_name"
               }
             },
             {
@@ -9932,7 +9932,7 @@
                 "name": "name",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "_name"
+                  "name": "_plain_name"
                 }
               },
               {
