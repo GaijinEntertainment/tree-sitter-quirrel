@@ -414,6 +414,33 @@ x = clone
           (integer))))))
 
 ================================================================================
+Clone operator on an operand that starts no statement on the next line
+================================================================================
+
+x = clone
+const [1]
+y = clone
+function() {}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (unary_expression
+          argument: (array
+            (integer))))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (unary_expression
+        argument: (function_expression
+          parameters: (parameters)
+          body: (block))))))
+
+================================================================================
 Clone operator on a prefix update, and a postfix update of the name clone
 ================================================================================
 
