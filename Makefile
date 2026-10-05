@@ -1,6 +1,6 @@
 LANGUAGE_NAME := tree-sitter-quirrel
 HOMEPAGE_URL := https://github.com/GaijinEntertainment/tree-sitter-quirrel
-VERSION := 0.1.0
+VERSION := 4.43.0
 DESCRIPTION := Dagor Quirrel grammar for tree-sitter
 
 # repository
