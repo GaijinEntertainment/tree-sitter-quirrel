@@ -25,8 +25,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   - An import in a nested statement list. The compiler accepts it only while each statement that has ended in the file
     is an import, a directive, `;`, an expression statement, `return`, `yield`, `break`, `continue`, or `throw`.
 - The grammar does not check what the compiler checks after it reads the syntax: the names in a declaration (duplicate
-  catch types, the same name for the key and the value of a `foreach`, `async` on a metamethod), the number of
-  docstrings in a function, the nesting depth of an expression, and the checks of the code generator.
+  catch types, the same name for the key and the value of a `foreach`), the number of docstrings in a function, the
+  nesting depth of an expression, and the checks of the code generator.
 
 ## Where things live
 
@@ -105,6 +105,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - An alias of an inline `seq` applies to each element. Alias a named rule.
 - A contextual keyword used as a name, and a type name, is an aliased token, so that its node is a leaf. A keyword
   capture in `queries/highlights.scm` then does not color a name.
+- The compiler rejects `async` on a method whose name is a metamethod. `METAMETHODS` in `grammar.js` holds the names
+  of `METAMETHODS_LIST` in `sqobject.h`; they are keywords only after `async function` in a table or a class, where
+  `_never_returned` rejects them.
 - `constructor` is a keyword token of the compiler and a reserved word here. The compiler takes it as a name where it
   calls `Expect(TK_IDENTIFIER)`; those places use `_name`. Where the compiler compares the token with `TK_IDENTIFIER`
   itself, `constructor` is not a name; those places use `_plain_name` or `identifier`: an import name, a slot key, and

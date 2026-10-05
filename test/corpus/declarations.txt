@@ -269,6 +269,32 @@ global const VERSION = "1.0"
       (string_content))))
 
 ================================================================================
+Metamethod name on an async function and near an async method
+================================================================================
+
+async function _add() {}
+class C { async function _added() {} function _add() {} }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    parameters: (parameters)
+    body: (block))
+  (class_declaration
+    name: (identifier)
+    body: (class_body
+      (method
+        name: (identifier)
+        parameters: (parameters)
+        body: (block))
+      (method
+        name: (identifier)
+        parameters: (parameters)
+        body: (block)))))
+
+================================================================================
 Empty pattern in a parameter and in a foreach
 ================================================================================
 

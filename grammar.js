@@ -34,6 +34,12 @@ const TYPE_NAMES = [
 
 const CONTEXTUAL_NAMES = ['switch', 'case', 'default', 'clone', 'import', 'from', 'as'];
 
+// constraint: follows METAMETHODS_LIST in sqobject.h of the compiler
+const METAMETHODS = [
+  '_add', '_sub', '_mul', '_div', '_unm', '_modulo', '_set', '_get', '_typeof', '_nexti', '_cmp', '_call', '_cloned',
+  '_newslot', '_delslot', '_tostring', '_lock',
+];
+
 const DIRECTIVES = [
   'strict', 'relaxed', 'forbid-root-table', 'allow-root-table', 'disable-optimizer', 'enable-optimizer',
   'forbid-delete-operator', 'allow-delete-operator', 'forbid-clone-operator', 'allow-clone-operator',
@@ -378,12 +384,14 @@ function functionMethod($) {
   return seq('function', optional($.function_attributes), field('name', $._name), $._function_tail);
 }
 
+// constraint: the compiler rejects `async` on a method that has the name of a metamethod
 /**
  * @param {GrammarSymbols<string>} $
  */
 function methodForms($) {
   return choice(
     seq(optional('async'), functionMethod($)),
+    seq('async', 'function', optional($.function_attributes), choice(...METAMETHODS), $._never_returned),
     seq(field('name', alias('constructor', $.identifier)), optional($.function_attributes), $._function_tail),
   );
 }
