@@ -28,6 +28,7 @@ enum TokenType {
   SAME_LINE_TYPE_BAR,
   CONST_DECLARATION_END,
   AFTER_POSTFIX_UPDATE,
+  BEFORE_IMPORT_ALIAS,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
@@ -426,8 +427,14 @@ static bool scan_postfix(TSLexer *lexer, const bool *valid_symbols, const Gap *g
   return accept(lexer, token);
 }
 
+typedef struct {
+  bool call;
+  bool binary_minus;
+  bool import_alias;
+} Continuations;
+
 // constraint: the compiler ends a statement at a line end only where the next token can start a new statement
-static bool continues_statement(TSLexer *lexer, bool can_take_call, bool can_take_binary_minus) {
+static bool continues_statement(TSLexer *lexer, const Continuations *can_take) {
   int32_t c = lexer->lookahead;
   switch (c) {
     case '=':
@@ -456,9 +463,13 @@ static bool continues_statement(TSLexer *lexer, bool can_take_call, bool can_tak
       return lexer->lookahead == '=';
     case '-':
       advance(lexer);
-      return lexer->lookahead == '=' || (can_take_binary_minus && lexer->lookahead != '-');
+      return lexer->lookahead == '=' || (can_take->binary_minus && lexer->lookahead != '-');
     case '(':
-      return can_take_call;
+      return can_take->call;
+    case 'a': {
+      char word[16];
+      return can_take->import_alias && read_word(lexer, word, sizeof word) && strcmp(word, "as") == 0;
+    }
     case 'i':
     case 'n': {
       char word[16];
@@ -564,7 +575,12 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
            accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
   }
   // constraint: the compiler takes no postfix operator after `x++`, but a binary operator can follow it
-  if (continues_statement(lexer, expression_ended, expression_ended || valid_symbols[AFTER_POSTFIX_UPDATE])) {
+  Continuations can_take = {
+    .call = expression_ended,
+    .binary_minus = expression_ended || valid_symbols[AFTER_POSTFIX_UPDATE],
+    .import_alias = valid_symbols[BEFORE_IMPORT_ALIAS],
+  };
+  if (continues_statement(lexer, &can_take)) {
     return false;
   }
   return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);

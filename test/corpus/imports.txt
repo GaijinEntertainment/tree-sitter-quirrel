@@ -91,6 +91,31 @@ import <- 2
       right: (integer))))
 
 ================================================================================
+Import alias on the next line
+================================================================================
+
+import "m"
+as x
+from "n" import a
+as b, c
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (import_statement
+    module: (string
+      (string_content))
+    alias: (identifier))
+  (import_statement
+    module: (string
+      (string_content))
+    (import_slot
+      name: (identifier)
+      alias: (identifier))
+    (import_slot
+      name: (identifier))))
+
+================================================================================
 Import inside the first statement
 ================================================================================
 

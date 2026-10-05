@@ -413,6 +413,7 @@ export default grammar({
     $._same_line_type_bar,
     $._const_declaration_end,
     $._after_postfix_update,
+    $._before_import_alias,
     $._never_returned,
     $._error_sentinel,
   ],
@@ -502,18 +503,26 @@ export default grammar({
     _unterminated_body: $ => choice($._statement, alias($._semicolon, $.empty_statement)),
 
     import_statement: $ => choice(
-      seq('import', field('module', $._module_name), optional(seq('as', field('alias', $.identifier)))),
+      seq('import', field('module', $._module_name), optional($._import_alias)),
       seq(
         'from',
         field('module', $._module_name),
         'import',
-        sep1(choice($.import_slot, alias('*', $.wildcard_import)), ','),
+        sep1(choice($.import_slot, $._wildcard_import_slot), ','),
       ),
     ),
 
     _module_name: $ => choice($.string, $.verbatim_string),
 
-    import_slot: $ => seq(field('name', $.identifier), optional(seq('as', field('alias', $.identifier)))),
+    import_slot: $ => seq(field('name', $.identifier), optional($._import_alias)),
+
+    // constraint: the compiler takes `as` after an import name as the alias keyword, also on the next line
+    _import_alias: $ => choice(seq('as', field('alias', $.identifier)), $._before_import_alias),
+
+    _wildcard_import_slot: $ => seq(
+      alias('*', $.wildcard_import),
+      optional(choice($._before_import_alias, seq('as', $._never_returned))),
+    ),
 
     expression_statement: $ => $._statement_regular_expression,
 

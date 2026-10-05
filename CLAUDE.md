@@ -119,6 +119,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler takes no postfix operator after a postfix update and reads `--` as one token there. The update rule
   therefore ends with an optional `--` that `_never_returned` rejects; where the next operand can start, as in
   `[a++ --b]`, the left associativity of the rule ends the update first.
+- The compiler reads an import statement without regard to line ends: the word `as` after an import name or a module
+  name is the alias keyword, also on a later line. `_before_import_alias` is a token that the scanner never returns;
+  where it is valid, a line end before `as` does not end the statement.
 - The scanner never returns `_after_postfix_update` either. Its presence in `valid_symbols` marks the position after a
   postfix update, where `_index_bracket` is not valid but a binary minus on the next line continues the expression.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
