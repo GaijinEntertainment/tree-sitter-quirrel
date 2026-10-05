@@ -178,7 +178,92 @@ static bool reject_number(TSLexer *lexer) {
   return accept(lexer, MALFORMED_NUMBER);
 }
 
-// constraint: follows SQLexer::ReadNumber of the compiler, except that value limits stay unchecked
+// constraint: SQInteger has 64 bits, and the compiler has no negative integer literal
+static const char INTEGER_MAX[] = "9223372036854775807";
+enum { HEX_DIGITS_MAX = 16 };
+
+// constraint: SQFloat has 32 bits in the engine build; a literal is an error if it rounds to FLT_MAX or more, or to 0
+// constraint: the compiler has two float rounding paths; each limit is that of the path that accepts more
+static const char FLOAT_OVERFLOW_ABOVE[] = "340282336497324076875334902989472137216";
+enum { FLOAT_OVERFLOW_EXPONENT = 38 };
+static const char FLOAT_UNDERFLOW_UP_TO[] =
+  "700649232162408535461864791644958065640130970938257885878534141944895541342930300743319094181060791015625";
+enum { FLOAT_UNDERFLOW_EXPONENT = -46 };
+
+enum { SIGNIFICANT_DIGITS_KEPT = 112, EXPONENT_LIMIT = 100000 };
+
+typedef struct {
+  char significant[SIGNIFICANT_DIGITS_KEPT];
+  unsigned kept;
+  bool dropped_nonzero;
+  int32_t integer_digits;
+  int32_t leading_integer_zeros;
+  int32_t leading_fraction_zeros;
+  bool in_fraction;
+  int32_t exponent;
+  bool exponent_is_negative;
+} NumberValue;
+
+static void add_mantissa_digit(NumberValue *value, int32_t digit) {
+  if (!value->in_fraction) {
+    value->integer_digits++;
+  }
+  if (value->kept == 0 && digit == '0') {
+    if (value->in_fraction) {
+      value->leading_fraction_zeros++;
+    } else {
+      value->leading_integer_zeros++;
+    }
+    return;
+  }
+  if (value->kept < SIGNIFICANT_DIGITS_KEPT) {
+    value->significant[value->kept++] = (char)digit;
+  } else if (digit != '0') {
+    value->dropped_nonzero = true;
+  }
+}
+
+static void add_exponent_digit(NumberValue *value, int32_t digit) {
+  if (value->exponent < EXPONENT_LIMIT) {
+    value->exponent = value->exponent * 10 + (digit - '0');
+  }
+}
+
+static int compare_with_limit(const NumberValue *value, const char *limit) {
+  for (unsigned i = 0; i < SIGNIFICANT_DIGITS_KEPT; i++) {
+    char digit = i < value->kept ? value->significant[i] : '0';
+    char limit_digit = *limit ? *limit++ : '0';
+    if (digit != limit_digit) {
+      return digit < limit_digit ? -1 : 1;
+    }
+  }
+  return value->dropped_nonzero ? 1 : 0;
+}
+
+static bool is_integer_in_range(const NumberValue *value) {
+  unsigned digits = (unsigned)(value->integer_digits - value->leading_integer_zeros);
+  unsigned max_digits = sizeof INTEGER_MAX - 1;
+  return digits < max_digits || (digits == max_digits && compare_with_limit(value, INTEGER_MAX) <= 0);
+}
+
+static bool is_float_in_range(const NumberValue *value) {
+  if (value->kept == 0) {
+    return true;
+  }
+  int32_t first_digit_exponent = value->leading_integer_zeros < value->integer_digits
+                                   ? value->integer_digits - value->leading_integer_zeros - 1
+                                   : -(value->leading_fraction_zeros + 1);
+  first_digit_exponent += value->exponent_is_negative ? -value->exponent : value->exponent;
+  if (first_digit_exponent != FLOAT_OVERFLOW_EXPONENT && first_digit_exponent != FLOAT_UNDERFLOW_EXPONENT) {
+    return first_digit_exponent > FLOAT_UNDERFLOW_EXPONENT && first_digit_exponent < FLOAT_OVERFLOW_EXPONENT;
+  }
+  if (first_digit_exponent == FLOAT_OVERFLOW_EXPONENT) {
+    return compare_with_limit(value, FLOAT_OVERFLOW_ABOVE) <= 0;
+  }
+  return compare_with_limit(value, FLOAT_UNDERFLOW_UP_TO) > 0;
+}
+
+// constraint: follows SQLexer::ReadNumber of the compiler
 static bool scan_number(TSLexer *lexer) {
   int32_t first = lexer->lookahead;
   advance_digit(lexer);
@@ -187,15 +272,19 @@ static bool scan_number(TSLexer *lexer) {
   }
   if (first == '0' && (lexer->lookahead == 'x' || lexer->lookahead == 'X')) {
     advance_digit(lexer);
-    if (!is_hex_digit(lexer->lookahead)) {
-      return reject_number(lexer);
-    }
+    unsigned hex_digits = 0;
     while (is_hex_digit(lexer->lookahead)) {
+      hex_digits++;
       advance_digit(lexer);
+    }
+    if (hex_digits == 0 || hex_digits > HEX_DIGITS_MAX) {
+      return reject_number(lexer);
     }
     lexer->mark_end(lexer);
     return accept(lexer, INTEGER);
   }
+  NumberValue value = {0};
+  add_mantissa_digit(&value, first);
   bool has_dot = false;
   bool has_exponent = false;
   while (lexer->lookahead == '.' || is_alnum(lexer->lookahead)) {
@@ -205,6 +294,7 @@ static bool scan_number(TSLexer *lexer) {
         return reject_number(lexer);
       }
       has_dot = true;
+      value.in_fraction = true;
     } else if (c == 'e' || c == 'E') {
       if (has_exponent) {
         return reject_number(lexer);
@@ -212,18 +302,28 @@ static bool scan_number(TSLexer *lexer) {
       has_exponent = true;
       advance(lexer);
       if (lexer->lookahead == '+' || lexer->lookahead == '-') {
+        value.exponent_is_negative = lexer->lookahead == '-';
         advance(lexer);
       }
       if (!is_digit(lexer->lookahead)) {
         return reject_number(lexer);
       }
+      add_exponent_digit(&value, lexer->lookahead);
     } else if (!is_digit(c)) {
       return reject_number(lexer);
+    } else if (has_exponent) {
+      add_exponent_digit(&value, c);
+    } else {
+      add_mantissa_digit(&value, c);
     }
     advance_digit(lexer);
   }
+  bool is_float = has_dot || has_exponent;
+  if (is_float ? !is_float_in_range(&value) : !is_integer_in_range(&value)) {
+    return reject_number(lexer);
+  }
   lexer->mark_end(lexer);
-  return accept(lexer, has_dot || has_exponent ? FLOAT : INTEGER);
+  return accept(lexer, is_float ? FLOAT : INTEGER);
 }
 
 static bool scan_template_chars(TSLexer *lexer) {
