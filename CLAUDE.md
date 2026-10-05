@@ -56,6 +56,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - `eslint.config.mjs` - the lint configuration for `grammar.js` (`npm run lint`).
 - `examples/` - Quirrel files that the CI workflow parses.
 - `test/corpus/` - corpus tests, one file per topic. `:error` marks an input that must produce ERROR.
+- `test/corpus/compiler/` - inputs of the compiler tests, copied unchanged from `testData/` of the compiler. Each test
+  names its source file, and its tree comes from `tree-sitter test --update`. When the grammar moves to a new Quirrel
+  version, copy the inputs again, update the trees, and review the difference.
 
 ## Rules
 
