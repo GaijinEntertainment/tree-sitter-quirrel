@@ -195,9 +195,10 @@ function postfixSpine(prefix) {
   const {hidden, node, ruleName} = spineNames(prefix);
 
   return {
-    [ruleName('postfix_increment_expression')]: $ => prec(PREC.POSTFIX, seq(
+    [ruleName('postfix_increment_expression')]: $ => prec.left(PREC.POSTFIX, seq(
       field('argument', hidden($, '_postfix_operand')),
       field('operator', choice(alias($._postfix_increment, '++'), alias($._postfix_decrement, '--'))),
+      optional(choice($._after_postfix_update, seq('--', $._never_returned))),
     )),
 
     [ruleName('field_access_expression')]: $ => prec(PREC.POSTFIX, seq(
@@ -273,6 +274,7 @@ export default grammar({
     $._import_marker,
     $._same_line_type_bar,
     $._const_declaration_end,
+    $._after_postfix_update,
     $._never_returned,
     $._error_sentinel,
   ],

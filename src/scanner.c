@@ -27,6 +27,7 @@ enum TokenType {
   IMPORT_MARKER,
   SAME_LINE_TYPE_BAR,
   CONST_DECLARATION_END,
+  AFTER_POSTFIX_UPDATE,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
@@ -426,7 +427,7 @@ static bool scan_postfix(TSLexer *lexer, const bool *valid_symbols, const Gap *g
 }
 
 // constraint: the compiler ends a statement at a line end only where the next token can start a new statement
-static bool continues_statement(TSLexer *lexer, bool expression_ended) {
+static bool continues_statement(TSLexer *lexer, bool can_take_call, bool can_take_binary_minus) {
   int32_t c = lexer->lookahead;
   switch (c) {
     case '=':
@@ -455,9 +456,9 @@ static bool continues_statement(TSLexer *lexer, bool expression_ended) {
       return lexer->lookahead == '=';
     case '-':
       advance(lexer);
-      return lexer->lookahead == '=' || (expression_ended && lexer->lookahead != '-');
+      return lexer->lookahead == '=' || (can_take_binary_minus && lexer->lookahead != '-');
     case '(':
-      return expression_ended;
+      return can_take_call;
     case 'i':
     case 'n': {
       char word[16];
@@ -562,7 +563,8 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     return !next_word_is(lexer, c == 'e' ? "else" : "catch") &&
            accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
   }
-  if (continues_statement(lexer, expression_ended)) {
+  // constraint: the compiler takes no postfix operator after `x++`, but a binary operator can follow it
+  if (continues_statement(lexer, expression_ended, expression_ended || valid_symbols[AFTER_POSTFIX_UPDATE])) {
     return false;
   }
   return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);

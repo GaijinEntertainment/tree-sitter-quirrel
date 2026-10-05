@@ -92,6 +92,11 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - A `const` declaration with a value ends only at `;`, a line end, `}`, or the text end; a `}` before it does not end
   it, as in `const A = {} x = 1`. The zero-width `_const_declaration_end` holds that check, and the statement end
   follows it.
+- The compiler takes no postfix operator after a postfix update and reads `--` as one token there. The update rule
+  therefore ends with an optional `--` that `_never_returned` rejects; where the next operand can start, as in
+  `[a++ --b]`, the left associativity of the rule ends the update first.
+- The scanner never returns `_after_postfix_update` either. Its presence in `valid_symbols` marks the position after a
+  postfix update, where `_index_bracket` is not valid but a binary minus on the next line continues the expression.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
   longer token for input that a shorter valid token matches in part: `_invalid_unicode_escape` takes all of `\uD800`,
   of which `\uD80` is a valid escape.
