@@ -96,6 +96,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   capture of an earlier match that shares a node with a later match.
 - A `#match?` regex must mean the same in Rust regex syntax and in Vim very-magic syntax (Neovim). Write a literal `@`
   as `[@]` and a literal `~` as `[~]`.
+- A workflow pins each action to the commit SHA of a release and names the release in a comment
+  (`actions/checkout@<sha> # v7.0.1`), which Dependabot reads to update both. A checkout sets
+  `persist-credentials: false`.
 - In `queries/tags.scm`, tree-sitter-tags keeps one tag per name node, from the earliest pattern that matches it. Put
   a specific pattern before the general pattern for the same node.
 
