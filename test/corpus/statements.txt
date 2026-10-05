@@ -386,6 +386,44 @@ Empty statements and blocks
     (empty_statement)))
 
 ================================================================================
+One docstring in the file, in each function body, and in each class body
+================================================================================
+
+@@"file"
+function f() {
+  @@"function"
+  return function() { @@"inner" }
+}
+class C {
+  @@"class"
+  function m() { @@"method" }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (docstring)
+  (function_declaration
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (docstring)
+      (return_statement
+        (function_expression
+          parameters: (parameters)
+          body: (block
+            (docstring))))))
+  (class_declaration
+    name: (identifier)
+    body: (class_body
+      (docstring)
+      (method
+        name: (identifier)
+        parameters: (parameters)
+        body: (block
+          (docstring))))))
+
+================================================================================
 Directives and docstrings
 ================================================================================
 

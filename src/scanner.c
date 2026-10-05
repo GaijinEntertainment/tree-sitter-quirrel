@@ -34,14 +34,24 @@ enum TokenType {
   AFTER_CLONE,
   AFTER_OPENING_ITEM,
   AFTER_BLOCK,
+  DOCSTRING_START,
+  DOCSTRING_SCOPE_START,
+  UNCHECKED_DOCSTRING_SCOPE_START,
+  DOCSTRING_SCOPE_END,
   NEVER_RETURNED,
   ERROR_SENTINEL,
 };
+
+enum { DOCSTRING_SCOPES_MAX = 512 };
+
+enum DocstringScope { SCOPE_WITHOUT_DOCSTRING, SCOPE_WITH_DOCSTRING, UNCHECKED_SCOPE };
 
 // constraint: the runtime restores this state from the last external token, so each scan that changes it returns one
 typedef struct {
   bool after_terminator;
   bool imports_closed;
+  uint32_t open_scopes;
+  uint8_t scopes[DOCSTRING_SCOPES_MAX];
 } Scanner;
 
 typedef struct {
@@ -819,17 +829,71 @@ void *tree_sitter_quirrel_external_scanner_create(void) { return ts_calloc(1, si
 
 void tree_sitter_quirrel_external_scanner_destroy(void *payload) { ts_free(payload); }
 
+enum { SCOPES_OFFSET = 2 + sizeof(uint32_t) };
+
+static unsigned recorded_scopes(const Scanner *scanner) {
+  return scanner->open_scopes < DOCSTRING_SCOPES_MAX ? scanner->open_scopes + 1 : DOCSTRING_SCOPES_MAX;
+}
+
 unsigned tree_sitter_quirrel_external_scanner_serialize(void *payload, char *buffer) {
   Scanner *scanner = payload;
   buffer[0] = (char)scanner->after_terminator;
   buffer[1] = (char)scanner->imports_closed;
-  return 2;
+  memcpy(buffer + 2, &scanner->open_scopes, sizeof scanner->open_scopes);
+  memcpy(buffer + SCOPES_OFFSET, scanner->scopes, recorded_scopes(scanner));
+  return SCOPES_OFFSET + recorded_scopes(scanner);
 }
 
 void tree_sitter_quirrel_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
   Scanner *scanner = payload;
-  scanner->after_terminator = length == 2 && buffer[0] != 0;
-  scanner->imports_closed = length == 2 && buffer[1] != 0;
+  scanner->after_terminator = false;
+  scanner->imports_closed = false;
+  scanner->open_scopes = 0;
+  scanner->scopes[0] = SCOPE_WITHOUT_DOCSTRING;
+  if (length < SCOPES_OFFSET) {
+    return;
+  }
+  scanner->after_terminator = buffer[0] != 0;
+  scanner->imports_closed = buffer[1] != 0;
+  memcpy(&scanner->open_scopes, buffer + 2, sizeof scanner->open_scopes);
+  memcpy(scanner->scopes, buffer + SCOPES_OFFSET, length - SCOPES_OFFSET);
+}
+
+// shortcut: the scanner keeps the docstring state of 512 nested scopes - a deeper scope takes each docstring
+static void open_docstring_scope(Scanner *scanner, enum DocstringScope scope) {
+  scanner->open_scopes++;
+  if (scanner->open_scopes < DOCSTRING_SCOPES_MAX) {
+    scanner->scopes[scanner->open_scopes] = (uint8_t)scope;
+  }
+}
+
+static void close_docstring_scope(Scanner *scanner) {
+  if (scanner->open_scopes > 0) {
+    scanner->open_scopes--;
+  }
+}
+
+// constraint: the compiler takes one docstring in a file, in a function body, and in a class body
+static bool scan_docstring_start(Scanner *scanner, TSLexer *lexer) {
+  lexer->mark_end(lexer);
+  advance(lexer);
+  if (lexer->lookahead != '@') {
+    return false;
+  }
+  advance(lexer);
+  if (lexer->lookahead != '"') {
+    return false;
+  }
+  if (scanner->open_scopes < DOCSTRING_SCOPES_MAX) {
+    uint8_t *scope = &scanner->scopes[scanner->open_scopes];
+    if (*scope == SCOPE_WITH_DOCSTRING) {
+      return false;
+    }
+    if (*scope == SCOPE_WITHOUT_DOCSTRING) {
+      *scope = SCOPE_WITH_DOCSTRING;
+    }
+  }
+  return accept(lexer, DOCSTRING_START);
 }
 
 static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool after_terminator) {
@@ -845,6 +909,14 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   }
   if (valid_symbols[ENUM_MEMBERS_MARKER]) {
     return scan_enum_members_marker(lexer);
+  }
+  if (valid_symbols[DOCSTRING_SCOPE_START]) {
+    open_docstring_scope(scanner, SCOPE_WITHOUT_DOCSTRING);
+    return accept(lexer, DOCSTRING_SCOPE_START);
+  }
+  if (valid_symbols[UNCHECKED_DOCSTRING_SCOPE_START]) {
+    open_docstring_scope(scanner, UNCHECKED_SCOPE);
+    return accept(lexer, UNCHECKED_DOCSTRING_SCOPE_START);
   }
 
   Gap gap = {false, false, false, false};
@@ -878,6 +950,10 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     if (may_terminate) {
       return accept(lexer, statement_end);
     }
+    if (valid_symbols[DOCSTRING_SCOPE_END]) {
+      close_docstring_scope(scanner);
+      return accept(lexer, DOCSTRING_SCOPE_END);
+    }
     return valid_symbols[CLOSE_BRACE] && !gap.crossed_comment && accept_terminator(scanner, lexer, CLOSE_BRACE);
   }
   if (c == ';') {
@@ -889,6 +965,9 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
       return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
     }
     return valid_symbols[SEMICOLON] && !gap.crossed_comment && accept_terminator(scanner, lexer, SEMICOLON);
+  }
+  if (c == '@' && valid_symbols[DOCSTRING_START]) {
+    return !gap.crossed_comment && scan_docstring_start(scanner, lexer);
   }
   if (c == '|' && valid_symbols[SAME_LINE_TYPE_BAR] && !gap.newline) {
     advance(lexer);
