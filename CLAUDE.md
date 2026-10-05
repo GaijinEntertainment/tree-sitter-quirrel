@@ -84,8 +84,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - An alias of an inline `seq` applies to each element. Alias a named rule.
 - A contextual keyword used as a name, and a type name, is an aliased token, so that its node is a leaf. A keyword
   capture in `queries/highlights.scm` then does not color a name.
-- The runtime restores the scanner state from the last external token. The scan after a `}` or `;` that ends a
-  statement therefore always returns a token, the zero-width `_terminator_reset` extra when no other token applies.
+- The runtime restores the scanner state from the last external token. While `after_terminator` is set, each scan
+  therefore returns a token, the zero-width `_terminator_reset` extra when no other token applies.
+- A `}` or `;` that ends a statement sets `after_terminator`. One `}` or `;` ends each statement that it closes, as in
+  `if (a) if (b) c; d`, so an automatic `;` that needs the flag keeps it for the statement around it.
 - `scan_number` follows `SQLexer::ReadNumber`: a decimal number takes every following letter, digit, and `.`, and an
   invalid run returns `_malformed_number`, which no rule accepts. Number limits stay unchecked.
 - The import region is open only at the top level: `_import_marker` makes `import` and `from` start an import at the
