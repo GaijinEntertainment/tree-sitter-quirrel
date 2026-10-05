@@ -134,3 +134,5 @@ switch (x) { case 1: break; default: yield }
 //                   ^ keyword.repeat
 //                          ^ keyword.conditional
 //                                   ^ keyword.return
+let t = {};
+//        ^ punctuation.delimiter

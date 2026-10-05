@@ -261,6 +261,8 @@
   "::"
 ] @punctuation.delimiter
 
+(empty_statement) @punctuation.delimiter
+
 (ternary_expression
   [
     "?"

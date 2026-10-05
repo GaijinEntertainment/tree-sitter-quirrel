@@ -123,6 +123,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   therefore returns a token, the zero-width `_terminator_reset` extra when no other token applies.
 - A `}` or `;` that ends a statement sets `after_terminator`. One `}` or `;` ends each statement that it closes, as in
   `if (a) if (b) c; d`, so an automatic `;` that needs the flag keeps it for the statement around it.
+- A `;` on the line of the `}` or `;` that ended a statement ends no statement. The compiler takes it as an empty
+  statement, so `x = {};` is two statements, and `else` or the `while` of a `do` loop cannot follow that `;`.
 - A `const` declaration with a value ends only at `;`, a line end, `}`, or the text end; a `}` before it does not end
   it, as in `const A = {} x = 1`. The zero-width `_const_declaration_end` holds that check, and the statement end
   follows it.

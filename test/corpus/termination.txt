@@ -115,6 +115,40 @@ function f() { for (;;) foreach (x in y) z; w }
         (identifier)))))
 
 ================================================================================
+A semicolon on the line of a closing brace is an empty statement
+================================================================================
+
+x = {};
+if (a) y = {}
+; else z = 1
+do w = {} while (b)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (table)))
+  (empty_statement)
+  (if_statement
+    condition: (identifier)
+    then_branch: (expression_statement
+      (assignment_expression
+        left: (identifier)
+        right: (table)))
+    else_branch: (expression_statement
+      (assignment_expression
+        left: (identifier)
+        right: (integer))))
+  (do_while_statement
+    body: (expression_statement
+      (assignment_expression
+        left: (identifier)
+        right: (table)))
+    condition: (identifier)))
+
+================================================================================
 A const declaration ends at a semicolon, a line end, or a closing brace
 ================================================================================
 
