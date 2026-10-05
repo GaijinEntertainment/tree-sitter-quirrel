@@ -686,6 +686,128 @@ static bool scan_enum_members_marker(TSLexer *lexer) {
   return !has_duplicate && accept(lexer, ENUM_MEMBERS_MARKER);
 }
 
+enum { TEMPLATE_NESTING_MAX = 32 };
+
+typedef struct {
+  unsigned open_brackets;
+  unsigned hole_levels[TEMPLATE_NESTING_MAX];
+  unsigned open_holes;
+  bool in_template_text;
+} CodeNesting;
+
+static bool read_word_outside_brackets(TSLexer *lexer, CodeNesting *nesting, char *word, unsigned size) {
+  for (;;) {
+    if (nesting->in_template_text) {
+      int32_t c = lexer->lookahead;
+      if (at_text_end(lexer) || c == '\n') {
+        return false;
+      }
+      advance(lexer);
+      if (c == '\\') {
+        advance(lexer);
+      } else if (c == '"') {
+        nesting->in_template_text = false;
+      } else if (c == '{') {
+        if (nesting->open_holes == TEMPLATE_NESTING_MAX) {
+          return false;
+        }
+        nesting->hole_levels[nesting->open_holes++] = nesting->open_brackets++;
+        nesting->in_template_text = false;
+      }
+      continue;
+    }
+    Gap gap = {false, false, false, false};
+    skip_gap(lexer, &gap);
+    if (at_text_end(lexer)) {
+      return false;
+    }
+    int32_t c = lexer->lookahead;
+    if (is_word_char(c)) {
+      bool fits = read_word(lexer, word, size);
+      while (is_word_char(lexer->lookahead)) {
+        advance(lexer);
+      }
+      if (fits && nesting->open_brackets == 0) {
+        return true;
+      }
+    } else if (c == '"' || c == '\'') {
+      if (!skip_quoted(lexer, c, false)) {
+        return false;
+      }
+    } else if (c == '@') {
+      advance(lexer);
+      if (lexer->lookahead == '@') {
+        advance(lexer);
+      }
+      if (lexer->lookahead == '"' && !skip_quoted(lexer, '"', true)) {
+        return false;
+      }
+    } else if (c == '$') {
+      advance(lexer);
+      if (lexer->lookahead == '"') {
+        advance(lexer);
+        nesting->in_template_text = true;
+      }
+    } else if (c == '{' || c == '(' || c == '[') {
+      advance(lexer);
+      nesting->open_brackets++;
+    } else if (c == '}' || c == ')' || c == ']') {
+      if (nesting->open_brackets == 0) {
+        return false;
+      }
+      advance(lexer);
+      nesting->open_brackets--;
+      if (nesting->open_holes > 0 && nesting->hole_levels[nesting->open_holes - 1] == nesting->open_brackets) {
+        nesting->open_holes--;
+        nesting->in_template_text = true;
+      }
+    } else {
+      advance(lexer);
+    }
+  }
+}
+
+static bool repeats_catch_type(TSLexer *lexer, CodeNesting *nesting, NameList *types) {
+  Gap gap = {false, false, false, false};
+  skip_gap(lexer, &gap);
+  if (lexer->lookahead != '(') {
+    return false;
+  }
+  advance(lexer);
+  nesting->open_brackets++;
+  skip_gap(lexer, &gap);
+  if (!starts_name(lexer->lookahead)) {
+    return false;
+  }
+  unsigned type = types->size;
+  read_name(lexer, types);
+  skip_gap(lexer, &gap);
+  if (!starts_name(lexer->lookahead)) {
+    types->size = type;
+    return false;
+  }
+  return name_list_holds_last_name_twice(types, type);
+}
+
+// constraint: the compiler rejects a `try` that has two catch clauses for one type
+// shortcut: the scan stops at 32 nested template strings - use a growing list when deeper text needs the check
+static bool has_no_repeated_catch_type(TSLexer *lexer) {
+  NameList types = {NULL, 0, 0, 0};
+  CodeNesting nesting = {0, {0}, 0, false};
+  char word[8];
+  bool has_duplicate = repeats_catch_type(lexer, &nesting, &types);
+  while (!has_duplicate && read_word_outside_brackets(lexer, &nesting, word, sizeof(word))) {
+    if (strcmp(word, "try") == 0) {
+      break;
+    }
+    if (strcmp(word, "catch") == 0) {
+      has_duplicate = repeats_catch_type(lexer, &nesting, &types);
+    }
+  }
+  ts_free(types.text);
+  return !has_duplicate;
+}
+
 void *tree_sitter_quirrel_external_scanner_create(void) { return ts_calloc(1, sizeof(Scanner)); }
 
 void tree_sitter_quirrel_external_scanner_destroy(void *payload) { ts_free(payload); }
@@ -769,6 +891,12 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
   if (expression_ended && (c == '[' || c == '?' || c == '+' || c == '-')) {
     return scan_postfix(lexer, valid_symbols, &gap, statement_end);
   }
+  if (c == 'c' && valid_symbols[CATCH_MARKER]) {
+    if (is_next_word(lexer, "catch")) {
+      return has_no_repeated_catch_type(lexer) && accept(lexer, CATCH_MARKER);
+    }
+    return may_terminate && line_break && accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
+  }
   if (!may_terminate || !line_break) {
     if (is_digit(c)) {
       return valid_symbols[INTEGER] && scan_number(lexer);
@@ -776,9 +904,8 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     bool starts_import = valid_symbols[IMPORT_MARKER] && !scanner->imports_closed && next_word_starts_import(lexer);
     return starts_import && accept(lexer, IMPORT_MARKER);
   }
-  if ((c == 'e' && valid_symbols[ELSE_MARKER]) || (c == 'c' && valid_symbols[CATCH_MARKER])) {
-    return !next_word_is(lexer, c == 'e' ? "else" : "catch") &&
-           accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
+  if (c == 'e' && valid_symbols[ELSE_MARKER]) {
+    return !next_word_is(lexer, "else") && accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
   }
   // constraint: the compiler takes no postfix operator after `x++`, but a binary operator can follow it
   Continuations can_take = {

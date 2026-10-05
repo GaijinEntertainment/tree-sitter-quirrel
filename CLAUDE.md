@@ -23,8 +23,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The compiler rejects this input, and the grammar accepts it. Keep the list current:
   - An import after a `try` or `catch` body that is a declaration or a control statement without braces, as in
     `try local x = 1 catch (e) { import "m" }`. A marker for the end of such a body costs about 2,200 parser states.
-- The grammar does not check what the compiler checks after it reads the syntax: duplicate catch types, the number of
-  docstrings in a function, the nesting depth of an expression, and the checks of the code generator.
+- The grammar does not check what the compiler checks after it reads the syntax: the number of docstrings in a
+  function, the nesting depth of an expression, and the checks of the code generator.
 
 ## Where things live
 
@@ -138,6 +138,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   the index and the value of a `foreach`, and the members of an enum. The scan returns no token when two names are
   equal, and the statement is then an error. The enum scan follows the lexer of the compiler for the member values
   and compares the first 4096 members.
+- `_catch_marker` is a zero-width token before each `catch`. Its scan reads ahead and compares the type names of the
+  catch clauses that follow outside brackets, up to the next `try` outside brackets, because a `catch` joins the
+  nearest `try`. The scan returns no token when two types are equal. It steps over strings, template strings, and
+  comments, and it stops at 32 nested template strings.
 - The scanner never returns `_after_postfix_update` either. Its presence in `valid_symbols` marks the position after a
   postfix update, where `_index_bracket` is not valid but a binary minus on the next line continues the expression.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
