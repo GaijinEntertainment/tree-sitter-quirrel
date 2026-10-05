@@ -85,6 +85,31 @@ d = '\n'
       right: (character))))
 
 ================================================================================
+Unicode escapes at the limits of the compiler
+================================================================================
+
+x = ["\uD7FF", "\uE000", "\U0010FFFF", "\UD8001", $"\uD7FF", '\u7F']
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (array
+        (string
+          (escape_sequence))
+        (string
+          (escape_sequence))
+        (string
+          (escape_sequence))
+        (string
+          (escape_sequence))
+        (interpolated_string
+          (escape_sequence))
+        (character)))))
+
+================================================================================
 Template strings
 ================================================================================
 
