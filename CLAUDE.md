@@ -53,6 +53,12 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - After the word `clone` a `[` on a later line starts the array that the clone operator takes, so the scanner returns
   `_index_bracket` there and not `_unexpected_newline`. `_after_clone`, which the scanner never returns, marks that
   position.
+- After the word `clone` at a line end the statement ends, because `clone` can be a name. The scanner does not end it
+  when the next line starts with `function`, `async`, `class`, or `const` in a form that is an operand and no
+  statement, as in `clone` and then `const [1]`.
+- The grammar rejects one input that the compiler accepts where `clone` is an operator: `clone` at a line end and, on
+  the next line, a table that is not also a valid block, as in `{a = 1, b = 2}`. A parser that follows both readings
+  of that line end has about 45% more states.
 - After the word `clone` the scanner returns `++` and `--` as postfix tokens, because `clone` can be a name. The
   `clone_update_expression` rules take those tokens as the prefix update that the clone operator applies to, and the
   conflict with `_contextual_name` lets the parser try both readings of `clone --x`.

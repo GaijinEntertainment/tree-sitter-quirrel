@@ -498,6 +498,36 @@ static bool next_word_starts_import(TSLexer *lexer) {
   return read_word(lexer, word, sizeof word) && (strcmp(word, "import") == 0 || strcmp(word, "from") == 0);
 }
 
+// constraint: where `clone` is an operator, the compiler reads its operand from the next line; these words start an
+// operand there and no statement, except in the declaration forms `const name =`, `const function`, and `class name`
+static bool starts_operand_and_no_statement(TSLexer *lexer) {
+  char word[16];
+  Gap gap = {false, false, false, false};
+  if (!read_word(lexer, word, sizeof word)) {
+    return false;
+  }
+  if (strcmp(word, "function") == 0 || strcmp(word, "async") == 0) {
+    return true;
+  }
+  bool is_const = strcmp(word, "const") == 0;
+  if (!is_const && strcmp(word, "class") != 0) {
+    return false;
+  }
+  skip_gap(lexer, &gap);
+  if (!is_word_char(lexer->lookahead) || is_digit(lexer->lookahead)) {
+    return !gap.slash && !gap.directive;
+  }
+  if (!is_const || !read_word(lexer, word, sizeof word) || strcmp(word, "function") == 0) {
+    return false;
+  }
+  skip_gap(lexer, &gap);
+  if (lexer->lookahead != '=') {
+    return true;
+  }
+  advance(lexer);
+  return lexer->lookahead == '=';
+}
+
 typedef struct {
   char *text;
   unsigned size;
@@ -747,6 +777,9 @@ static bool scan_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbo
     .import_alias = valid_symbols[BEFORE_IMPORT_ALIAS],
   };
   if (continues_statement(lexer, &can_take)) {
+    return false;
+  }
+  if (valid_symbols[AFTER_CLONE] && gap.newline && starts_operand_and_no_statement(lexer)) {
     return false;
   }
   return accept_statement_end(scanner, lexer, statement_end, after_terminator, &gap);
