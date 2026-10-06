@@ -254150,7 +254150,7 @@ TS_PUBLIC const TSLanguage *tree_sitter_quirrel(void) {
     .metadata = {
       .major_version = 4,
       .minor_version = 43,
-      .patch_version = 1,
+      .patch_version = 2,
     },
   };
   return &language;
