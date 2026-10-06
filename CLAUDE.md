@@ -84,7 +84,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   The publish workflow authenticates to crates.io, PyPI, and npm with trusted publishing and holds no registry token.
 - `eslint.config.mjs` - the lint configuration for `grammar.js` (`npm run lint`).
 - `examples/` - Quirrel files that the CI workflow parses.
-- `test/corpus/` - corpus tests, one file per topic. `:error` marks an input that must produce ERROR.
+- `test/corpus/` - corpus tests, one file per topic. `:error` marks an input that must produce ERROR. `recovery.txt`
+  holds inputs with an error and the tree that the error recovery gives for each.
 - `test/corpus/compiler/` - inputs of the compiler tests, copied unchanged from `testData/` of the compiler. Each test
   names its source file, and its tree is the output of `tree-sitter parse` without the positions. When the grammar
   moves to a new Quirrel version, copy the inputs again, write the trees again, and review the difference.
@@ -166,6 +167,12 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   body opens an entry, and `_docstring_scope_end` before the `}` closes it. `_docstring_start` is a zero-width token
   before each docstring, and the scan returns no token for the second docstring of a scope. A code block opens an
   entry that takes each docstring. The scanner keeps 512 entries, and a deeper scope takes each docstring.
+- In error recovery the scanner returns only `}`, `;`, a number, and the text after a NUL byte. It returns no
+  zero-width token there, so a rule must not need one right before its `}`: the recovery then cannot close the body,
+  and the ERROR node takes the function or the class and the text after it. `_docstring_scope_end` is optional in each
+  rule for that reason. The scanner returns it wherever it is valid, so a text without an error always closes its
+  entry. A recovery that closes a body leaves the entry open, and the docstring check of the rest of that text can
+  then be wrong. `test/corpus/recovery.txt` holds one case for each rule.
 - The lexer of the compiler takes the character after `@@` as the opening quote of a docstring and does not check
   it, so `@@x doc"` is a docstring. The docstring token and the scans that look for a docstring follow that.
 - After a postfix update `_index_bracket` is not valid, but a binary minus on the next line continues the expression.
@@ -209,8 +216,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   from nothing and do not see this kind of defect.
 - `TYPE_NAMES` follows `sq_type_string_to_mask` in `sqtypeparser.cpp`, and `DIRECTIVES` holds the directive tables in
   `parser.cpp` of both compiler releases.
-- Every corpus input without `:error` compiles in some language mode, and every `:error` input fails in every mode.
-  Check a new case with the compiler before you add it.
+- Every corpus input without `:error` compiles in some language mode, and every `:error` input and every input of
+  `recovery.txt` fails in every mode. Check a new case with the compiler before you add it.
 - In `queries/highlights.scm`, a later pattern overrides an earlier one in both tree-sitter-highlight and Neovim. Put a
   specific pattern after the general pattern, and give each pattern one capture: tree-sitter-highlight drops every
   capture of an earlier match that shares a node with a later match.
