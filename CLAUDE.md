@@ -174,6 +174,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The scanner never returns `_never_returned`, so a rule that ends with it is an error. The rule gives the lexer a
   longer token for input that a shorter valid token matches in part: `_invalid_unicode_escape` takes all of `\uD800`,
   of which `\uD80` is a valid escape.
+- A form that needs `_never_returned` still counts for the `required` flags of `src/node-types.json`. When such a form
+  is an alternative of a visible rule, give it the fields and the children of the other alternatives, after the token
+  where the form has no place for them, as the async form of `methodForms` and the `try` without a clause do.
 - `scan_number` follows `SQLexer::ReadNumber`: a decimal number takes every following letter, digit, and `.`, and an
   invalid run returns `_malformed_number`, which no rule accepts.
 - A number outside the limits of the engine build returns `_malformed_number` too: an integer above 2^63 - 1, also after

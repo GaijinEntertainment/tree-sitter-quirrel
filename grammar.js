@@ -391,7 +391,14 @@ function functionMethod($) {
 function methodForms($) {
   return choice(
     seq(optional('async'), functionMethod($)),
-    seq('async', 'function', optional($.function_attributes), choice(...METAMETHODS), $._never_returned),
+    seq(
+      'async',
+      'function',
+      optional($.function_attributes),
+      field('name', choice(...METAMETHODS.map(name => alias(name, $.identifier)))),
+      $._never_returned,
+      $._function_tail,
+    ),
     seq(field('name', alias('constructor', $.identifier)), optional($.function_attributes), $._function_tail),
   );
 }
@@ -754,7 +761,7 @@ export default grammar({
       'try',
       $._try_start,
       field('body', $._unterminated_body),
-      choice($._catch_clauses, seq($._try_end, $._never_returned)),
+      choice($._catch_clauses, seq($._try_end, $._never_returned, $._catch_clauses)),
     ),
 
     // constraint: the compiler gives a `catch` to the innermost open `try`, also after the catch-all clause of it

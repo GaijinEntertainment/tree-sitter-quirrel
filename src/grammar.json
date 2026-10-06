@@ -2325,6 +2325,10 @@
                 {
                   "type": "SYMBOL",
                   "name": "_never_returned"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_catch_clauses"
                 }
               ]
             }
@@ -3854,81 +3858,174 @@
                   ]
                 },
                 {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "STRING",
-                      "value": "_add"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_sub"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_mul"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_div"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_unm"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_modulo"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_set"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_get"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_typeof"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_nexti"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_cmp"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_call"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_cloned"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_newslot"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_delslot"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_tostring"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_lock"
-                    }
-                  ]
+                  "type": "FIELD",
+                  "name": "name",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_add"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_sub"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_mul"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_div"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_unm"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_modulo"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_set"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_get"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_typeof"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_nexti"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_cmp"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_call"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_cloned"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_newslot"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_delslot"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_tostring"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "_lock"
+                        },
+                        "named": true,
+                        "value": "identifier"
+                      }
+                    ]
+                  }
                 },
                 {
                   "type": "SYMBOL",
                   "name": "_never_returned"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_function_tail"
                 }
               ]
             },
@@ -4047,81 +4144,174 @@
               ]
             },
             {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "_add"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_sub"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_mul"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_div"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_unm"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_modulo"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_set"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_get"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_typeof"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_nexti"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_cmp"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_call"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_cloned"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_newslot"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_delslot"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_tostring"
-                },
-                {
-                  "type": "STRING",
-                  "value": "_lock"
-                }
-              ]
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_add"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_sub"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_mul"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_div"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_unm"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_modulo"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_set"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_get"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_typeof"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_nexti"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_cmp"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_call"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_cloned"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_newslot"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_delslot"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_tostring"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "STRING",
+                      "value": "_lock"
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  }
+                ]
+              }
             },
             {
               "type": "SYMBOL",
               "name": "_never_returned"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_function_tail"
             }
           ]
         },
