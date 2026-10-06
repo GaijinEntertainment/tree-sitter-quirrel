@@ -3602,7 +3602,7 @@
     "fields": {
       "body": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "block",
@@ -3612,7 +3612,7 @@
       },
       "name": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "identifier",
@@ -3622,7 +3622,7 @@
       },
       "parameters": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "parameters",
@@ -4905,7 +4905,7 @@
     },
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "catch_clause",
@@ -5598,74 +5598,6 @@
   },
   {
     "type": "^",
-    "named": false
-  },
-  {
-    "type": "_add",
-    "named": false
-  },
-  {
-    "type": "_call",
-    "named": false
-  },
-  {
-    "type": "_cloned",
-    "named": false
-  },
-  {
-    "type": "_cmp",
-    "named": false
-  },
-  {
-    "type": "_delslot",
-    "named": false
-  },
-  {
-    "type": "_div",
-    "named": false
-  },
-  {
-    "type": "_get",
-    "named": false
-  },
-  {
-    "type": "_lock",
-    "named": false
-  },
-  {
-    "type": "_modulo",
-    "named": false
-  },
-  {
-    "type": "_mul",
-    "named": false
-  },
-  {
-    "type": "_newslot",
-    "named": false
-  },
-  {
-    "type": "_nexti",
-    "named": false
-  },
-  {
-    "type": "_set",
-    "named": false
-  },
-  {
-    "type": "_sub",
-    "named": false
-  },
-  {
-    "type": "_tostring",
-    "named": false
-  },
-  {
-    "type": "_typeof",
-    "named": false
-  },
-  {
-    "type": "_unm",
     "named": false
   },
   {
