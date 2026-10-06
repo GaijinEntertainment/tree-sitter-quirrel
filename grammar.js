@@ -825,11 +825,12 @@ export default grammar({
       optional($._after_block),
     ),
 
+    // constraint: the scanner returns no zero-width token in error recovery, so a body ends without the scope end too
     _function_block: $ => seq(
       '{',
       $._docstring_scope_start,
       repeat($._statement_item),
-      $._docstring_scope_end,
+      optional($._docstring_scope_end),
       alias($._close_brace, '}'),
     ),
 
@@ -884,7 +885,7 @@ export default grammar({
       '{',
       $._docstring_scope_start,
       repeat(seq($._class_member, optional(alias($._semicolon, ';')))),
-      $._docstring_scope_end,
+      optional($._docstring_scope_end),
       alias($._close_brace, '}'),
     ),
 
@@ -1019,7 +1020,7 @@ export default grammar({
       '$${',
       $._unchecked_docstring_scope_start,
       repeat($._statement_item),
-      $._docstring_scope_end,
+      optional($._docstring_scope_end),
       alias($._close_brace, '}'),
     ),
 

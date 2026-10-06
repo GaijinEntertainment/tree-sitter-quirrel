@@ -1,0 +1,76 @@
+================================================================================
+Error in a function body
+================================================================================
+
+function f() {
+  local x = 1
+  x.
+}
+local y = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (function_declaration
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (local_declaration
+        (variable_declaration
+          name: (identifier)
+          value: (integer)))
+      (ERROR
+        (identifier))))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (integer))))
+
+================================================================================
+Error in a class body
+================================================================================
+
+class C {
+  a = 1
+  function m(
+}
+local y = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (class_declaration
+    name: (identifier)
+    body: (class_body
+      (slot
+        key: (identifier)
+        value: (integer))
+      (ERROR
+        (identifier))))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (integer))))
+
+================================================================================
+Error in a code block
+================================================================================
+
+local v = $${
+  x.
+}
+local y = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (code_block_expression
+        (ERROR
+          (identifier)))))
+  (local_declaration
+    (variable_declaration
+      name: (identifier)
+      value: (integer))))
