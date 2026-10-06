@@ -251989,7 +251989,7 @@ TS_PUBLIC const TSLanguage *tree_sitter_quirrel(void) {
     .metadata = {
       .major_version = 4,
       .minor_version = 43,
-      .patch_version = 0,
+      .patch_version = 1,
     },
   };
   return &language;
