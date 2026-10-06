@@ -99,6 +99,10 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   `field_access_expression` with a `receiver` and a `field`, `GetSlotExpr` is `slot_access_expression` with a `key`,
   `CallExpr` has a `callee`, and `IfStatement` has a `then_branch` and an `else_branch`. The two sides of an assignment
   and a binary expression are `left` and `right`.
+- `_expression` is the only supertype. A query pattern `(_expression)` matches a node only where the parent takes the
+  rule `_expression`; the `outer_` and `statement_` copies do not pass through it. The statements have no supertype,
+  because `_prelude_statement` and `_opening_statement` stay separate rules for the import rules of the compiler. Do
+  not declare a supertype for kinds that more than one hidden rule produces.
 - The docs cite a Dagor file only when GaijinEntertainment/DagorEngine on GitHub has it.
 - Model the repository setup (workflows, lint, lockfiles, README) on the official grammars of the tree-sitter
   organization, such as tree-sitter/tree-sitter-cpp. `README.md` holds only the badges, a short description of the
@@ -222,7 +226,9 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The version is `X.Y.P`. `X.Y` is always the major and minor number of the newest Quirrel version that the grammar
   covers. `P` is the grammar's own number: it counts the grammar releases for that Quirrel version and does not follow
   the patch number of the compiler. Only a new Quirrel major version can mark a breaking change: under one major
-  version, a release adds node kinds and fields, and never renames or removes one.
+  version, a release adds node kinds and fields, and never renames or removes one. The supertypes and the `required`
+  and `multiple` flags of `src/node-types.json` are not part of that promise: they follow the rules of the grammar,
+  and a correction can change them.
 - To release, set the version with `tree-sitter version X.Y.P`, then run `tree-sitter generate`, because
   `src/parser.c` holds the version too, and update the lockfiles with `cargo update --workspace --offline` and
   `npm install --package-lock-only --ignore-scripts`. Commit, and push the tag `vX.Y.P`.

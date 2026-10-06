@@ -451,7 +451,7 @@ export default grammar({
     ],
   },
 
-  supertypes: $ => [$._statement, $._expression],
+  supertypes: $ => [$._expression],
 
   inline: $ => [$._name, $._terminator, $._body_statement],
 
@@ -514,8 +514,6 @@ export default grammar({
       $.try_statement,
       $.docstring,
     ),
-
-    _statement: $ => choice($._prelude_statement, $._opening_statement, $.import_statement),
 
     _statement_item: $ => choice($._prelude_item, $._opening_item),
 

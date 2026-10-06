@@ -276,23 +276,6 @@
         }
       ]
     },
-    "_statement": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_prelude_statement"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_opening_statement"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "import_statement"
-        }
-      ]
-    },
     "_statement_item": {
       "type": "CHOICE",
       "members": [
@@ -10741,7 +10724,6 @@
     "_body_statement"
   ],
   "supertypes": [
-    "_statement",
     "_expression"
   ],
   "reserved": {
