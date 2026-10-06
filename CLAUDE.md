@@ -106,7 +106,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - The docs cite a Dagor file only when GaijinEntertainment/DagorEngine on GitHub has it.
 - Model the repository setup (workflows, lint, lockfiles, README) on the official grammars of the tree-sitter
   organization, such as tree-sitter/tree-sitter-cpp. `README.md` holds only the badges, a short description of the
-  grammar, and references. Editor setup, binding use, and maintainer procedures stay out of it.
+  grammar, the meaning of the version numbers, and references. Editor setup, binding use, and maintainer procedures
+  stay out of it.
 - `tree-sitter init` writes only the first author of `tree-sitter.json` into a package manifest. Keep the full author
   list in `package.json`, `Cargo.toml`, and `pyproject.toml` by hand; `tree-sitter init --update` keeps it.
 - CLI 0.27.0 `tree-sitter init --update` writes a second `let dir` line into `Package.swift`. Remove that line.
@@ -228,7 +229,8 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
   the patch number of the compiler. Only a new Quirrel major version can mark a breaking change: under one major
   version, a release adds node kinds and fields, and never renames or removes one. The supertypes and the `required`
   and `multiple` flags of `src/node-types.json` are not part of that promise: they follow the rules of the grammar,
-  and a correction can change them.
+  and a correction can change them. The `Versioning` section of `README.md` gives the users the meaning of the three
+  numbers; change it with this rule.
 - To release, set the version with `tree-sitter version X.Y.P`, then run `tree-sitter generate`, because
   `src/parser.c` holds the version too, and update the lockfiles with `cargo update --workspace --offline` and
   `npm install --package-lock-only --ignore-scripts`. Commit, and push the tag `vX.Y.P`.
