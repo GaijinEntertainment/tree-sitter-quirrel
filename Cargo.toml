@@ -9,7 +9,7 @@ license = "MIT"
 name = "tree-sitter-quirrel"
 readme = "README.md"
 repository = "https://github.com/GaijinEntertainment/tree-sitter-quirrel"
-version = "4.43.1"
+version = "4.43.2"
 
 build = "bindings/rust/build.rs"
 include = [ "bindings/rust/*", "grammar.js", "queries/*", "src/*", "tree-sitter.json", "/LICENSE" ]
