@@ -116,6 +116,7 @@ Tree-sitter grammar for Quirrel, the scripting language of the Dagor Engine.
 - CLI 0.27.1 `tree-sitter init --update` writes a second `let dir` line into `Package.swift`, and rewrites
   `tree-sitter.json` with `injection-regex` after the queries and without its final newline. Remove that line, and
   revert `tree-sitter.json`.
+- The MinGW branches of the `install` and `uninstall` rules in `Makefile` differ from the CLI template; keep them.
 - Keep the `externals` array in `grammar.js` and `enum TokenType` in `src/scanner.c` in the same order.
 - The generator copies the fields of an aliased hidden rule into the parent node, and `child_by_field_name` on the
   parent then returns the wrong child. A rule that has fields and appears only under an alias gets a visible name, as
