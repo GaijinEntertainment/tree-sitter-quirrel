@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-quirrel",
-  "version": "4.43.2",
+  "version": "4.43.3",
   "description": "Dagor Quirrel grammar for tree-sitter",
   "type": "module",
   "repository": {
